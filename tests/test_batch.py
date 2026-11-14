@@ -1,7 +1,13 @@
 """T-SELECT (SPEC 7.6) and the tolerance of 8.3, on synthetic lod_stats."""
+import json
+import shutil
+from pathlib import Path
+
+import numpy as np
 import pytest
 
-from tilepipe import batch, lod
+from test_lod import AOI, hills, stage_root
+from tilepipe import batch, config, glb, lod
 from tilepipe.config import RuleFailure
 
 TRIS = [133120, 33792, 8704, 2304, 640]
@@ -71,3 +77,27 @@ def test_SELECT_batch_groups():
     q = batch.batch_groups("quadrant")
     assert q[1] == ["c2_0", "c3_0", "c2_1", "c3_1"] and len(q) == 4
     assert batch.batch_groups("tile") == [CIDS]
+
+
+def test_SELECT_batch_run(tmp_path):
+    """batch.run on exported synthetic chunks: one GLB per batch, merged in (cz, cx) order with offset indices."""
+    shutil.copytree(Path(__file__).resolve().parents[1] / "profiles", tmp_path / "profiles")
+    b = stage_root(tmp_path, hills())
+    lod.run(tmp_path, AOI)
+    lod.export(tmp_path, AOI)
+    batch.run(tmp_path, AOI)
+    d = config.dist_dir(tmp_path, AOI)
+    sel = json.loads((b / "selection.json").read_text())
+    assert sorted(sel) == sorted(config.load_profiles(tmp_path))
+    for name, p in sel.items():
+        assert len(list(d.glob(f"terrain_{name}_b*.glb"))) == p["terrain_draws"] == len(p["batches"])
+        assert sum(x["tris"] for x in p["batches"]) == p["terrain_tris"]
+        for x in p["batches"]:
+            pos, idx = glb.read_mesh(d / x["file"])
+            parts = [glb.read_mesh(d / f"terrain_{c}_lod{p['selection'][c]}.glb") for c in x["chunks"]]
+            assert pos.tobytes() == np.concatenate([q for q, _ in parts]).tobytes()
+            offs = np.cumsum([0] + [len(q) for q, _ in parts[:-1]])
+            want = np.concatenate([i.astype(np.int64) + o for (_, i), o in zip(parts, offs)])
+            assert (idx.astype(np.int64) == want).all()
+            assert x["index_type"] == ("uint16" if len(pos) <= 65535 else "uint32") == str(idx.dtype)
+            assert x["bytes"] == (d / x["file"]).stat().st_size
