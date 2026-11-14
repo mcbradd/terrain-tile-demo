@@ -1,0 +1,10 @@
+* text=auto eol=lf
+
+*.blend binary
+*.tif   binary
+*.glb   binary
+*.bin   binary
+*.npy   binary
+*.png   binary
+*.jpg   binary
+*.mp4   binary

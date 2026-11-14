@@ -1,0 +1,41 @@
+# Terrain Tile Pipeline Demo
+
+One command takes public USGS elevation data to a validated, real-time terrain tile, built against two hardware budget profiles. A Blender toolchain validates entity assets while they are authored and again after export.
+
+> **Status: in development.** The live viewer, walkthrough video, and validation report will be linked here once the build passes its own acceptance gates.
+
+## What it shows
+
+- **One-command pipeline.** Raw DEM to runtime assets, deterministic and offline after the first fetch.
+- **Budgets in config.** Two hardware profiles. LOD selection, draw batching, validation, and the viewer all follow from one file per profile.
+- **Measured LOD error.** Geometric error per chunk and level, in meters and in on-screen pixels, with the trade against the triangle budget reported.
+- **Two-gate asset validation.** Rules run inside Blender while an artist works, then again on the exported glTF with no DCC in the loop. Every rule has a test asset built to break it.
+- **Engine-agnostic contract.** glTF plus a JSON manifest, and a standalone GLSL ES 3.00 terrain shader that ports line for line.
+
+## Repository layout
+
+```text
+src/tilepipe/   core pipeline and validator (Python, no DCC dependency)
+blender/        Blender extension and headless scripts
+viewer/         real-time WebGL2 viewer
+profiles/       hardware budget profiles
+look/           terrain look presets
+assets/         hand-modeled entity sources and their exports
+data/source/    committed crop of the USGS source and its provenance
+docs/           standards, decisions, open questions, provenance
+tests/          unit and property tests
+```
+
+## Honest limits
+
+- No headset performance was measured. Budgets are checked as static counts.
+- Both hardware profiles are assumptions derived from public developer guidance, and are labeled as such in config.
+- This is a sketch of method, not a proposal for any team's architecture.
+
+## Credits and licenses
+
+- Code: [MIT](LICENSE). The `blender/` directory: [GPL-3.0-or-later](blender/LICENSE), as Blender add-ons require.
+- Data and models: see [DATA_LICENSE.md](DATA_LICENSE.md).
+- Elevation: U.S. Geological Survey, 3D Elevation Program, 1/3 arc-second DEM. Public domain.
+
+Built by Bradd McBrearty, directing AI coding agents from a written spec. Entity models and look development are hand-made.
