@@ -1,0 +1,23 @@
+{
+  "credit": "Elevation: U.S. Geological Survey, 3D Elevation Program, 1/3 arc-second DEM. Public domain.",
+  "crop_sha256": "89df841df79536257a07f699e2fa8c8c10cebc3b1056bd9485c25e661d60b995",
+  "retrieved_utc": "2026-11-14T19:08:49Z",
+  "source_crs": "EPSG:4269",
+  "tiles": [
+    {
+      "etag": "\"6aa955d0-1c68d2bf\"",
+      "last_modified": "Tue, 15 Sep 2026 14:27:28 GMT",
+      "tile": "n34w117",
+      "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/13/TIFF/current/n34w117/USGS_13_n34w117.tif"
+    }
+  ],
+  "urls": [
+    "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/13/TIFF/current/n34w117/USGS_13_n34w117.tif"
+  ],
+  "window_bounds": {
+    "east": -116.362778,
+    "north": 33.337222,
+    "south": 33.222685,
+    "west": -116.497315
+  }
+}
