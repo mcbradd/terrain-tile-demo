@@ -14,7 +14,7 @@ One row per work package, kept current by the orchestrating session.
 | WP08 | Not started | sonnet | medium | 0 | |
 | WP09 | In progress | opus | high | 1 | |
 | WP10 | Not started | sonnet | high | 0 | |
-| WP11 | In progress (resumed after usage-limit stop) | opus | high | 1 | |
+| WP11 | Built; acceptance held: `tilepipe entities` exits 2 at unowned stub entities.py, ENTD needs WP07 | opus | high | 1 (restarted fresh after usage-limit stop) | Orchestrator re-run: extension validate 0; pytest -k blender 0 (4 passed); tilepipe entities 2 (stub); 9 entity GLBs committed. Deviation D-05 logged |
 | WP12 | Not started | sonnet | low | 0 | |
 | WP13 | Not started | sonnet | medium | 0 | |
 | WP14 | Not started | opus (verifier) | xhigh | 0 | |
