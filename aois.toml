@@ -1,0 +1,17 @@
+# AOI definitions (SPEC 5.2). Every AOI value in code is read from this file.
+
+[anza_borrego_01]
+name = "Anza-Borrego, Borrego Palm Canyon"
+center_lat = 33.2800
+center_lon = -116.4300
+min_relief_m = 600
+expect_e0_range = [545000, 551000]
+expect_n0_range = [3674000, 3681000]
+
+[st_helens_01]            # P1.1 only
+name = "Mount St. Helens"
+center_lat = 46.1912
+center_lon = -122.1944
+min_relief_m = 800
+expect_e0_range = [554000, 560000]
+expect_n0_range = [5107000, 5114000]

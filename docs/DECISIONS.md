@@ -20,3 +20,10 @@
 
 - Spec section: 4.1 lists `blender/scripts/preflight_export.py`, owned by WP11.
 - Change: WP01 ships the script as `tools/preflight_export.py` so preflight works now. WP11 may move it.
+
+### D-04 (WP02) Contract modules beyond the 4.1 layout
+
+- Spec section: 4.1 layout, 12.1 (registry location), 19.3 WP02 owned paths.
+- Expected: WP02 owns `registry.py` and `cli.py`. The layout lists no shared config module, no `entities.py`, and no home for `profile set-share`.
+- Observed: lanes B to F run in parallel after WP02, and they all need the same config loaders, exit-code errors, and canonical JSON writer before any of them merges. The `entities` command has no core module, and `set-share` has no module.
+- Change: WP02 adds `src/tilepipe/config.py`, which holds the loaders, the errors of 4.3, and `write_json` per 6.7, and is frozen. It adds `src/tilepipe/entities.py` as a stub owned by WP11. `set_share` is a stub in `presubmit.py`, owned by WP12. The registry lives at `src/tilepipe/validate/registry.py`, where 4.1 and 12.1 place it. All signatures are listed in `src/tilepipe/contracts.md`.

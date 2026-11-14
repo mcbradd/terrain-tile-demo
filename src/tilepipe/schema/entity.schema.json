@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "entity.schema.json",
+  "title": "dist/entities/<entity>/entity.json (SPEC 9.2)",
+  "type": "object",
+  "properties": {
+    "schema": {"const": 1},
+    "id": {"type": "string", "pattern": "^ent_[a-z0-9]+_[a-z0-9]+_[a-z0-9]+$"},
+    "class": {"type": "string", "pattern": "^[a-z0-9]+$"},
+    "display": {
+      "type": "object",
+      "properties": {
+        "mode": {"const": "token"},
+        "table_size_m": {"type": "number", "exclusiveMinimum": 0}
+      },
+      "required": ["mode", "table_size_m"],
+      "additionalProperties": false
+    },
+    "up": {"const": "+Y"},
+    "front": {"const": "+Z"},
+    "origin": {"const": "ground footprint center"},
+    "bbox_m": {"$ref": "#/$defs/aabb"},
+    "base_color_srgb": {"type": "string", "pattern": "^#[0-9A-F]{6}$"},
+    "lods": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "properties": {
+          "n": {"type": "integer", "minimum": 0, "maximum": 2},
+          "file": {"type": "string", "pattern": "^ent_[a-z0-9]+_[a-z0-9]+_[a-z0-9]+_LOD[0-2]\\.glb$"},
+          "tris": {"type": "integer", "minimum": 1},
+          "vertices": {"type": "integer", "minimum": 3, "maximum": 65535},
+          "primitives": {"const": 1},
+          "materials": {"const": 1},
+          "texture_bytes": {"const": 0},
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"$ref": "#/$defs/sha256"}
+        },
+        "required": ["n", "file", "tris", "vertices", "primitives", "materials", "texture_bytes", "bytes", "sha256"],
+        "additionalProperties": false
+      }
+    },
+    "source_blend_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "required": ["schema", "id", "class", "display", "up", "front", "origin", "bbox_m", "base_color_srgb", "lods",
+               "source_blend_sha256"],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "vec3": {"type": "array", "items": {"type": "number"}, "minItems": 3, "maxItems": 3},
+    "aabb": {
+      "type": "object",
+      "properties": {"min": {"$ref": "#/$defs/vec3"}, "max": {"$ref": "#/$defs/vec3"}},
+      "required": ["min", "max"],
+      "additionalProperties": false
+    }
+  }
+}
