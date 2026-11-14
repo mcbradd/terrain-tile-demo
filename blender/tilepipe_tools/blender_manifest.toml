@@ -1,0 +1,9 @@
+schema_version = "1.0.0"
+id = "tilepipe_tools"
+version = "1.0.0"
+name = "Tile Pipeline Tools"
+tagline = "Validate and export tabletop entities against hardware budgets"
+maintainer = "Bradd McBrearty"
+type = "add-on"
+blender_version_min = "5.2.0"
+license = ["SPDX:GPL-3.0-or-later"]
