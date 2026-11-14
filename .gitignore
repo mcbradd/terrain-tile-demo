@@ -26,3 +26,8 @@ node_modules/
 Thumbs.db
 .vscode/
 .idea/
+
+# Local tooling state (Headroom, Serena, tokensave)
+.claude/.headroom_wrap_marker.json
+.serena/
+.tokensave/
