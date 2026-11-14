@@ -8,9 +8,9 @@ Credit: Elevation: U.S. Geological Survey, 3D Elevation Program, 1/3 arc-second 
 
 All 3DEP products are in the public domain. Source URLs, retrieval time, and checksums for each crop are recorded in the `.json` file next to it.
 
-## Entity models
+## Entity tokens
 
-The models in `assets/entities/` were made by Bradd McBrearty and are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+The files in `assets/entities/` are placeholder tokens generated from primitives by `blender/scripts/make_entities.py`. They are covered by the repository's [MIT license](LICENSE).
 
 ## Generated outputs
 
