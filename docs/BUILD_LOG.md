@@ -4,7 +4,7 @@ One row per work package, kept current by the orchestrating session.
 
 | Package | Status | Model | Effort | Attempts | Validation |
 | --- | --- | --- | --- | --- | --- |
-| WP01 | Not started | sonnet | medium | 0 | |
+| WP01 | Accepted, merged | sonnet | medium | 1 | Orchestrator re-run: uv sync --no-build 0; npm ci 0; preflight 0 (PF-01 to PF-07 PASS); pytest -k OFFLINE 0 (1 passed). Deviations D-01 to D-03 logged |
 | WP02 | Not started | opus | high | 0 | |
 | WP03 | Not started | sonnet | high | 0 | |
 | WP04 | Not started | opus | high | 0 | |
