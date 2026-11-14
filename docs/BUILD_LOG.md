@@ -9,10 +9,10 @@ One row per work package, kept current by the orchestrating session.
 | WP03 | Accepted, merged; G1 machine conditions pass, [HUMAN] sign-off pending | sonnet | high | 1 | Orchestrator re-run: fetch 0 (no-op); build --to prep 0 (DG-01 to DG-06 pass); pytest -k "PNG or guard" 0 (11 passed). Scan clean |
 | WP04 | Accepted, merged | opus | high | 1 (restarted fresh after usage-limit stop) | Orchestrator re-run: build --to batch 0; pytest -k "LOD or SELECT or SKIRT or GLB" 0 (17 passed); 80 chunk + 20 batch GLBs (4 mobile_ar, 16 workstation); Khronos validator 100 checked, 0 with errors or warnings; lod_stats.json written |
 | WP05 | Accepted, merged | sonnet | high | 1 | Orchestrator re-run on real prep output: build --from bake --to bake 0; sizes 2097152 and 5592404 exact; pytest -k "CODEC or normal or AO" 0 (6 passed) |
-| WP06 | In progress | sonnet | medium | 1 | |
-| WP07 | Not started | sonnet | high | 0 | |
+| WP06 | Accepted, merged; G2 pass | sonnet | medium | 1 | Orchestrator re-run: build 0 twice, outputs.sha256 byte-identical; tile.json schema-valid; textures exact; no abs paths in dist; full pytest 0 (72 passed); scene file committed and unchanged |
+| WP07 | In progress | sonnet | high | 1 | |
 | WP08 | Not started | sonnet | medium | 0 | |
-| WP09 | Not started | opus | high | 0 | |
+| WP09 | In progress | opus | high | 1 | |
 | WP10 | Not started | sonnet | high | 0 | |
 | WP11 | In progress (resumed after usage-limit stop) | opus | high | 1 | |
 | WP12 | Not started | sonnet | low | 0 | |
