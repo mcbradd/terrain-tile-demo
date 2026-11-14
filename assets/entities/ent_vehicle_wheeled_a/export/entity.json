@@ -1,0 +1,49 @@
+{
+  "base_color_srgb": "#F2F0EA",
+  "bbox_m": {
+    "max": [
+      1.0,
+      2.0,
+      2.5
+    ],
+    "min": [
+      -1.0,
+      0.0,
+      -2.5
+    ]
+  },
+  "class": "vehicle",
+  "display": {
+    "mode": "token",
+    "table_size_m": 0.025
+  },
+  "front": "+Z",
+  "id": "ent_vehicle_wheeled_a",
+  "lods": [
+    {
+      "file": "ent_vehicle_wheeled_a_LOD0.glb",
+      "materials": 1,
+      "n": 0,
+      "primitives": 1,
+      "texture_bytes": 0
+    },
+    {
+      "file": "ent_vehicle_wheeled_a_LOD1.glb",
+      "materials": 1,
+      "n": 1,
+      "primitives": 1,
+      "texture_bytes": 0
+    },
+    {
+      "file": "ent_vehicle_wheeled_a_LOD2.glb",
+      "materials": 1,
+      "n": 2,
+      "primitives": 1,
+      "texture_bytes": 0
+    }
+  ],
+  "origin": "ground footprint center",
+  "schema": 1,
+  "source_blend_sha256": "33a09a6f8189af1b7e75f8e65fa3f500d982d179b6553562fec05b7ceecc5de9",
+  "up": "+Y"
+}

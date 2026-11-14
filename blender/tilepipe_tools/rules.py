@@ -56,7 +56,8 @@ def skip(rule: str, scope: str, reason: str, obj: str = "") -> dict:
 
 
 def strip(rec: dict) -> dict:
-    return {k: rec[k] for k in FIELDS}
+    """The 12.1 record without the panel-only `object` key, floats rounded to 6 places (6.7)."""
+    return {k: round(rec[k], 6) if isinstance(rec[k], float) else rec[k] for k in FIELDS}
 
 
 def failed(records: list[dict]) -> list[str]:
@@ -167,7 +168,7 @@ def ent02(a: Asset) -> dict:
 def ent03(a: Asset) -> dict:
     items = []
     for o in a.meshes:
-        dev = float(np.abs(np.array(o.matrix_world) - np.eye(4)).max())
+        dev = float(np.abs(np.array(o.matrix_basis) - np.eye(4)).max())   # location, rotation, scale
         hint = f"Clear the parent of {o.name}." if o.parent else f"Apply all transforms on {o.name}."
         items.append((dev <= TRANSFORM_TOL and o.parent is None, dev, TRANSFORM_TOL, "<=", o.name, hint))
     return _first_failing("ENT-03", a, items)
@@ -218,7 +219,7 @@ def ent07(a: Asset) -> dict:
     for n in (1, 2):
         if n in lods:
             d = _dims(lods[n])
-            diff = float("inf") if d is None else float(np.abs(d - d0).max())
+            diff = float(d0.max()) if d is None else float(np.abs(d - d0).max())
             items.append((diff <= lim, diff, lim, "<=", lods[n].name,
                           f"Keep the bounds of {lods[n].name} equal to LOD 0."))
     return _first_failing("ENT-07", a, items, "m")
