@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "look.schema.json",
+  "title": "look/<mode>.json (SPEC 10.4)",
+  "type": "object",
+  "properties": {
+    "schema": {"const": 1},
+    "mode": {"enum": ["opaque", "additive"]},
+    "clear_srgb": {"$ref": "#/$defs/srgb"},
+    "ramp": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "properties": {
+          "t": {"type": "number", "minimum": 0, "maximum": 1},
+          "srgb": {"$ref": "#/$defs/srgb"}
+        },
+        "required": ["t", "srgb"],
+        "additionalProperties": false
+      }
+    },
+    "k_dim": {"$ref": "#/$defs/gain"},
+    "ao_floor": {"type": "number", "minimum": 0, "maximum": 1},
+    "shade_base": {"$ref": "#/$defs/gain"},
+    "shade_gain": {"$ref": "#/$defs/gain"},
+    "shade_max": {"$ref": "#/$defs/gain"},
+    "line_srgb": {"$ref": "#/$defs/srgb"},
+    "alpha_minor": {"$ref": "#/$defs/alpha"},
+    "alpha_index": {"$ref": "#/$defs/alpha"},
+    "alpha_grid": {"$ref": "#/$defs/alpha"},
+    "plinth_srgb": {"$ref": "#/$defs/srgb"},
+    "bg_gain": {"$ref": "#/$defs/gain"},
+    "display_gain": {"$ref": "#/$defs/gain"}
+  },
+  "required": ["schema", "mode", "clear_srgb", "ramp", "k_dim", "ao_floor", "shade_base", "shade_gain",
+               "shade_max", "line_srgb", "alpha_minor", "alpha_index", "alpha_grid", "plinth_srgb"],
+  "additionalProperties": false,
+  "if": {"properties": {"mode": {"const": "additive"}}},
+  "then": {"required": ["bg_gain", "display_gain"]},
+  "else": {"not": {"anyOf": [{"required": ["bg_gain"]}, {"required": ["display_gain"]}]}},
+  "$defs": {
+    "srgb": {"type": "string", "pattern": "^#[0-9A-F]{6}$"},
+    "alpha": {"type": "number", "minimum": 0, "maximum": 1},
+    "gain": {"type": "number", "minimum": 0}
+  }
+}

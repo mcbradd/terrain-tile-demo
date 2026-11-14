@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "profile.schema.json",
+  "title": "profiles/<name>.toml (SPEC 8.5)",
+  "type": "object",
+  "properties": {
+    "schema": {"const": 1},
+    "name": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+    "class": {
+      "type": "object",
+      "properties": {
+        "description": {"type": "string", "minLength": 1},
+        "display": {"enum": ["additive", "opaque"]}
+      },
+      "required": ["description", "display"],
+      "additionalProperties": false
+    },
+    "anchor": {
+      "type": "object",
+      "properties": {
+        "source": {"type": "string", "minLength": 1},
+        "frame_tris": {"type": "integer", "minimum": 1},
+        "draw_calls": {"type": "integer", "minimum": 1}
+      },
+      "required": ["source", "frame_tris", "draw_calls"],
+      "additionalProperties": false
+    },
+    "share": {
+      "type": "object",
+      "properties": {
+        "content": {"$ref": "#/$defs/fraction"},
+        "terrain": {"$ref": "#/$defs/fraction"},
+        "entities": {"$ref": "#/$defs/fraction"},
+        "reserve": {"$ref": "#/$defs/fraction"}
+      },
+      "required": ["content", "terrain", "entities", "reserve"],
+      "additionalProperties": false
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "frame_tris_max": {"$ref": "#/$defs/count"},
+        "terrain_tris_max": {"$ref": "#/$defs/count"},
+        "entity_tris_max": {"$ref": "#/$defs/count"},
+        "draw_calls_max": {"$ref": "#/$defs/count"},
+        "texture_bytes_max": {"$ref": "#/$defs/count"},
+        "max_texture_dim": {"$ref": "#/$defs/count"},
+        "terrain_tex_samples_max": {"$ref": "#/$defs/count"},
+        "web_payload_bytes_max": {"$ref": "#/$defs/count"}
+      },
+      "required": ["frame_tris_max", "terrain_tris_max", "entity_tris_max", "draw_calls_max",
+                   "texture_bytes_max", "max_texture_dim", "terrain_tex_samples_max", "web_payload_bytes_max"],
+      "additionalProperties": false
+    },
+    "lod": {
+      "type": "object",
+      "properties": {
+        "ppd": {"type": "number", "exclusiveMinimum": 0},
+        "pixel_error": {"type": "number", "exclusiveMinimum": 0},
+        "view_distance_m": {"type": "number", "exclusiveMinimum": 0},
+        "exaggeration": {"enum": [1.0, 1.5, 2.0, 3.0]}
+      },
+      "required": ["ppd", "pixel_error", "view_distance_m", "exaggeration"],
+      "additionalProperties": false
+    },
+    "terrain": {
+      "type": "object",
+      "properties": {"batch": {"enum": ["chunk", "quadrant", "tile"]}},
+      "required": ["batch"],
+      "additionalProperties": false
+    },
+    "entities": {
+      "type": "object",
+      "properties": {"lod": {"type": "integer", "minimum": 0}},
+      "required": ["lod"],
+      "additionalProperties": false
+    },
+    "look": {
+      "type": "object",
+      "properties": {"default": {"enum": ["opaque", "additive"]}},
+      "required": ["default"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["schema", "name", "class", "anchor", "share", "budget", "lod", "terrain", "entities", "look"],
+  "additionalProperties": false,
+  "$defs": {
+    "fraction": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+    "count": {"type": "integer", "minimum": 1}
+  }
+}

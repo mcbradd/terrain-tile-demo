@@ -1,0 +1,42 @@
+schema = 1
+name = "workstation"
+
+[class]                         # ASSUMED
+description = "Desktop discrete GPU, tethered headset or flat display"
+display = "opaque"
+
+[anchor]
+source = "Meta PC VR developer guidance, low end of range"
+frame_tris = 1000000
+draw_calls = 500
+
+[share]
+content = 0.60
+terrain = 0.60
+entities = 0.30
+reserve = 0.10
+
+[budget]                        # must equal anchor * share; rule META-01
+frame_tris_max = 600000
+terrain_tris_max = 360000
+entity_tris_max = 180000
+draw_calls_max = 300
+texture_bytes_max = 268435456   # ASSUMED
+max_texture_dim = 2048
+terrain_tex_samples_max = 8
+web_payload_bytes_max = 33554432
+
+[lod]
+ppd = 25.0                      # ASSUMED
+pixel_error = 1.0
+view_distance_m = 0.75
+exaggeration = 1.5
+
+[terrain]
+batch = "chunk"
+
+[entities]
+lod = 0                         # index into entity_lods.toml
+
+[look]
+default = "opaque"

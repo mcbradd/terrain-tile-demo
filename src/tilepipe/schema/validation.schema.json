@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "validation.schema.json",
+  "title": "dist/<aoi>/validation.json (SPEC 12.1, 12.2)",
+  "type": "object",
+  "properties": {
+    "schema": {"const": 1},
+    "aoi": {"type": "string", "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*_[0-9]{2}$"},
+    "results": {"type": "array", "items": {"$ref": "#/$defs/result"}},
+    "summary": {
+      "type": "object",
+      "patternProperties": {"^(tile|repo|(profile|entity|fixture):[a-z0-9_]+)$": {"$ref": "#/$defs/counts"}},
+      "additionalProperties": false
+    }
+  },
+  "required": ["schema", "aoi", "results", "summary"],
+  "additionalProperties": false,
+  "$defs": {
+    "value": {"type": ["number", "string", "boolean", "null"]},
+    "result": {
+      "type": "object",
+      "properties": {
+        "rule": {"type": "string", "pattern": "^[A-Z]+-[0-9]{2}$"},
+        "severity": {"enum": ["FAIL", "WARN"]},
+        "status": {"enum": ["PASS", "FAIL", "WARN", "SKIP"]},
+        "scope": {"type": "string", "pattern": "^(tile|repo|(profile|entity|fixture):[a-z0-9_]+)$"},
+        "measured": {"$ref": "#/$defs/value"},
+        "limit": {"$ref": "#/$defs/value"},
+        "unit": {"type": "string"},
+        "message": {"type": "string", "minLength": 1, "pattern": "^[A-Z]+-[0-9]{2} (PASS|FAIL|WARN|SKIP) [^\\n]+$"},
+        "fix_hint": {"type": "string"}
+      },
+      "required": ["rule", "severity", "status", "scope", "measured", "limit", "unit", "message", "fix_hint"],
+      "additionalProperties": false
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "pass": {"type": "integer", "minimum": 0},
+        "fail": {"type": "integer", "minimum": 0},
+        "warn": {"type": "integer", "minimum": 0},
+        "skip": {"type": "integer", "minimum": 0}
+      },
+      "required": ["pass", "fail", "warn", "skip"],
+      "additionalProperties": false
+    }
+  }
+}

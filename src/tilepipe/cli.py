@@ -1,4 +1,4 @@
-"""tilepipe command line. Only `preflight` exists so far (SPEC 3.4); WP02 adds the other commands."""
+"""tilepipe command line (SPEC 4.2). `preflight` is SPEC 3.4; every other command dispatches to its module."""
 import argparse
 import importlib.metadata as md
 import json
@@ -7,6 +7,7 @@ import platform
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 EXIT_OK, EXIT_ENV = 0, 3
@@ -110,12 +111,148 @@ def preflight(root: Path) -> int:
     return EXIT_ENV if any(r["status"] == "FAIL" for r in results) else EXIT_OK
 
 
+def _stage_fn(stage: str):
+    """Stage name (SPEC 7) -> callable(root, aoi). Imported lazily so a stub stage does not break other commands."""
+    import importlib
+    mod, attr = {"export": ("lod", "export")}.get(stage, (stage, "run"))
+    return getattr(importlib.import_module(f"tilepipe.{mod}"), attr)
+
+
+def build(root: Path, aoi: str, start: str | None = None, stop: str | None = None) -> int:
+    """Run stages start..stop of config.STAGES in order and record each wall-clock duration in build_info.json."""
+    from tilepipe import config
+    stages = list(config.STAGES)
+    i = stages.index(start) if start else 0
+    j = stages.index(stop) + 1 if stop else len(stages)
+    if i >= j:
+        raise config.UsageError(f"--from {start} comes after --to {stop}")
+    info_path = config.build_dir(root, aoi) / "build_info.json"
+    info = json.loads(info_path.read_text(encoding="utf-8")) if info_path.exists() else {}
+    secs = info.setdefault("stage_seconds", {})
+    for stage in stages[i:j]:
+        t0 = time.perf_counter()
+        _stage_fn(stage)(root, aoi)
+        secs[stage] = time.perf_counter() - t0
+        print(f"{stage}: {secs[stage]:.2f} s")
+    info["total_seconds"] = sum(secs[s] for s in stages if s in secs)
+    info["host"] = platform.node()
+    info["finished_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    config.write_json(info_path, info)
+    return EXIT_OK
+
+
+def _parser(stage_names) -> argparse.ArgumentParser:
+    ap = argparse.ArgumentParser(prog="tilepipe", description="Terrain tile pipeline (SPEC 4.2). Exit codes: "
+                                 "0 ok, 1 FAIL rule, 2 usage or config, 3 environment, 4 data guard.")
+    sub = ap.add_subparsers(dest="command", required=True, metavar="<command>")
+
+    def cmd(name, help_, aoi=False):
+        p = sub.add_parser(name, help=help_, description=help_)
+        if aoi:
+            p.add_argument("--aoi", default=None, help="AOI id from aois.toml (default: its first AOI)")
+        return p
+
+    cmd("preflight", "check the toolchain (SPEC 3.4)")
+    cmd("fetch", "read the source window; write the committed crop and its provenance (network)", aoi=True)
+    p = cmd("build", "run stages prep, lod, bake, export, batch, scene, manifest", aoi=True)
+    p.add_argument("--from", dest="start", choices=stage_names, help="first stage to run; reuses build/<aoi>/")
+    p.add_argument("--to", dest="stop", choices=stage_names, help="last stage to run")
+    p = cmd("entities", "headless Blender source gate and export for every asset, then fixtures")
+    p.add_argument("--no-blender", action="store_true",
+                   help="skip Blender; copy committed exports into dist/entities/ and run the deliverable gate")
+    p = cmd("validate", "run every rule; write validation.json, validation.junit.xml, and the report", aoi=True)
+    p.add_argument("--skip-entities", action="store_true",
+                   help="run no ENT or ENTD rule; record them and SCN-01, SCN-02, SCN-05 as SKIP")
+    p.add_argument("--determinism", action="store_true", help="add rule DET-01")
+    cmd("site", "bundle the viewer with esbuild and assemble site/", aoi=True)
+    cmd("serve", "serve site/ at http://127.0.0.1:8000")
+    p = cmd("all", "build, entities, validate, site, in that order", aoi=True)
+    p.add_argument("--no-blender", action="store_true", help="as entities --no-blender")
+    p = cmd("scene", "regenerate scene/<aoi>_scene.json", aoi=True)
+    p.add_argument("--regen", action="store_true", required=True, help="rewrite the committed placement file")
+    p = cmd("profile", "edit a hardware profile")
+    psub = p.add_subparsers(dest="profile_command", required=True, metavar="<subcommand>")
+    q = psub.add_parser("set-share", help="rewrite a profile's content share and derived budgets so META-01 holds",
+                        description="rewrite a profile's content share and derived budgets so META-01 holds")
+    q.add_argument("profile", help="profile name, e.g. mobile_ar")
+    q.add_argument("share", type=float, help="new content share in (0, 1]")
+    p = cmd("presubmit", "source gate on each .blend, deliverable gate on each .glb; exit 1 on any FAIL")
+    p.add_argument("files", nargs="+", type=Path, help=".blend and .glb files")
+    cmd("licenses", "write the third-party license table of PROVENANCE.md from installed package metadata")
+    return ap
+
+
+def _dispatch(a, root: Path) -> int:
+    from tilepipe import config
+    aoi = getattr(a, "aoi", None)
+    if aoi is not None or a.command in ("fetch", "build", "validate", "site", "all", "scene"):
+        aoi = config.load_aoi(root, aoi or config.default_aoi(root))["id"]
+    if a.command == "fetch":
+        from tilepipe.fetch import fetch
+        fetch(root, aoi)
+        return EXIT_OK
+    if a.command == "build":
+        return build(root, aoi, a.start, a.stop)
+    if a.command == "entities":
+        from tilepipe.entities import run
+        return run(root, no_blender=a.no_blender)
+    if a.command == "validate":
+        from tilepipe.validate.runner import run
+        return run(root, aoi, skip_entities=a.skip_entities, determinism=a.determinism)
+    if a.command == "site":
+        from tilepipe.site import build as site_build
+        site_build(root, aoi)
+        return EXIT_OK
+    if a.command == "serve":
+        from tilepipe.site import serve
+        serve(root)
+        return EXIT_OK
+    if a.command == "all":
+        from tilepipe.entities import run as entities
+        from tilepipe.site import build as site_build
+        from tilepipe.validate.runner import run as validate
+        for step in (lambda: build(root, aoi), lambda: entities(root, no_blender=a.no_blender),
+                     lambda: validate(root, aoi), lambda: site_build(root, aoi) or EXIT_OK):
+            rc = step()
+            if rc:
+                return rc
+        return EXIT_OK
+    if a.command == "scene":
+        from tilepipe.scene import run
+        run(root, aoi, regen=True)
+        return EXIT_OK
+    if a.command == "profile":
+        from tilepipe.presubmit import set_share
+        if a.profile not in config.load_profiles(root):
+            raise config.UsageError(f"unknown profile {a.profile!r}")
+        if not 0 < a.share <= 1:
+            raise config.UsageError("share must be in (0, 1]")
+        set_share(root, a.profile, a.share)
+        return EXIT_OK
+    if a.command == "presubmit":
+        from tilepipe.presubmit import run
+        return run(root, a.files)
+    if a.command == "licenses":
+        from tilepipe.licenses import run
+        run(root)
+        return EXIT_OK
+    raise AssertionError(a.command)
+
+
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(prog="tilepipe")
-    sub = ap.add_subparsers(dest="command", required=True)
-    sub.add_parser("preflight", help="check the toolchain (SPEC 3.4)")
-    ap.parse_args(argv)
-    return preflight(Path.cwd())
+    from tilepipe import config
+    a = _parser(list(config.STAGES)).parse_args(argv)
+    root = Path.cwd()
+    if a.command == "preflight":
+        return preflight(root)
+    try:
+        return _dispatch(a, root)
+    except config.TilepipeError as e:
+        print(f"tilepipe {a.command}: {e}", file=sys.stderr)
+        return e.code
+    except NotImplementedError as e:
+        print(f"tilepipe {a.command}: not implemented yet ({e})", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":

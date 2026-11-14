@@ -1,0 +1,220 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tile.schema.json",
+  "title": "dist/<aoi>/tile.json (SPEC 9.1)",
+  "type": "object",
+  "properties": {
+    "schema": {"const": 1},
+    "tile_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*_[0-9]{2}$"},
+    "name": {"type": "string", "minLength": 1},
+    "generator": {"type": "string", "pattern": "^tilepipe [0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "crs": {
+      "type": "object",
+      "properties": {
+        "epsg": {"type": "integer", "minimum": 32601, "maximum": 32660},
+        "zone": {"type": "integer", "minimum": 1, "maximum": 60},
+        "hemisphere": {"const": "N"},
+        "vertical_datum": {"type": "string", "minLength": 1},
+        "height_unit": {"const": "m"}
+      },
+      "required": ["epsg", "zone", "hemisphere", "vertical_datum", "height_unit"],
+      "additionalProperties": false
+    },
+    "origin": {
+      "type": "object",
+      "properties": {"E0": {"type": "number"}, "N0": {"type": "number"}, "N_top": {"type": "number"}},
+      "required": ["E0", "N0", "N_top"],
+      "additionalProperties": false
+    },
+    "extent_m": {"const": 10240.0},
+    "cell_m": {"const": 10.0},
+    "cells": {"const": 1024},
+    "height": {
+      "type": "object",
+      "properties": {"min": {"type": "number"}, "max": {"type": "number"}, "plinth_bottom": {"type": "number"}},
+      "required": ["min", "max", "plinth_bottom"],
+      "additionalProperties": false
+    },
+    "mgrs": {
+      "type": "object",
+      "properties": {
+        "center": {"type": "string", "minLength": 1},
+        "gzd": {"type": "string", "minLength": 1},
+        "square": {"type": "string", "minLength": 1}
+      },
+      "required": ["center", "gzd", "square"],
+      "additionalProperties": false
+    },
+    "frame": {
+      "type": "object",
+      "properties": {
+        "handedness": {"const": "right"},
+        "up": {"const": "+Y"},
+        "x": {"const": "east"},
+        "z": {"const": "south"},
+        "origin": {"const": "NW corner, elevation 0"},
+        "front_face": {"const": "CCW"}
+      },
+      "required": ["handedness", "up", "x", "z", "origin", "front_face"],
+      "additionalProperties": false
+    },
+    "table": {
+      "type": "object",
+      "properties": {
+        "scale": {"const": 8000},
+        "exaggeration_default": {"enum": [1.0, 1.5, 2.0, 3.0]},
+        "exaggeration_allowed": {
+          "type": "array", "items": {"enum": [1.0, 1.5, 2.0, 3.0]}, "minItems": 1, "uniqueItems": true
+        }
+      },
+      "required": ["scale", "exaggeration_default", "exaggeration_allowed"],
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "product": {"type": "string", "minLength": 1},
+        "credit": {"type": "string", "minLength": 1},
+        "crop_sha256": {"$ref": "#/$defs/sha256"},
+        "urls": {"type": "array", "items": {"type": "string", "pattern": "^https://"}, "minItems": 1},
+        "retrieved_utc": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:.]+Z$"}
+      },
+      "required": ["product", "credit", "crop_sha256", "urls", "retrieved_utc"],
+      "additionalProperties": false
+    },
+    "textures": {"type": "array", "items": {"$ref": "#/$defs/texture"}, "minItems": 2, "maxItems": 2},
+    "chunks": {"type": "array", "items": {"$ref": "#/$defs/chunk"}, "minItems": 16, "maxItems": 16},
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "patternProperties": {"^[a-z][a-z0-9_]*$": {"$ref": "#/$defs/profile"}},
+      "additionalProperties": false
+    },
+    "entities": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^ent_[a-z0-9]+_[a-z0-9]+_[a-z0-9]+$"},
+      "uniqueItems": true
+    },
+    "scene": {"const": "scene.json"},
+    "looks": {"type": "array", "items": {"enum": ["opaque", "additive"]}, "minItems": 1, "uniqueItems": true}
+  },
+  "required": ["schema", "tile_id", "name", "generator", "crs", "origin", "extent_m", "cell_m", "cells", "height",
+               "frame", "table", "source", "textures", "chunks", "profiles", "entities", "scene", "looks"],
+  "additionalProperties": false,
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "count": {"type": "integer", "minimum": 0},
+    "chunk_id": {"type": "string", "pattern": "^c[0-3]_[0-3]$"},
+    "index_type": {"enum": ["uint16", "uint32"]},
+    "vec3": {"type": "array", "items": {"type": "number"}, "minItems": 3, "maxItems": 3},
+    "aabb": {
+      "type": "object",
+      "properties": {"min": {"$ref": "#/$defs/vec3"}, "max": {"$ref": "#/$defs/vec3"}},
+      "required": ["min", "max"],
+      "additionalProperties": false
+    },
+    "texture": {
+      "type": "object",
+      "properties": {
+        "id": {"enum": ["height", "nao"]},
+        "file": {"type": "string", "pattern": "^terrain_[a-z0-9]+\\.[a-z0-9]+\\.bin$"},
+        "format": {"enum": ["RG8_UNORM", "RGBA8_UNORM"]},
+        "colorspace": {"const": "linear"},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1},
+        "mip_levels": {"type": "integer", "minimum": 1},
+        "bytes": {"type": "integer", "minimum": 1},
+        "filter": {"enum": ["bilinear", "trilinear"]},
+        "wrap": {"const": "clamp"},
+        "channels": {
+          "type": "object",
+          "minProperties": 1,
+          "properties": {
+            "RG": {"type": "string"}, "R": {"type": "string"}, "G": {"type": "string"},
+            "B": {"type": "string"}, "A": {"type": "string"}
+          },
+          "additionalProperties": false
+        },
+        "sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "required": ["id", "file", "format", "colorspace", "width", "height", "mip_levels", "bytes", "filter", "wrap",
+                   "channels", "sha256"],
+      "additionalProperties": false
+    },
+    "chunk": {
+      "type": "object",
+      "properties": {
+        "id": {"$ref": "#/$defs/chunk_id"},
+        "cx": {"type": "integer", "minimum": 0, "maximum": 3},
+        "cz": {"type": "integer", "minimum": 0, "maximum": 3},
+        "aabb": {"$ref": "#/$defs/aabb"},
+        "lods": {"type": "array", "items": {"$ref": "#/$defs/chunk_lod"}, "minItems": 5, "maxItems": 5}
+      },
+      "required": ["id", "cx", "cz", "aabb", "lods"],
+      "additionalProperties": false
+    },
+    "chunk_lod": {
+      "type": "object",
+      "properties": {
+        "k": {"type": "integer", "minimum": 0, "maximum": 4},
+        "file": {"type": "string", "pattern": "^terrain_c[0-3]_[0-3]_lod[0-4]\\.glb$"},
+        "vertices": {"$ref": "#/$defs/count"},
+        "tris_surface": {"$ref": "#/$defs/count"},
+        "tris_skirt": {"$ref": "#/$defs/count"},
+        "tris": {"$ref": "#/$defs/count"},
+        "index_type": {"$ref": "#/$defs/index_type"},
+        "bytes": {"$ref": "#/$defs/count"},
+        "e_max_m": {"type": "number", "minimum": 0},
+        "e_rms_m": {"type": "number", "minimum": 0},
+        "skirt_depth_m": {"type": "number", "exclusiveMinimum": 0},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "required": ["k", "file", "vertices", "tris_surface", "tris_skirt", "tris", "index_type", "bytes", "e_max_m",
+                   "e_rms_m", "skirt_depth_m", "sha256"],
+      "additionalProperties": false
+    },
+    "batch": {
+      "type": "object",
+      "properties": {
+        "file": {"type": "string", "pattern": "^terrain_[a-z0-9_]+_b[0-9]{2}\\.glb$"},
+        "chunks": {"type": "array", "items": {"$ref": "#/$defs/chunk_id"}, "minItems": 1, "uniqueItems": true},
+        "vertices": {"$ref": "#/$defs/count"},
+        "tris": {"$ref": "#/$defs/count"},
+        "index_type": {"$ref": "#/$defs/index_type"},
+        "bytes": {"$ref": "#/$defs/count"},
+        "aabb": {"$ref": "#/$defs/aabb"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "required": ["file", "chunks", "vertices", "tris", "index_type", "bytes", "aabb", "sha256"],
+      "additionalProperties": false
+    },
+    "profile": {
+      "type": "object",
+      "properties": {
+        "tau_target_m": {"type": "number", "exclusiveMinimum": 0},
+        "e_star_m": {"type": "number", "minimum": 0},
+        "budget_forced": {"type": "boolean"},
+        "error_px_nominal": {"type": "number", "minimum": 0},
+        "error_px_v3": {"type": "number", "minimum": 0},
+        "selection": {
+          "type": "object",
+          "patternProperties": {"^c[0-3]_[0-3]$": {"type": "integer", "minimum": 0, "maximum": 4}},
+          "additionalProperties": false,
+          "minProperties": 16,
+          "maxProperties": 16
+        },
+        "terrain_tris": {"$ref": "#/$defs/count"},
+        "terrain_draws": {"type": "integer", "minimum": 1},
+        "batches": {"type": "array", "items": {"$ref": "#/$defs/batch"}, "minItems": 1},
+        "texture_bytes": {"$ref": "#/$defs/count"},
+        "terrain_tex_samples": {"type": "integer", "minimum": 1},
+        "web_payload_bytes": {"$ref": "#/$defs/count"},
+        "entity_lod": {"type": "integer", "minimum": 0, "maximum": 2}
+      },
+      "required": ["tau_target_m", "e_star_m", "budget_forced", "error_px_nominal", "error_px_v3", "selection",
+                   "terrain_tris", "terrain_draws", "batches", "texture_bytes", "terrain_tex_samples",
+                   "web_payload_bytes", "entity_lod"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,22 @@
+# Entity LOD limits (SPEC 8.4). Read by the core and by the Blender extension. Rule META-04.
+schema = 1
+token_table_size_m = 0.025
+min_triangle_area_px = 4.0
+
+[[lod]]
+n = 0
+view_distance_m = 0.30
+ppd = 25.0
+tris_max = 7000
+
+[[lod]]
+n = 1
+view_distance_m = 0.75
+ppd = 30.0
+tris_max = 1500
+
+[[lod]]
+n = 2
+view_distance_m = 1.50
+ppd = 30.0
+tris_max = 400

@@ -1,0 +1,42 @@
+schema = 1
+name = "mobile_ar"
+
+[class]                         # ASSUMED
+description = "Standalone XR2 Gen 1 class SoC, optical see-through additive display"
+display = "additive"
+
+[anchor]
+source = "Meta Quest 2 developer guidance, low end of range"
+frame_tris = 750000
+draw_calls = 80
+
+[share]
+content = 0.25
+terrain = 0.60
+entities = 0.30
+reserve = 0.10
+
+[budget]                        # must equal anchor * share; rule META-01
+frame_tris_max = 187500
+terrain_tris_max = 112500
+entity_tris_max = 56250
+draw_calls_max = 20
+texture_bytes_max = 33554432    # ASSUMED
+max_texture_dim = 2048
+terrain_tex_samples_max = 4
+web_payload_bytes_max = 12582912
+
+[lod]
+ppd = 30.0                      # ASSUMED
+pixel_error = 2.0
+view_distance_m = 0.75
+exaggeration = 1.5
+
+[terrain]
+batch = "quadrant"
+
+[entities]
+lod = 1                         # index into entity_lods.toml
+
+[look]
+default = "additive"
