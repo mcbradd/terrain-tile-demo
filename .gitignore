@@ -31,3 +31,6 @@ Thumbs.db
 .claude/.headroom_wrap_marker.json
 .serena/
 .tokensave/
+
+# Prebuilt launcher wheel is committed (see tools/launcher/build_wheel.py)
+!tools/launcher/dist/

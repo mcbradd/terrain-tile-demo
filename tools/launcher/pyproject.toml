@@ -1,0 +1,15 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tilepipe-launcher"
+version = "0.1.0"
+description = "Prebuilt wheel that puts the `tilepipe` command on PATH so `uv sync --no-build` works"
+requires-python = "==3.12.*"
+
+[project.scripts]
+tilepipe = "tilepipe_launcher:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tilepipe_launcher"]
