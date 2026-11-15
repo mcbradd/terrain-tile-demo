@@ -12,8 +12,8 @@ One row per work package, kept current by the orchestrating session.
 | WP06 | Accepted, merged; G2 pass | sonnet | medium | 1 | Orchestrator re-run: build 0 twice, outputs.sha256 byte-identical; tile.json schema-valid; textures exact; no abs paths in dist; full pytest 0 (72 passed); scene file committed and unchanged |
 | WP07 | In progress (continuing draft f3a7da6 after 2nd usage-limit stop) | sonnet | high | 1 | |
 | WP08 | Not started | sonnet | medium | 0 | |
-| WP09 | In progress on branch WP09r (continuing draft f8578ea after 2nd usage-limit stop; WP09 branch locked by session) | opus | high | 1 | |
-| WP10 | Not started | sonnet | high | 0 | |
+| WP09 | Accepted, merged (branch WP09r) | opus | high | 1 (continued after usage-limit stops) | Orchestrator re-run: node tests/viewer_check.mjs 0 (7 checks: 4 profile/look renders, profile switch, same-origin only, fallback page); full pytest 0 (83 passed, incl. TEX-05, no three.js chunks, WebGL2 compile). site/serve are WP10 stubs. Entity render not checkable until WP11 merges: re-check owed at WP10 and WP14. Deviation D-08 logged |
+| WP10 | In progress | sonnet | high | 1 | |
 | WP11 | Built; acceptance held: `tilepipe entities` exits 2 at unowned stub entities.py, ENTD needs WP07 | opus | high | 1 (restarted fresh after usage-limit stop) | Orchestrator re-run: extension validate 0; pytest -k blender 0 (4 passed); tilepipe entities 2 (stub); 9 entity GLBs committed. Deviation D-05 logged |
 | WP12 | Not started | sonnet | low | 0 | |
 | WP13 | Not started | sonnet | medium | 0 | |
