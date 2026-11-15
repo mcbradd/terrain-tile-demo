@@ -110,11 +110,15 @@ class _Handler(SimpleHTTPRequestHandler):
         pass
 
 
+class _Server(ThreadingHTTPServer):
+    allow_reuse_address = False  # on Windows reuse lets a second server share a busy port
+
+
 def make_server(root: Path, port: int = 8000) -> ThreadingHTTPServer:
     site = root / "site"
     if not (site / "index.html").exists():
         raise UsageError("site/ is empty; run `uv run tilepipe site` first")
-    return ThreadingHTTPServer(("127.0.0.1", port), functools.partial(_Handler, directory=str(site)))
+    return _Server(("127.0.0.1", port), functools.partial(_Handler, directory=str(site)))
 
 
 def serve(root: Path, port: int = 8000) -> None:
