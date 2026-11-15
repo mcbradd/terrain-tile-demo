@@ -35,3 +35,10 @@
 - Observed: at C1, G0 and G2 were green. G1 passed its machine conditions but awaited the `[HUMAN]` AOI sign-off and MGRS cross-check. G3 was not started, because a usage limit stopped WP07 at setup.
 - Change: Bradd chose on 2026-11-14 to defer the P1 cut decision to C2 instead of taking it at C1. P1 work still starts only after WP14 passes (19.3). No threshold, budget, or rule changes.
 - Why: DRAFT, for Bradd to write in his own words.
+
+### D-08 (WP09) Profile default look in the viewer
+
+- Spec section: 13.2 step 2, 9.1.
+- Expected: the viewer applies each profile's default look, which `profiles/<name>.toml` holds under `[look] default`.
+- Observed: `tile.json` (frozen schema) does not carry the default look, and the site does not ship the profile files.
+- Change: `viewer/src/main.js` mirrors the defaults in `PROFILE_LOOK`. `tests/test_viewer.py` fails if the mirror differs from `profiles/*.toml`. No threshold, budget, or rule changes. A later schema revision could add the field to `tile.json` and remove the mirror.
