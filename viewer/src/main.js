@@ -207,6 +207,7 @@ export const viewer = {
   camera: null,
   controls: null,
   ready: null,
+  textureBytesLoaded: 0,
   onFrame: null, // optional per-frame hook, called after the composite
 };
 
@@ -519,7 +520,7 @@ export async function setProfile(name) {
   const prof = viewer.tile.profiles[name];
   if (!prof) throw new Error(`unknown profile ${name}`);
   const token = ++loadToken;
-  bytesLoaded = 0;
+  bytesLoaded = viewer.textureBytesLoaded; // textures are shared and already loaded
   bytesExpected = prof.web_payload_bytes;
   showProgress();
   const aoi = viewer.tile.tile_id;
@@ -727,7 +728,7 @@ async function boot() {
     viewer.cpu[desc.id] = { data: bytes.subarray(0, desc.width * desc.height * BYTES_PER_TEXEL[desc.format]),
       width: desc.width, height: desc.height };
   }));
-  const loadedTextureBytes = bytesLoaded;
+  viewer.textureBytesLoaded = bytesLoaded;
   U.u_height.value = tex.height;
   U.u_nao.value = tex.nao;
   U.u_hMin.value = tile.height.min;
@@ -739,7 +740,6 @@ async function boot() {
   viewer.look = viewer.looks[PROFILE_LOOK[name]] ? PROFILE_LOOK[name] : 'opaque'; // 13.2 step 2
   renderer.setAnimationLoop(frame);
   await setProfile(name);
-  viewer.textureBytesLoaded = loadedTextureBytes;
 }
 
 Object.assign(viewer, { setProfile, setLook, setExaggeration, setToggles, setDebug, setGroundDisc,
