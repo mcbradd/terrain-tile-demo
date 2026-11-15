@@ -13,8 +13,8 @@ One row per work package, kept current by the orchestrating session.
 | WP07 | Accepted, merged; G3 pass | sonnet | high | 1 (continued after usage-limit stops) | Orchestrator re-run after merging main: validate --skip-entities 0 (45 PASS, 2 WARN TER-09, 0 FAIL, 68 SKIP); JSON and JUnit written; pytest -k "REG or rule" 0 (99 passed); full pytest 0 (180 passed); forced failure (nao truncated 1 byte) exit 1, TEX-01/TEX-02 messages per 12.1. DECISIONS merge conflict (D-07 vs D-08) resolved keeping both. Deviation D-07 logged |
 | WP08 | Not started | sonnet | medium | 0 | |
 | WP09 | Accepted, merged (branch WP09r) | opus | high | 1 (continued after usage-limit stops) | Orchestrator re-run: node tests/viewer_check.mjs 0 (7 checks: 4 profile/look renders, profile switch, same-origin only, fallback page); full pytest 0 (83 passed, incl. TEX-05, no three.js chunks, WebGL2 compile). site/serve are WP10 stubs. Entity render not checkable until WP11 merges: re-check owed at WP10 and WP14. Deviation D-08 logged |
-| WP10 | In progress | sonnet | high | 1 | |
-| WP11 | In progress: fix for entities.py stub and glb.parse_glb (branch WP11r) | opus | high | 1 | Earlier run: extension validate 0; pytest -k blender 0; tilepipe entities 2 (stub) |
+| WP10 | In progress (fresh restart after 3rd usage-limit stop; nothing salvaged) | sonnet | high | 1 | |
+| WP11 | In progress: entities.py fix continuing on branch WP11s from WIP 8621bb0 after 3rd usage-limit stop | opus | high | 1 | Earlier run: extension validate 0; pytest -k blender 0; tilepipe entities 2 (stub) |
 | WP12 | Not started | sonnet | low | 0 | |
 | WP13 | Not started | sonnet | medium | 0 | |
 | WP14 | Not started | opus (verifier) | xhigh | 0 | |
