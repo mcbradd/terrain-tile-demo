@@ -65,6 +65,13 @@ def rewrite(path: Path, data: bytes) -> None:
     path.write_bytes(data)
 
 
+def put_text(path: Path, text: str) -> None:
+    """Write a file whether or not `dist/entities` already exists, never through a hard link into `built`."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.unlink(missing_ok=True)
+    path.write_text(text, encoding="utf-8")
+
+
 def edit_json(root: Path, rel: str, fn) -> None:
     p = root / rel
     doc = json.loads(p.read_text(encoding="utf-8"))
@@ -499,8 +506,7 @@ def test_rule_LOOK_05_pass(built):
 
 def test_rule_LOOK_05_fail(clone):
     d = clone / "dist" / "entities" / "ent_vehicle_wheeled_a"
-    d.mkdir(parents=True)
-    (d / "entity.json").write_text(json.dumps({"id": "ent_vehicle_wheeled_a", "base_color_srgb": "#6B6A5E"}), encoding="utf-8")
+    put_text(d / "entity.json", json.dumps({"id": "ent_vehicle_wheeled_a", "base_color_srgb": "#6B6A5E"}))
     bad("LOOK-05", make_ctx(clone), TILE)
 
 
@@ -550,9 +556,8 @@ def static_counts_for(ctx, name):
 def write_entity_jsons(root: Path) -> None:
     """Minimal entity.json files, so SCN-04 can count strictly from exported data."""
     for e in common.tile(make_ctx(root))["entities"]:
-        d = root / "dist" / "entities" / e
-        d.mkdir(parents=True)
-        (d / "entity.json").write_text(json.dumps({"id": e, "lods": [{"tris": 7000}, {"tris": 1500}, {"tris": 400}]}), encoding="utf-8")
+        put_text(root / "dist" / "entities" / e / "entity.json",
+                 json.dumps({"id": e, "lods": [{"tris": 7000}, {"tris": 1500}, {"tris": 400}]}))
 
 
 def test_rule_SCN_04_pass(clone):
@@ -745,3 +750,37 @@ def test_runner_turns_a_missing_input_into_a_fail(clone):
     recs = runner.run_rules(make_ctx(clone, skip_entities=True))
     r = next(x for x in recs if x["rule"] == "TEX-04")
     assert r["status"] == "FAIL" and "terrain_height" in r["message"]
+
+
+# ---------------------------------------------------------------- fixture verdict (12.9, G5, G6)
+
+def fixture_run(clone, monkeypatch, expected: dict, failing: dict) -> int:
+    """Run the runner on canned records: one passing tile rule, plus ENT-01 and ENT-02 on each fixture."""
+    put_text(clone / "assets" / "fixtures" / "expected.json", json.dumps(expected))
+    recs = [registry.result("GEO-01", "tile", "PASS", 0, 1).to_dict()]
+    for fx, fails in failing.items():
+        recs += [registry.result(r, f"fixture:{fx}", "FAIL" if r in fails else "PASS", 0, 1).to_dict()
+                 for r in ("ENT-01", "ENT-02")]
+    monkeypatch.setattr(runner, "run_rules", lambda ctx: recs)
+    return runner.run(clone, AOI)
+
+
+def test_fixture_failing_exactly_its_expected_set_does_not_fail_validate(clone, monkeypatch):
+    assert fixture_run(clone, monkeypatch, {"fx_a": ["ENT-01"]}, {"fx_a": ["ENT-01"]}) == 0
+
+
+@pytest.mark.parametrize("failing", [["ENT-02"], ["ENT-01", "ENT-02"], []], ids=["wrong", "extra", "none"])
+def test_fixture_failing_a_different_set_fails_validate(clone, monkeypatch, failing):
+    assert fixture_run(clone, monkeypatch, {"fx_a": ["ENT-01"]}, {"fx_a": failing}) == 1
+
+
+def test_expected_fixture_with_no_results_fails_validate(clone, monkeypatch):
+    assert fixture_run(clone, monkeypatch, {"fx_a": ["ENT-01"], "fx_b": ["ENT-02"]}, {"fx_a": ["ENT-01"]}) == 1
+
+
+def test_a_real_failure_still_fails_validate_beside_matching_fixtures(clone, monkeypatch):
+    put_text(clone / "assets" / "fixtures" / "expected.json", json.dumps({"fx_a": ["ENT-01"]}))
+    recs = [registry.result("GEO-01", "tile", "FAIL", 2, 1).to_dict(),
+            registry.result("ENT-01", "fixture:fx_a", "FAIL", 0, 1).to_dict()]
+    monkeypatch.setattr(runner, "run_rules", lambda ctx: recs)
+    assert runner.run(clone, AOI) == 1

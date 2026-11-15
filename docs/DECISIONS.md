@@ -57,3 +57,19 @@
 - Expected: the viewer applies each profile's default look, which `profiles/<name>.toml` holds under `[look] default`.
 - Observed: `tile.json` (frozen schema) does not carry the default look, and the site does not ship the profile files.
 - Change: `viewer/src/main.js` mirrors the defaults in `PROFILE_LOOK`. `tests/test_viewer.py` fails if the mirror differs from `profiles/*.toml`. No threshold, budget, or rule changes. A later schema revision could add the field to `tile.json` and remove the mirror.
+
+### D-11 (WP07f) Fixture verdicts in `validate`
+
+- Spec section: 4.3, 12.1, 12.9, 16.2 G5 and G6.
+- Expected: 4.3 says `validate` exits 1 when a FAIL-severity rule fails. 12.9 says each fixture's failing set MUST equal its expected set. G6 needs `tilepipe all` to exit 0. The spec does not say how fixture results count toward the exit code.
+- Observed: `validation.json` carries 13 FAIL records under `fixture:` scopes, all of them the expected ones, so `validate` exited 1 and G6 could not pass.
+- Change: `validate` still records those results as FAIL. Its exit code ignores a `fixture:` FAIL only when the fixture's failing set equals its set in `assets/fixtures/expected.json`. A fixture whose set differs, or an expected fixture with no results, exits 1. FAILs under every other scope still exit 1. No threshold, budget, or rule changes.
+- Why: DRAFT, for Bradd to write in his own words.
+
+### D-12 (WP07f) PAY-01 fails after a clean `tilepipe all` order
+
+- Spec section: 4.2 (`all`), 9.1, 12.5 (PAY-01).
+- Expected: `build, entities, validate, site` leaves PAY-01 passing.
+- Observed: the manifest counts the drawn entity GLBs in `dist/entities/` when `build` runs, before `entities` has created them. After `rm -rf dist/entities`, `build`, `entities`, `validate` gives PAY-01 FAIL on both profiles (measured 9117813 vs 9162285, and 12101709 vs 12208697). A second run passes only because `dist/entities/` survives.
+- Change: none in WP07f paths. The manifest must be rewritten after `entities` in `all`: the fix belongs in `tilepipe.entities.run` (WP11) or the `all` step of `cli.py` (WP02), not in `validate/`.
+- Why: DRAFT, for Bradd to write in his own words.
