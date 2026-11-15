@@ -165,5 +165,6 @@ def pay01(ctx, scope):
     name = scope.split(":", 1)[1]
     got = payload_bytes(ctx, name)
     limit = ctx.profiles[name]["budget"]["web_payload_bytes_max"]
-    return check_result("PAY-01", scope, got <= limit, got, limit, "bytes", "<=",
-                        "Reduce batch or texture size, or raise the demo hosting limit in the profile.")
+    return common.multi("PAY-01", scope, [("bytes", got, limit, "<="),
+                                          ("bytes in tile.json", common.tile(ctx)["profiles"][name]["web_payload_bytes"], got, "==")],
+                        "Reduce batch or texture size, or raise the demo hosting limit in the profile; rebuild the manifest.")

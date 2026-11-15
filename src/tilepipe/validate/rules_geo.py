@@ -33,7 +33,8 @@ def geo01(ctx, scope):
         if ds.nodata is not None:
             arr[arr == ds.nodata] = np.nan
         lon, lat = transform(f"EPSG:{g['epsg']}", ds.crs, list(e), list(n))
-        col, row = ~ds.transform * (np.array(lon), np.array(lat))
+        inv, lon, lat = ~ds.transform, np.array(lon), np.array(lat)
+        col, row = inv.a * lon + inv.b * lat + inv.c, inv.d * lon + inv.e * lat + inv.f
     src = common.bilinear(arr, col - 0.5, row - 0.5)
     d = np.abs(mine - src)
     med, p95 = float(np.nanmedian(d)), float(np.nanpercentile(d, 95))
@@ -56,8 +57,10 @@ def geo02(ctx, scope):
     pts = [(e0 + t / 2, n0 + t / 2), (e0 + INSET_M, n0 + INSET_M), (e0 + t - INSET_M, n0 + INSET_M),
            (e0 + INSET_M, nt - INSET_M), (e0 + t - INSET_M, nt - INSET_M)]
     bad, grids, worst = [], set(), 0.0
-    for (e, n) in pts:
+    for i, (e, n) in enumerate(pts):
         s = _digits((e, n), g["epsg"])
+        if i == 0 and s != g["mgrs_center"]:
+            bad.append(f"geo.json mgrs_center {g['mgrs_center']} differs from {s} at the tile center")
         m = _MGRS.match(s)
         if not m:
             bad.append(f"unparseable MGRS {s!r}")
@@ -71,6 +74,9 @@ def geo02(ctx, scope):
         bad.append(f"points fall in {len(grids)} zone and square pairs")
     if g["mgrs_center"][:2] != f"{g['zone']:02d}":
         bad.append("mgrs_center zone differs from geo.json zone")
+    tile_mgrs = common.tile(ctx).get("mgrs")
+    if tile_mgrs and tile_mgrs["center"] != g["mgrs_center"]:
+        bad.append(f"tile.json mgrs.center {tile_mgrs['center']} differs from geo.json {g['mgrs_center']}")
     return check_result("GEO-02", scope, not bad, worst if not bad else len(bad), 1,
                         "m" if not bad else "mismatches", "<=",
                         f"MGRS and UTM disagree. First: {bad[0]}." if bad else "")
