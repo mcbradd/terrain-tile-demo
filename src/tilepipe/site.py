@@ -113,6 +113,9 @@ class _Handler(SimpleHTTPRequestHandler):
 class _Server(ThreadingHTTPServer):
     allow_reuse_address = False  # on Windows reuse lets a second server share a busy port
 
+    def handle_error(self, request, client_address) -> None:  # a browser closing a connection is not an error
+        pass
+
 
 def make_server(root: Path, port: int = 8000) -> ThreadingHTTPServer:
     site = root / "site"
