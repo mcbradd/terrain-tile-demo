@@ -1,0 +1,116 @@
+/* HUD tokens of SPEC 13.5. No web fonts. */
+:root {
+  --text: #E8E6E1;
+  --panel: rgba(14, 16, 19, 0.78);
+  --edge: rgba(255, 255, 255, 0.08);
+  --accent: #FF7A1A;
+  --pass: #7BD88F;
+  --warn: #FFD166;
+  --fail: #FF6B6B;
+}
+
+html, body { margin: 0; height: 100%; background: #0E1013; overflow: hidden; }
+
+body {
+  color: var(--text);
+  font: 13px/1.4 system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+#hud { position: fixed; inset: 0; pointer-events: none; }
+#hud.hidden { display: none; }
+#hud > * { pointer-events: auto; }
+
+.noscript { padding: 16px; }
+
+.panel {
+  position: fixed;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: 6px;
+  max-width: 340px;
+}
+
+.panel h1, .panel h2 { margin: 0 0 6px; font-size: 15px; font-weight: 600; }
+.panel p { margin: 2px 0; }
+.panel a { color: var(--accent); }
+.muted { opacity: 0.7; }
+.num { font-variant-numeric: tabular-nums; }
+.credit { font-size: 11px; opacity: 0.75; }
+
+button {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--edge);
+  border-radius: 4px;
+  padding: 3px 9px;
+  font: inherit;
+  cursor: pointer;
+}
+button:hover { background: rgba(255, 255, 255, 0.12); }
+button.accent, button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #14100C; }
+button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.seg { display: inline-flex; gap: 2px; margin: 2px 0; }
+.row { margin: 6px 0; }
+.row .lbl { display: flex; justify-content: space-between; gap: 8px; }
+.row.checks label { margin-right: 10px; white-space: nowrap; }
+
+.bar { height: 6px; margin-top: 2px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); }
+.bar i.over { background: var(--fail); }
+
+.chip {
+  display: inline-block;
+  padding: 0 7px;
+  border-radius: 9px;
+  color: #101214;
+  font-weight: 600;
+}
+.chip.pass { background: var(--pass); }
+.chip.warn { background: var(--warn); }
+.chip.fail { background: var(--fail); }
+
+#title { top: 12px; left: 12px; }
+#title .tile { font-weight: 600; }
+#about { position: static; margin-top: 8px; max-width: 300px; }
+#about[hidden], #caption[hidden] { display: none; }
+#budget { top: 12px; right: 12px; width: 320px; }
+#cursor { bottom: 12px; left: 12px; min-width: 250px; }
+#view-panel { bottom: 12px; right: 12px; width: 300px; }
+
+#caption {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  max-width: 80vw;
+  padding: 8px 18px;
+  font-size: 15px;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  text-align: center;
+}
+
+#toggles { display: none; position: fixed; top: 12px; right: 12px; gap: 6px; }
+
+#bench { top: 12px; left: 50%; transform: translateX(-50%); max-width: 520px; max-height: 80vh; overflow: auto; }
+#bench pre { font-size: 11px; white-space: pre-wrap; }
+body.bench #cursor, body.bench #view-panel, body.bench #title, body.bench #budget { display: none; }
+
+/* During the tour the Cursor and View panels are hidden and Budget stays (13.7). */
+body.touring #cursor, body.touring #view-panel { display: none; }
+
+/* Below 720 px the Budget and View panels collapse behind two buttons (13.5). */
+@media (max-width: 719px) {
+  #toggles { display: flex; }
+  .collapsible { display: none; }
+  .collapsible.open { display: block; }
+  #budget { top: 48px; right: 12px; width: calc(100vw - 24px); max-width: none; }
+  #view-panel { bottom: 12px; right: 12px; width: calc(100vw - 24px); max-width: none; }
+  #title { max-width: calc(100vw - 150px); }
+  body.touring #budget.collapsible { display: block; }
+}

@@ -320,8 +320,8 @@ function applyUniformsFromLook() {
     THREE.LinearSRGBColorSpace), 1);
   discMesh.visible = !additive && viewer.groundDiscEnabled;
   entityGroup.visible = viewer.toggles.entities;
-  U.u_debugLod.value = viewer.debug === 'lod' ? 0.5 : 0;
-  wireGroup.visible = viewer.debug === 'wireframe';
+  U.u_debugLod.value = viewer.debug === 'lod' || viewer.debug === 'both' ? 0.5 : 0; // 'both' is for the tour (13.7)
+  wireGroup.visible = viewer.debug === 'wireframe' || viewer.debug === 'both';
 }
 
 export function setLook(name) {
