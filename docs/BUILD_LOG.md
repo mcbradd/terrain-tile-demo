@@ -10,9 +10,9 @@ One row per work package, kept current by the orchestrating session.
 | WP04 | Accepted, merged | opus | high | 1 (restarted fresh after usage-limit stop) | Orchestrator re-run: build --to batch 0; pytest -k "LOD or SELECT or SKIRT or GLB" 0 (17 passed); 80 chunk + 20 batch GLBs (4 mobile_ar, 16 workstation); Khronos validator 100 checked, 0 with errors or warnings; lod_stats.json written |
 | WP05 | Accepted, merged | sonnet | high | 1 | Orchestrator re-run on real prep output: build --from bake --to bake 0; sizes 2097152 and 5592404 exact; pytest -k "CODEC or normal or AO" 0 (6 passed) |
 | WP06 | Accepted, merged; G2 pass | sonnet | medium | 1 | Orchestrator re-run: build 0 twice, outputs.sha256 byte-identical; tile.json schema-valid; textures exact; no abs paths in dist; full pytest 0 (72 passed); scene file committed and unchanged |
-| WP07 | In progress (fresh restart after usage-limit stop) | sonnet | high | 1 | |
+| WP07 | In progress (continuing draft f3a7da6 after 2nd usage-limit stop) | sonnet | high | 1 | |
 | WP08 | Not started | sonnet | medium | 0 | |
-| WP09 | In progress (fresh restart after usage-limit stop) | opus | high | 1 | |
+| WP09 | In progress on branch WP09r (continuing draft f8578ea after 2nd usage-limit stop; WP09 branch locked by session) | opus | high | 1 | |
 | WP10 | Not started | sonnet | high | 0 | |
 | WP11 | Built; acceptance held: `tilepipe entities` exits 2 at unowned stub entities.py, ENTD needs WP07 | opus | high | 1 (restarted fresh after usage-limit stop) | Orchestrator re-run: extension validate 0; pytest -k blender 0 (4 passed); tilepipe entities 2 (stub); 9 entity GLBs committed. Deviation D-05 logged |
 | WP12 | Not started | sonnet | low | 0 | |
