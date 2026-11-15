@@ -219,6 +219,8 @@ def test_schema_registry_catalog_is_complete_and_stubbed():
         assert r.scope_kind in registry.SCOPE_KINDS and r.doc
     ctx = registry.Context(root=ROOT, aoi="anza_borrego_01")
     for rid, r in registry.RULES.items():
+        if not r.stub:   # implemented by a later package (D-07); its own tests cover it
+            continue
         res = r.check(ctx, "repo")
         assert res.status == "SKIP" and res.rule == rid and res.message.startswith(f"{rid} SKIP repo: ")
         assert config.schema_errors({"schema": 1, "aoi": "anza_borrego_01", "results": [res.to_dict()],

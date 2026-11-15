@@ -36,6 +36,14 @@
 - Change: Bradd chose on 2026-11-14 to defer the P1 cut decision to C2 instead of taking it at C1. P1 work still starts only after WP14 passes (19.3). No threshold, budget, or rule changes.
 - Why: DRAFT, for Bradd to write in his own words.
 
+### D-07 (WP07) Validator interfaces the spec leaves open
+
+- Spec section: 12.1, 12.3, 12.8, 13.8, 19.4.
+- Expected: the spec fixes every rule's check but not the `bench.json` field names, how REG-01 finds test cases, or how a rule that is implemented later interacts with the WP02 stub test.
+- Observed: 13.8 names the per-profile values (`live_tris`, `live_draws`, frame time p50 and p95, fraction of frames longer than 1.5 times the median) but not the document shape. `tests/test_schema.py` asserted that every rule is a stub returning SKIP, which stops being true once a rule module is imported.
+- Change: SCN-04 and PERF-01 read `build/<aoi>/bench.json` as `{"profiles": {<profile>: {"live_tris", "live_draws", "frac_longer_than_1p5_median", ...}}}`; WP10 must write that shape. REG-01 finds cases as `def test_rule_<FAMILY>_<nn>_pass` and `_fail` in `tests/*.py` and `blender/scripts/*.py`, and requires them for every rule that is not a stub (ENT rules stay stubs in the core registry and are covered by WP11). SCN-01 and SCN-02 use the `entity_lods.toml` `tris_max` as an upper bound when no `entity.json` exists; SCN-04 requires the exported counts. One line in `tests/test_schema.py` now skips the stub assertion for rules whose `stub` flag is false. No threshold, budget, or rule changed.
+- Why: DRAFT, for Bradd to write in his own words.
+
 ### D-08 (WP09) Profile default look in the viewer
 
 - Spec section: 13.2 step 2, 9.1.
