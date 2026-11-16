@@ -73,3 +73,11 @@
 - Observed: the manifest counts the drawn entity GLBs in `dist/entities/` when `build` runs, before `entities` has created them. After `rm -rf dist/entities`, `build`, `entities`, `validate` gives PAY-01 FAIL on both profiles (measured 9117813 vs 9162285, and 12101709 vs 12208697). A second run passes only because `dist/entities/` survives.
 - Change: none in WP07f paths. The manifest must be rewritten after `entities` in `all`: the fix belongs in `tilepipe.entities.run` (WP11) or the `all` step of `cli.py` (WP02), not in `validate/`.
 - Why: DRAFT, for Bradd to write in his own words.
+
+### D-13 (WP08) Report header date
+
+- Spec section: 14.1 item 1, 6.7.
+- Expected: the header shows the build date.
+- Observed: the only build date is `finished_utc` in `build_info.json`, which differs on every build, so the report would not be reproducible. The WP08 brief also bars timestamps.
+- Change: the header and provenance show the source retrieval date (a date, from `tile.json`), and the header says the build records no date in this file. No threshold, budget, or rule changes.
+- Why: DRAFT, for Bradd to write in his own words.
