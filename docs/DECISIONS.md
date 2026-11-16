@@ -28,6 +28,13 @@
 - Observed: lanes B to F run in parallel after WP02, and they all need the same config loaders, exit-code errors, and canonical JSON writer before any of them merges. The `entities` command has no core module, and `set-share` has no module.
 - Change: WP02 adds `src/tilepipe/config.py`, which holds the loaders, the errors of 4.3, and `write_json` per 6.7, and is frozen. It adds `src/tilepipe/entities.py` as a stub owned by WP11. `set_share` is a stub in `presubmit.py`, owned by WP12. The registry lives at `src/tilepipe/validate/registry.py`, where 4.1 and 12.1 place it. All signatures are listed in `src/tilepipe/contracts.md`.
 
+### D-05 (WP11) Pytest case for the Blender scripts lives in `tests/`
+
+- Spec section: 12.9 (test_rules.py "is run headless by a pytest case"), 19.3 WP11 owned paths (`blender/`), 19.4 WP11 validation `uv run pytest -k blender`.
+- Expected: WP11 writes only under `blender/`.
+- Observed: `pyproject.toml` sets `testpaths = ["tests"]`, so a pytest case under `blender/` is never collected by `uv run pytest -k blender`.
+- Change: WP11 adds one file, `tests/test_blender.py`. It runs `blender/scripts/test_rules.py` headless and the fixture matrix through `blender/source_gate.py`, a standard-library driver that `tilepipe.entities.run` can call for its Blender half. It skips when Blender is absent.
+
 ### D-06 (orchestrator) C1 cut deferred to C2
 
 - Spec section: 2.4, checkpoint C1.
@@ -72,3 +79,19 @@
 - Expected: `dist/entities/<entity>/entity.json` exists, so SCN-04 can compare live and static counts.
 - Observed: `dist/entities` is absent until WP11 is merged and `tilepipe entities` runs. SCN-04 requires the exported counts (D-07), so it fails with "missing entity.json". With a throwaway set of three synthetic cube entities (not committed, deleted afterwards), the same bench path gave live counts equal to the static counts and SCN-04 passed for both profiles, which shows the viewer and the rule agree.
 - Change: none to thresholds or rules. The orchestrator re-runs `?bench=1` and `validate` after WP11.
+
+### D-11 (WP07f) Fixture verdicts in `validate`
+
+- Spec section: 4.3, 12.1, 12.9, 16.2 G5 and G6.
+- Expected: 4.3 says `validate` exits 1 when a FAIL-severity rule fails. 12.9 says each fixture's failing set MUST equal its expected set. G6 needs `tilepipe all` to exit 0. The spec does not say how fixture results count toward the exit code.
+- Observed: `validation.json` carries 13 FAIL records under `fixture:` scopes, all of them the expected ones, so `validate` exited 1 and G6 could not pass.
+- Change: `validate` still records those results as FAIL. Its exit code ignores a `fixture:` FAIL only when the fixture's failing set equals its set in `assets/fixtures/expected.json`. A fixture whose set differs, or an expected fixture with no results, exits 1. FAILs under every other scope still exit 1. No threshold, budget, or rule changes.
+- Why: DRAFT, for Bradd to write in his own words.
+
+### D-12 (WP07f) PAY-01 fails after a clean `tilepipe all` order
+
+- Spec section: 4.2 (`all`), 9.1, 12.5 (PAY-01).
+- Expected: `build, entities, validate, site` leaves PAY-01 passing.
+- Observed: the manifest counts the drawn entity GLBs in `dist/entities/` when `build` runs, before `entities` has created them. After `rm -rf dist/entities`, `build`, `entities`, `validate` gives PAY-01 FAIL on both profiles (measured 9117813 vs 9162285, and 12101709 vs 12208697). A second run passes only because `dist/entities/` survives.
+- Change: none in WP07f paths. The manifest must be rewritten after `entities` in `all`: the fix belongs in `tilepipe.entities.run` (WP11) or the `all` step of `cli.py` (WP02), not in `validate/`.
+- Why: DRAFT, for Bradd to write in his own words.

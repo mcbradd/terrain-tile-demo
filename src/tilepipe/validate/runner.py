@@ -11,6 +11,7 @@ from tilepipe.validate.registry import RULES, Context, Result, result, skip
 RULE_MODULES = ("rules_meta", "rules_geo", "rules_terrain", "rules_tex", "rules_look", "rules_scene", "rules_entd")
 FIELDS = ("rule", "severity", "status", "scope", "measured", "limit", "unit", "message", "fix_hint")
 ENT_RESULTS = Path("build") / "entities" / "ent_results.json"
+FIXTURE_EXPECTED = Path("assets") / "fixtures" / "expected.json"   # written by make_fixtures.py (12.9)
 
 
 def _load_rules() -> None:
@@ -77,6 +78,26 @@ def run_rules(ctx: Context) -> list[dict]:
     return out
 
 
+def fixture_mismatches(root: Path, results: list[dict]) -> list[str]:
+    """12.9: each fixture's failing FAIL rules MUST equal its expected set. Lines for every fixture that differs.
+
+    A fixture is a test of the rules, so its expected FAILs are not deliverable failures (G5, G6); a missing,
+    extra, or absent fixture result is. Only applies when ENT records were merged (not under --skip-entities).
+    """
+    if not any(r["scope"].startswith("fixture:") for r in results):
+        return []
+    f = root / FIXTURE_EXPECTED
+    expected = json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
+    seen = {r["scope"][len("fixture:"):] for r in results if r["scope"].startswith("fixture:")}
+    out = []
+    for name in sorted(set(expected) | seen):
+        actual = sorted({r["rule"] for r in results if r["scope"] == f"fixture:{name}" and r["status"] == "FAIL"})
+        want = sorted(expected.get(name, []))
+        if actual != want:
+            out.append(f"fixture:{name}: failing set {actual} != expected {want}")
+    return out
+
+
 def summarize(results: list[dict]) -> dict:
     summary: dict[str, dict] = {}
     for r in results:
@@ -127,8 +148,15 @@ def run(root: Path, aoi: str, skip_entities: bool = False, determinism: bool = F
     except (ImportError, NotImplementedError) as e:
         print(f"report: not written ({type(e).__name__}: {e})")
     totals = {s: sum(r["status"] == s for r in results) for s in registry.STATUSES}
+    mismatches = fixture_mismatches(root, results)
+    # a fixture's FAIL is a deliverable failure only when its set differs from the expected one (12.9, G5, G6)
+    real = [r for r in results if r["status"] == "FAIL" and not r["scope"].startswith("fixture:")]
     for r in results:
         if r["status"] in ("FAIL", "WARN"):
             print(r["message"])
-    print(f"validate: {totals['PASS']} PASS, {totals['WARN']} WARN, {totals['FAIL']} FAIL, {totals['SKIP']} SKIP")
-    return 1 if totals["FAIL"] else 0
+    for m in mismatches:
+        print(f"ERROR {m}")
+    n_fx = sum(r["status"] == "FAIL" and r["scope"].startswith("fixture:") for r in results)
+    print(f"validate: {totals['PASS']} PASS, {totals['WARN']} WARN, {totals['FAIL']} FAIL "
+          f"({n_fx} expected by fixtures), {totals['SKIP']} SKIP")
+    return 1 if real or mismatches else 0

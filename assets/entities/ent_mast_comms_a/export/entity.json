@@ -1,0 +1,49 @@
+{
+  "base_color_srgb": "#F2F0EA",
+  "bbox_m": {
+    "max": [
+      1.5,
+      12.0,
+      1.5
+    ],
+    "min": [
+      -1.5,
+      0.0,
+      -1.5
+    ]
+  },
+  "class": "mast",
+  "display": {
+    "mode": "token",
+    "table_size_m": 0.025
+  },
+  "front": "+Z",
+  "id": "ent_mast_comms_a",
+  "lods": [
+    {
+      "file": "ent_mast_comms_a_LOD0.glb",
+      "materials": 1,
+      "n": 0,
+      "primitives": 1,
+      "texture_bytes": 0
+    },
+    {
+      "file": "ent_mast_comms_a_LOD1.glb",
+      "materials": 1,
+      "n": 1,
+      "primitives": 1,
+      "texture_bytes": 0
+    },
+    {
+      "file": "ent_mast_comms_a_LOD2.glb",
+      "materials": 1,
+      "n": 2,
+      "primitives": 1,
+      "texture_bytes": 0
+    }
+  ],
+  "origin": "ground footprint center",
+  "schema": 1,
+  "source_blend_sha256": "34179157292e4cbc701f8cc827e6e6938bf4b5ffd2e89dd0965b98fc8a433917",
+  "up": "+Y"
+}
