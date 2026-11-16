@@ -79,6 +79,15 @@
 - Expected: `dist/entities/<entity>/entity.json` exists, so SCN-04 can compare live and static counts.
 - Observed: `dist/entities` is absent until WP11 is merged and `tilepipe entities` runs. SCN-04 requires the exported counts (D-07), so it fails with "missing entity.json". With a throwaway set of three synthetic cube entities (not committed, deleted afterwards), the same bench path gave live counts equal to the static counts and SCN-04 passed for both profiles, which shows the viewer and the rule agree.
 - Change: none to thresholds or rules. The orchestrator re-runs `?bench=1` and `validate` after WP11.
+- Resolved 2026-11-15: after WP11 merged, the orchestrator re-ran `?bench=1` and `validate`. SCN-04 passes for both profiles with the real entities.
+
+### D-09c (WP10f, recorded by the orchestrator) Repository link from `site/config.json`
+
+- Spec section: 13.5 (About panel), 13.9 (`site/config.json`), 16.2 G7, 17.10.
+- Expected: `site/config.json` holds the publish-time values of G7. 17.10 forbids usernames in committed or shipped files.
+- Observed: the About panel hardcoded the repository URL, and that URL contains a username.
+- Change: `viewer/src/hud.js` no longer contains a URL. `site.py` writes `{"repo_url": "", "video_url": ""}` by default. The About panel shows "Repository not yet published" until `repo_url` holds an http(s) URL. `repo_url` is a key the spec does not list, so the G7 step that writes `video_url` must write `repo_url` too. No threshold, budget, or rule changes.
+- Why: DRAFT, for Bradd to write in his own words.
 
 ### D-11 (WP07f) Fixture verdicts in `validate`
 
