@@ -1,0 +1,5 @@
+#!/bin/sh
+# Sample hook: copy to .git/hooks/pre-commit. Runs the source and deliverable gates on staged .blend and .glb files.
+files=$(git diff --cached --name-only --diff-filter=ACM -- '*.blend' '*.glb')
+[ -z "$files" ] && exit 0
+exec uv run tilepipe presubmit $files
