@@ -81,3 +81,9 @@
 - Observed: the only build date is `finished_utc` in `build_info.json`, which differs on every build, so the report would not be reproducible. The WP08 brief also bars timestamps.
 - Change: the header and provenance show the source retrieval date (a date, from `tile.json`), and the header says the build records no date in this file. No threshold, budget, or rule changes.
 - Why: DRAFT, for Bradd to write in his own words.
+
+### D-12 update (WP11f) Fix applied
+
+- Change: `tilepipe.entities.run` calls `manifest.run(root, default_aoi)` after a successful gate, when `build/<aoi>/geo.json` exists, so `tile.json` and `outputs.sha256` count `dist/entities/`. No signature, threshold, or rule changed.
+- Result: `build`, `entities`, `validate` on a clean tree passes PAY-01 on both profiles (9162285 and 12208697 bytes). `entities --no-blender` copies the committed exports and yields a byte-identical `outputs.sha256`.
+- Open: `tilepipe all` still exits 2 at `site` (WP10 not merged, stub).
