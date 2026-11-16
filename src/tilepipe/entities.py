@@ -64,6 +64,14 @@ def deliverable_gate(root: Path, ids: list[str]) -> list[dict]:
     return out
 
 
+def refresh_manifest(root: Path) -> None:
+    """Rewrite tile.json and outputs.sha256 now that dist/entities/ exists (D-12). Skipped before a first build."""
+    from tilepipe import manifest
+    aoi = config.default_aoi(root)
+    if (config.build_dir(root, aoi) / "geo.json").exists():
+        manifest.run(root, aoi)
+
+
 def run(root: Path, no_blender: bool = False) -> int:
     root = Path(root).resolve()
     errors = [] if no_blender else _source_gate(root)
@@ -77,6 +85,8 @@ def run(root: Path, no_blender: bool = False) -> int:
     for r in records:
         print(r["message"])
     errors += [f"deliverable gate: {r['message']}" for r in records if r["status"] == "FAIL"]
+    if not errors:
+        refresh_manifest(root)
     for err in errors:
         print(f"ERROR {err}")
     print(f"entities: {len(ids)} entities, {len(records)} deliverable checks, {len(errors)} errors")
