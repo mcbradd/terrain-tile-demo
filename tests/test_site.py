@@ -38,7 +38,7 @@ def test_site_tree_matches_13_9(served):
     for prof in tile["profiles"].values():
         assert {b["file"] for b in prof["batches"]} <= names
     assert not any("_lod" in n for n in names), "the 80 per-chunk LOD files are not hosted"
-    assert json.loads((out / "config.json").read_text(encoding="utf-8")).keys() == {"video_url"}
+    assert json.loads((out / "config.json").read_text(encoding="utf-8")).keys() == {"video_url", "repo_url"}
     html = (out / "index.html").read_text(encoding="utf-8")
     assert "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'" in html
     assert "__TILEPIPE_PROFILES__" not in (out / "app.js").read_text(encoding="utf-8")

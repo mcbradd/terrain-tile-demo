@@ -13,7 +13,6 @@ const STEM_TRIS = 16;
 const MIB = 1048576;
 const MARCH_STEPS = 512;
 const BISECTIONS = 8;
-const REPO_URL = 'https://github.com/mcbradd/terrain-tile-demo';
 // Budget limits and class descriptions come from profiles/*.toml, which tile.json does not carry. site.py embeds
 // them with an esbuild define (Deviation D-09).
 // eslint-disable-next-line no-undef
@@ -199,7 +198,7 @@ function titlePanel() {
     el('p', { text: 'No headset performance was measured.' }),
     ui.links = el('p', { class: 'links' }));
   ui.links.append(el('a', { href: 'report/index.html', text: 'Report' }), document.createTextNode(' | '),
-    el('a', { href: REPO_URL, text: 'Repository' }), document.createTextNode(' | '),
+    ui.repo = el('span', { class: 'muted', text: 'Repository not yet published' }), document.createTextNode(' | '),
     ui.video = el('span', { class: 'muted', text: 'Video not yet published' }));
   return el('section', { id: 'title', class: 'panel' },
     el('h1', { text: 'Terrain Tile Pipeline Demo' }),
@@ -217,6 +216,9 @@ async function loadVideoLink() {
     const cfg = await res.json();
     if (typeof cfg.video_url === 'string' && /^https?:\/\//.test(cfg.video_url)) {
       ui.video.replaceWith(el('a', { href: cfg.video_url, text: 'Video' }));
+    }
+    if (typeof cfg.repo_url === 'string' && /^https?:\/\//.test(cfg.repo_url)) {
+      ui.repo.replaceWith(el('a', { href: cfg.repo_url, text: 'Repository' }));
     }
   } catch (e) {
     console.warn(`config.json not read: ${e.message}`);

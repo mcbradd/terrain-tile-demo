@@ -76,7 +76,7 @@ def build(root: Path, aoi: str) -> None:
         _copy(root / "viewer" / name, out / name)
     (out / ".nojekyll").write_bytes(b"")
     if not (out / "config.json").exists():
-        config.write_json(out / "config.json", {"video_url": ""})
+        config.write_json(out / "config.json", {"video_url": "", "repo_url": ""})
     for name in ("room.jpg", "fallback.jpg"):  # [HUMAN] files; copied only when present
         if (root / "assets" / name).exists():
             _copy(root / "assets" / name, out / "assets" / name)
