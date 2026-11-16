@@ -1,5 +1,100 @@
 # Decisions
 
+## Decision records
+
+Each `Why` is a draft for Bradd to rewrite.
+
+### D1 Core logic lives outside the DCC; Blender is a front end
+
+- Decision: the rules and pipeline are Python with no Blender dependency. The extension calls the same rule shapes.
+- Why: DRAFT, for Bradd to write in his own words.
+- Alternative rejected: all validation inside Blender.
+- Revisit when: the receiving team's DCC of record is not Blender.
+
+### D2 Regular-grid chunks with skirts, not adaptive triangulation
+
+- Decision: the tile is 16 chunks on a regular grid, each with skirts.
+- Why: DRAFT, for Bradd to write in his own words.
+- Alternative rejected: adaptive triangulation.
+- Revisit when: the engine's mesh format is known.
+
+### D3 Static per-profile LOD selection in the pipeline; runtime LOD policy left to the engine
+
+- Decision: the build picks one LOD per chunk per profile and reports the error.
+- Why: DRAFT, for Bradd to write in his own words.
+- Alternative rejected: a runtime LOD policy in the viewer.
+- Revisit when: a team names who owns runtime LOD policy.
+
+### D4 Shading from full-resolution data textures so the look is independent of geometric LOD
+
+- Decision: normals, occlusion, and height come from data textures, not from mesh attributes.
+- Why: DRAFT, for Bradd to write in his own words.
+- Alternative rejected: vertex normals and UVs.
+- Revisit when: the engine requires per-vertex shading data.
+
+### D5 Raw binary textures with 16-bit height packed in RG8, not PNG or float
+
+- Decision: textures are raw `.bin` files and height uses two 8-bit channels.
+- Why: DRAFT, for Bradd to write in his own words.
+- Alternative rejected: PNG files, or float textures.
+- Revisit when: the engine's texture formats are known.
+
+### D6 Textures ship uncompressed and budgets count actual bytes; compression is a next step
+
+- Decision: no texture compression, and payload budgets use real byte counts.
+- Why: DRAFT, for Bradd to write in his own words.
+- Alternative rejected: KTX2 or Basis compression.
+- Revisit when: the target compression format is chosen.
+
+### D7 glTF plus a JSON manifest as an engine-agnostic contract; terrain GLBs carry positions only
+
+- Decision: `tile.json` plus GLB files are the interface. Terrain GLBs hold positions only.
+- Why: DRAFT, for Bradd to write in his own words.
+- Alternative rejected: an engine-specific format.
+- Revisit when: the receiving engine and its import path are known.
+
+### D8 The additive look is a first-order preview, not a display model
+
+- Decision: the additive look approximates an optical see-through display and models no real headset.
+- Why: DRAFT, for Bradd to write in his own words.
+- Alternative rejected: a display model for a specific headset.
+- Revisit when: a target display is named with its measured response.
+
+### D9 Entities are fixed-size tokens because 1:8000 makes true scale invisible
+
+- Decision: entities have a fixed table size set in `entity_lods.toml`.
+- Why: DRAFT, for Bradd to write in his own words.
+- Alternative rejected: entities drawn at true scale.
+- Revisit when: the table scale changes.
+
+### D10 Budgets are public anchors times a content share, all in config
+
+- Decision: each budget is a public anchor times a share, and lives in the profile file.
+- Why: DRAFT, for Bradd to write in his own words.
+- Alternative rejected: hard-coded budgets in code.
+- Revisit when: real device budgets are available.
+
+### D11 three.js as scaffolding around standalone GLSL
+
+- Decision: the viewer uses three.js for setup. The terrain shader is standalone GLSL ES 3.00.
+- Why: DRAFT, for Bradd to write in his own words.
+- Alternative rejected: a three.js material system for the terrain.
+- Revisit when: the shader is ported to the engine.
+
+## Known limitations
+
+- Contours come from bilinear height samples, so under magnification they show small kinks at 10 m texel boundaries.
+- Normals are stored at 8 bits per component, which quantizes diffuse lighting in steps of about 0.5%.
+- Ambient occlusion is baked at true scale and is not recomputed when exaggeration changes.
+- Silhouettes show the geometric LOD error. Interior shading does not.
+- Index order is row-major with no vertex cache optimization.
+- The additive look ignores display brightness limits, color non-uniformity, and field of view.
+- Where neighboring chunks differ in LOD, skirt faces can show as thin plinth-colored seams in the opaque look and as thin gaps in the additive look.
+
+## Cuts
+
+None recorded.
+
 ## Deviations
 
 ### D-01 (WP01) Installing the tilepipe command under `uv sync --no-build`
