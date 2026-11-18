@@ -12,14 +12,14 @@ import subprocess
 import sys
 from pathlib import Path
 
-DEFAULT_BLENDER = r"C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"   # SPEC 3.1
 ENTITIES = ("ent_vehicle_wheeled_a", "ent_mast_comms_a", "ent_uas_quad_a")
 GOLDEN = "ent_vehicle_wheeled_a"
 
 
 def blender(root: Path, script: str, *args: str) -> int:
     """One headless call with the exact shape of SPEC 3.3 rule 4; output appended to build/logs/entities.log."""
-    exe = os.environ.get("TILEPIPE_BLENDER", DEFAULT_BLENDER)
+    from tilepipe.cli import blender_exe   # the single lookup; this file runs in core Python, not inside Blender
+    exe = blender_exe()
     cmd = [exe, "--background", "--factory-startup", "--offline-mode", "--python-exit-code", "1",
            "--python", str(root / "blender" / "scripts" / script), "--", *args]
     r = subprocess.run(cmd, cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace")

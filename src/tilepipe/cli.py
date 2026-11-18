@@ -11,10 +11,15 @@ import time
 from pathlib import Path
 
 EXIT_OK, EXIT_ENV = 0, 3
-DEFAULT_BLENDER = r"C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
+_DEFAULT_BLENDER = r"C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"  # the only place this path lives
 PINS = {"rasterio": "1.5.2", "numpy": "2.5.4", "mgrs": "1.7.0", "jinja2": "3.1.6", "jsonschema": "4.26.0"}
 THREE_VERSION = "0.187.0"
 MIN_FREE_GIB = 2
+
+
+def blender_exe():
+    """Blender lookup (SPEC 3.1): TILEPIPE_BLENDER, then PATH, then the standard install path."""
+    return os.environ.get("TILEPIPE_BLENDER") or shutil.which("blender") or _DEFAULT_BLENDER
 
 
 def _run(cmd, timeout=120):
@@ -27,7 +32,7 @@ def _blender_cmd(blender, script, *args):
 
 
 def pf01():
-    exe = os.environ.get("TILEPIPE_BLENDER", DEFAULT_BLENDER)
+    exe = blender_exe()
     if not Path(exe).exists():
         return "FAIL", f"not found: {exe}"
     out = _run([exe, "--version"]).stdout.strip()
@@ -36,7 +41,7 @@ def pf01():
 
 
 def pf02(root):
-    exe = os.environ.get("TILEPIPE_BLENDER", DEFAULT_BLENDER)
+    exe = blender_exe()
     if not Path(exe).exists():
         return "FAIL", "Blender missing"
     out = root / "build" / "preflight" / "cube.glb"

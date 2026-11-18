@@ -1,15 +1,15 @@
 """WP12 tests: presubmit exit codes, set-share keeps META-01, licenses table."""
-import os
 import shutil
 from pathlib import Path
 
 import pytest
 
 from tilepipe import config, licenses, presubmit
+from tilepipe.cli import blender_exe
 from tilepipe.validate.registry import Context
 
 ROOT = Path(__file__).resolve().parents[1]
-BLENDER = Path(os.environ.get("TILEPIPE_BLENDER", r"C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"))
+BLENDER = Path(blender_exe())
 needs_blender = pytest.mark.skipif(not BLENDER.exists(), reason="Blender 5.2 not installed")
 
 
