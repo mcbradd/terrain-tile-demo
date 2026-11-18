@@ -213,3 +213,12 @@ None recorded.
 - Change: `tilepipe.entities.run` calls `manifest.run(root, default_aoi)` after a successful gate, when `build/<aoi>/geo.json` exists, so `tile.json` and `outputs.sha256` count `dist/entities/`. No signature, threshold, or rule changed.
 - Result: `build`, `entities`, `validate` on a clean tree passes PAY-01 on both profiles (9162285 and 12208697 bytes). `entities --no-blender` copies the committed exports and yields a byte-identical `outputs.sha256`.
 - Open: `tilepipe all` still exits 2 at `site` (WP10 not merged, stub).
+
+### D-14 (WP09f) Viewer default AOI
+
+- Spec section: 13.2 step 1, 17.14.
+- Expected: 13.2 reads `?aoi=` with a literal default AOI id.
+- Observed: a literal AOI id in viewer code breaks 17.14, and 17 wins a conflict.
+- Change: the viewer reads `?aoi=`, else the `aoi` key of `site/config.json`, else it shows a load error. `tests/viewer_check.mjs` writes `aoi` (the first `aois.toml` AOI with a built tile) into its config.json and fails if any `aois.toml` id appears under `viewer/src`. No threshold, budget, or rule changes.
+- Open: `tilepipe site` (WP10) must write `aoi` into `config.json`, merged into a kept file, and `tests/test_site.py` must accept the key. Until then the site needs `?aoi=`.
+- Why: DRAFT, for Bradd to write in his own words.
