@@ -99,3 +99,9 @@ def test_report_versions_come_from_build_info(html, tmp_path, monkeypatch):
     doc = {"schema": 1, "aoi": AOI, "results": [], "summary": {}}
     out = render(ROOT, AOI, doc, out_dir=tmp_path / "report").read_text(encoding="utf-8")
     assert "<th>GDAL</th><td>9.8.7</td>" in out and "<th>Blender</th><td>6.5.4</td>" in out
+
+
+def test_report_logs_git_call(html):
+    """WP08h: the git rev-parse call leaves build/logs/report.log (3.3 rule 7). `html` renders into tmp."""
+    log = ROOT / "build" / "logs" / "report.log"
+    assert log.is_file() and log.read_text(encoding="utf-8").startswith("exit ")

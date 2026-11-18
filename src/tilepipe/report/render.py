@@ -38,12 +38,16 @@ def _jload(p: Path):
 
 
 def _commit(root: Path) -> str:
+    log = root / "build" / "logs" / "report.log"   # 3.3 rule 7; no timestamps, so the log is reproducible
+    log.parent.mkdir(parents=True, exist_ok=True)
     try:
         r = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=root, capture_output=True, text=True,
                            timeout=10)
-        return r.stdout.strip() or "unknown"
-    except (OSError, subprocess.SubprocessError):
+    except (OSError, subprocess.SubprocessError) as e:
+        log.write_text(f"git rev-parse failed: {e}" + chr(10), encoding="utf-8", newline=chr(10))
         return "unknown"
+    log.write_text(f"exit {r.returncode}" + chr(10) + f"{r.stdout}{r.stderr}", encoding="utf-8", newline=chr(10))
+    return r.stdout.strip() or "unknown"
 
 
 def _ver(pkg: str) -> str:
