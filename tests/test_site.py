@@ -45,6 +45,13 @@ def test_site_tree_matches_13_9(served):
 
 
 @NEEDS_DIST
+def test_esbuild_output_is_logged(served):
+    log = ROOT / "build" / "logs" / "esbuild.log"   # 3.3 rule 7
+    assert log.read_text(encoding="utf-8").startswith("exit 0" + chr(10))
+    assert not list((ROOT / "site").rglob("esbuild.log")) and not list((ROOT / "dist").rglob("esbuild.log"))
+
+
+@NEEDS_DIST
 def test_serve_mime_types(served):
     for path, mime in ((f"data/{AOI}/terrain_workstation_b00.glb", "model/gltf-binary"),
                        (f"data/{AOI}/terrain_height.rg8.bin", "application/octet-stream"),

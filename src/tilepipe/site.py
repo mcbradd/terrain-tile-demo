@@ -41,6 +41,9 @@ def _bundle(root: Path, out: Path) -> None:
             "define": {"__TILEPIPE_PROFILES__": json.dumps(_profile_info(root), sort_keys=True)}}
     r = subprocess.run([node, "--input-type=module", "-e", _BUNDLE_JS], cwd=root, input=json.dumps(opts),
                        capture_output=True, text=True)
+    log = root / "build" / "logs" / "esbuild.log"   # 3.3 rule 7; no timestamps, so the log is reproducible
+    log.parent.mkdir(parents=True, exist_ok=True)
+    log.write_text(f"exit {r.returncode}" + chr(10) + f"{r.stdout}{r.stderr}", encoding="utf-8", newline=chr(10))
     if r.returncode:
         raise EnvError(f"esbuild failed:\n{r.stdout}{r.stderr}")
 
@@ -75,7 +78,7 @@ def build(root: Path, aoi: str) -> None:
     for name in ("index.html", "styles.css"):
         _copy(root / "viewer" / name, out / name)
     (out / ".nojekyll").write_bytes(b"")
-    cfg_path = out / "config.json"  # the viewer reads `aoi` from here when the URL has no ?aoi= (17.14, D-14)
+    cfg_path = out / "config.json"  # the viewer reads `aoi` from here when the URL has no ?aoi= (17.14, D-16)
     cfg = json.loads(cfg_path.read_text(encoding="utf-8")) if cfg_path.exists() else {"video_url": "", "repo_url": ""}
     config.write_json(cfg_path, {**cfg, "aoi": aoi})
     for name in ("room.jpg", "fallback.jpg"):  # [HUMAN] files; copied only when present
