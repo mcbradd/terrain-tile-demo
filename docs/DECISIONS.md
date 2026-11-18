@@ -228,7 +228,7 @@ None recorded.
 - Expected: stdout and stderr of every orchestrated subprocess are captured to `build/logs/<stage>.log`.
 - Observed: `rules_tex.run_validator` captured the node output in memory and wrote nothing to `build/logs/`.
 - Change: `run_validator` takes an optional log path. GLB-01 passes `build/logs/gltf_validator.log`, which holds the exit code and output of each node call and carries no timestamp. The log is under `build/`, not `dist/`, so absolute paths in it are allowed. No threshold, budget, or rule changes.
-- Open: `tilepipe.entities.deliverable_gate` (WP11, not owned here) still calls `run_validator` without a log path.
+- Resolved by WP11g: `tilepipe.entities.deliverable_gate` writes `build/logs/gltf_validator_entities.log`.
 
 ### D-16 (WP09f) Viewer default AOI
 
