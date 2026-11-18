@@ -192,14 +192,49 @@ def test_rule_DET_01_fail(built):
     bad("DET-01", ctx, TILE)
 
 
-def test_rule_OFF_01_pass(built, determinism_ctx):
-    ok("OFF-01", determinism_ctx, REPO)
+def test_rule_OFF_01_pass():
+    """The real run: `tilepipe all` offline on a scratch copy of the repository's committed inputs."""
+    ok("OFF-01", make_ctx(ROOT, determinism=True), REPO)
 
 
-def test_rule_OFF_01_fail(built):
-    ctx = make_ctx(built, determinism=True)
-    ctx.cache["two_builds"] = {"hashes": ["a", ""], "errors": ["", "OfflineError: network attempt"]}
-    bad("OFF-01", ctx, REPO)
+def _off01_with_step(monkeypatch, step) -> None:
+    """Replace the steps of `tilepipe all` inside OFF-01 by `step(root)`, and check the step passes online."""
+    from tilepipe import cli
+    assert step(ROOT) == 0, "the probe itself must succeed without the guard"
+    monkeypatch.setattr(cli, "_dispatch", lambda a, root: step(root))
+    bad("OFF-01", make_ctx(ROOT, determinism=True), REPO)
+
+
+def test_rule_OFF_01_fail(monkeypatch):
+    """A tilepipe step in this process attempts a connection."""
+    import socket
+
+    def step(root):
+        try:
+            socket.create_connection(("127.0.0.1", 9), timeout=1)
+        except OSError:
+            pass
+        return 0
+    _off01_with_step(monkeypatch, step)
+
+
+def test_rule_OFF_01_fail_node_subprocess(monkeypatch):
+    """A node child process (esbuild, validate_gltf.mjs) attempts a connection."""
+    import subprocess
+    probe = "fetch('http://127.0.0.1:9').catch(() => {}); require('net').connect(9, '127.0.0.1').on('error', () => {})"
+    _off01_with_step(monkeypatch, lambda root: subprocess.run(["node", "-e", probe], capture_output=True).returncode)
+
+
+@pytest.mark.skipif(not Path(__import__("tilepipe.cli").cli.blender_exe()).exists(), reason="Blender not installed")
+def test_rule_OFF_01_fail_blender_subprocess(monkeypatch, tmp_path):
+    """A headless Blender call, in the exact shape of 3.3 rule 4, attempts a connection."""
+    import subprocess
+    from tilepipe import cli
+    script = tmp_path / "probe.py"
+    script.write_text("import socket\ntry:\n    socket.create_connection(('127.0.0.1', 9), 1)\n"
+                      "except OSError:\n    pass\n", encoding="utf-8")
+    cmd = cli._blender_cmd(cli.blender_exe(), script)
+    _off01_with_step(monkeypatch, lambda root: subprocess.run(cmd, capture_output=True).returncode)
 
 
 def test_rule_REG_01_pass():
