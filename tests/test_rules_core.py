@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 
 from tilepipe import config, glb
-from tilepipe.validate import common, registry, rules_meta, runner
+from tilepipe.validate import common, registry, rules_meta, rules_tex, runner
 from tilepipe.validate.registry import RULES, Context
 from tilepipe.validate.rules_meta import SPEC_RULE_IDS, _stage_root, build_into
 from tilepipe.validate.rules_scene import static_counts
@@ -437,6 +437,15 @@ def test_rule_TEX_05_fail(clone):
 def test_rule_GLB_01_pass(built):
     ok("GLB-01", make_ctx(built), TILE)
     assert (common.build(make_ctx(built)) / "gltf_validator.json").exists()   # infos and hints are recorded
+    log = built / "build" / "logs" / "gltf_validator.log"   # 3.3 rule 7
+    assert log.is_file() and log.stat().st_size > 0 and "exit 0" in log.read_text(encoding="utf-8")
+
+
+def test_run_validator_writes_log(built, tmp_path):
+    log = tmp_path / "logs" / "v.log"
+    counts = rules_tex.run_validator([terrain_file(built)], log)
+    assert list(counts.values())[0]["errors"] == 0
+    assert log.is_file() and log.stat().st_size > 0
 
 
 def test_rule_GLB_01_fail(clone):

@@ -221,3 +221,12 @@ None recorded.
 - Observed: after a clean `tilepipe all`, `outputs.sha256` had 104 lines because `validate` runs after the manifest. On the next run `validation.json` existed, so the list had 105 lines and its hash changed with each run.
 - Change: `hashing.write_outputs_sha256` also skips `validation.json`. It is written after the manifest and carries the DET-01 comparison of the list, so listing it is circular, and fixing it the other way would need a change in `validate/`. The list is now the same on a clean and a repeated run. No threshold, budget, or rule changes.
 - Why: DRAFT, for Bradd to write in his own words.
+
+### D-15 (WP07g) Khronos validator output was not logged
+
+- Spec section: 3.3 rule 7, 12.5 (GLB-01).
+- Expected: stdout and stderr of every orchestrated subprocess are captured to `build/logs/<stage>.log`.
+- Observed: `rules_tex.run_validator` captured the node output in memory and wrote nothing to `build/logs/`.
+- Change: `run_validator` takes an optional log path. GLB-01 passes `build/logs/gltf_validator.log`, which holds the exit code and output of each node call and carries no timestamp. The log is under `build/`, not `dist/`, so absolute paths in it are allowed. No threshold, budget, or rule changes.
+- Open: `tilepipe.entities.deliverable_gate` (WP11, not owned here) still calls `run_validator` without a log path.
+- Why: DRAFT, for Bradd to write in his own words.

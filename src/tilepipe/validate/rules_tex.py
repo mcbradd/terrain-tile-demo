@@ -101,14 +101,22 @@ def tex05(ctx, scope):
 
 # ---------------------------------------------------------------- GLB-01, GLB-02
 
-def run_validator(files: list[Path]) -> dict:
-    """{file name: {errors, warnings, infos, hints}} from the Khronos validator, 40 files per node process."""
+def run_validator(files: list[Path], log: Path | None = None) -> dict:
+    """{file name: {errors, warnings, infos, hints}} from the Khronos validator, 40 files per node process.
+
+    `log` receives stdout and stderr of every node call (3.3 rule 7); no timestamps, so the log is reproducible."""
     out = {}
+    if log is not None:
+        log.parent.mkdir(parents=True, exist_ok=True)
+        log.write_text("", encoding="utf-8")
     for i in range(0, len(files), 40):
         part = files[i:i + 40]
         part = part if len(part) > 1 else part * 2   # one file would print the short single-file form
         r = subprocess.run(["node", str(GLTF_TOOL), *map(str, part)], capture_output=True, text=True,
                            cwd=GLTF_TOOL.parents[1], timeout=600)
+        if log is not None:
+            with log.open("a", encoding="utf-8", newline="\n") as f:
+                f.write(f"exit {r.returncode}\n{r.stdout}{r.stderr}")
         if r.stdout.strip().startswith("{"):
             for f, counts in json.loads(r.stdout).items():
                 out[Path(f).name] = counts
@@ -121,7 +129,7 @@ def run_validator(files: list[Path]) -> dict:
 def glb01(ctx, scope):
     files = sorted(common.dist(ctx).rglob("*.glb")) + sorted((ctx.root / "dist" / "entities").rglob("*.glb"))
     files = sorted(set(files))
-    counts = common.memo(ctx, "gltf_validator", lambda: run_validator(files))
+    counts = common.memo(ctx, "gltf_validator", lambda: run_validator(files, ctx.root / "build" / "logs" / "gltf_validator.log"))
     config.write_json(common.build(ctx) / "gltf_validator.json", counts)   # infos and hints are recorded here
     bad = [f"{f}: {c['errors']} errors, {c['warnings']} warnings" for f, c in counts.items()
            if c["errors"] or c["warnings"]]
