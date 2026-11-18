@@ -229,4 +229,12 @@ None recorded.
 - Observed: `rules_tex.run_validator` captured the node output in memory and wrote nothing to `build/logs/`.
 - Change: `run_validator` takes an optional log path. GLB-01 passes `build/logs/gltf_validator.log`, which holds the exit code and output of each node call and carries no timestamp. The log is under `build/`, not `dist/`, so absolute paths in it are allowed. No threshold, budget, or rule changes.
 - Open: `tilepipe.entities.deliverable_gate` (WP11, not owned here) still calls `run_validator` without a log path.
+
+### D-16 (WP09f) Viewer default AOI
+
+- Spec section: 13.2 step 1, 17.14.
+- Expected: 13.2 reads `?aoi=` with a literal default AOI id.
+- Observed: a literal AOI id in viewer code breaks 17.14, and 17 wins a conflict.
+- Change: the viewer reads `?aoi=`, else the `aoi` key of `site/config.json`, else it shows a load error. `tests/viewer_check.mjs` writes `aoi` (the first `aois.toml` AOI with a built tile) into its config.json and fails if any `aois.toml` id appears under `viewer/src`. No threshold, budget, or rule changes.
+- Resolved by WP10g: `tilepipe site` writes `aoi` into `config.json`, merged into a kept file, and `tests/test_site.py` accepts the key.
 - Why: DRAFT, for Bradd to write in his own words.

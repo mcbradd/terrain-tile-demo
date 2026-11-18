@@ -17,6 +17,20 @@ const shots = join(root, 'build', 'wp09');
 const SERVE = process.argv.includes('--serve');
 let ORIGIN = 'http://127.0.0.1'; // set once listening: port 8000 with --serve, else a free port
 
+// AOI ids in aois.toml order; the first one with a dist/ tile is the default, as in the CLI.
+const AOIS = [...readFileSync(join(root, 'aois.toml'), 'utf8').matchAll(/^\[([a-z0-9_]+)\]/gm)].map((m) => m[1]);
+const DEFAULT_AOI = AOIS.find((a) => existsSync(join(root, 'dist', a, 'tile.json')));
+
+// 17.14: no AOI id from aois.toml may appear literally anywhere under viewer/src.
+function aoiLiterals(dir = join(root, 'viewer', 'src')) {
+  return readdirSync(dir).flatMap((f) => {
+    const p = join(dir, f);
+    if (statSync(p).isDirectory()) return aoiLiterals(p);
+    const src = readFileSync(p, 'utf8');
+    return AOIS.filter((a) => src.includes(a)).map((a) => `${p.slice(root.length + 1)}: ${a}`);
+  });
+}
+
 // ---------- site/ (13.9 layout, viewer parts only) ----------
 
 async function buildSite() {
@@ -40,7 +54,7 @@ async function buildSite() {
 <title>Terrain Tile Pipeline Demo</title></head>
 <body style="margin:0;background:#0E1013"><canvas id="view"></canvas><script src="app.js"></script></body></html>
 `);
-  writeFileSync(join(site, 'config.json'), '{"video_url": ""}\n');
+  writeFileSync(join(site, 'config.json'), `${JSON.stringify({ aoi: DEFAULT_AOI, video_url: '' })}\n`);
   writeFileSync(join(site, '.nojekyll'), '');
   cpSync(join(root, 'look'), join(site, 'look'), { recursive: true });
   const dist = join(root, 'dist');
@@ -178,6 +192,10 @@ async function check() {
   return fails.length ? 1 : 0;
 }
 
+const literals = aoiLiterals();
+for (const l of literals) console.log(`FAIL AOI id literal in ${l}`);
+if (!literals.length) console.log(`PASS no aois.toml id appears under viewer/src (${AOIS.length} ids)`);
+if (!AOIS.length || literals.length) process.exit(1);
 await buildSite();
 const server = await serve();
 if (SERVE) {

@@ -75,8 +75,9 @@ def build(root: Path, aoi: str) -> None:
     for name in ("index.html", "styles.css"):
         _copy(root / "viewer" / name, out / name)
     (out / ".nojekyll").write_bytes(b"")
-    if not (out / "config.json").exists():
-        config.write_json(out / "config.json", {"video_url": "", "repo_url": ""})
+    cfg_path = out / "config.json"  # the viewer reads `aoi` from here when the URL has no ?aoi= (17.14, D-14)
+    cfg = json.loads(cfg_path.read_text(encoding="utf-8")) if cfg_path.exists() else {"video_url": "", "repo_url": ""}
+    config.write_json(cfg_path, {**cfg, "aoi": aoi})
     for name in ("room.jpg", "fallback.jpg"):  # [HUMAN] files; copied only when present
         if (root / "assets" / name).exists():
             _copy(root / "assets" / name, out / "assets" / name)
@@ -112,6 +113,7 @@ class _Handler(SimpleHTTPRequestHandler):
 
 class _Server(ThreadingHTTPServer):
     allow_reuse_address = False  # on Windows reuse lets a second server share a busy port
+    request_queue_size = 128  # the default backlog of 5 resets connections when a page opens ~20 at once on Windows
 
     def handle_error(self, request, client_address) -> None:  # a browser closing a connection is not an error
         pass

@@ -10,7 +10,8 @@ const args = process.argv.slice(2);
 const ORIGIN = args[0].replace(/\/$/, '');
 const benchOut = args.includes('--bench-out') ? args[args.indexOf('--bench-out') + 1] : null;
 const SKIP_BENCH = args.includes('--skip-bench');
-const AOI = 'anza_borrego_01';
+// The AOI is whatever `tilepipe site` wrote into config.json; the pages below are loaded with no ?aoi= (17.14, D-14).
+const AOI = (await (await fetch(`${ORIGIN}/config.json`)).json()).aoi;
 
 const fails = [];
 const check = (ok, what, detail = '') => {

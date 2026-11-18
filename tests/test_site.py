@@ -38,7 +38,7 @@ def test_site_tree_matches_13_9(served):
     for prof in tile["profiles"].values():
         assert {b["file"] for b in prof["batches"]} <= names
     assert not any("_lod" in n for n in names), "the 80 per-chunk LOD files are not hosted"
-    assert json.loads((out / "config.json").read_text(encoding="utf-8")).keys() == {"video_url", "repo_url"}
+    assert json.loads((out / "config.json").read_text(encoding="utf-8")).keys() == {"aoi", "video_url", "repo_url"}
     html = (out / "index.html").read_text(encoding="utf-8")
     assert "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'" in html
     assert "__TILEPIPE_PROFILES__" not in (out / "app.js").read_text(encoding="utf-8")
@@ -97,3 +97,34 @@ def test_bench_writes_valid_bench_json(browser_run):
         assert 0 <= p["frac_longer_than_1p5_median"] <= 1
         assert p["live_tris"] >= tile["profiles"][name]["terrain_tris"]
         assert p["live_draws"] >= tile["profiles"][name]["terrain_draws"]
+
+
+@NEEDS_DIST
+def test_config_json_holds_built_aoi_and_keeps_other_keys(served):
+    path = ROOT / "site" / "config.json"
+    path.write_text(json.dumps({"aoi": "stale", "video_url": "https://example.test/v", "extra": 1}), encoding="utf-8")
+    site.build(ROOT, AOI)
+    assert json.loads(path.read_text(encoding="utf-8")) == {"aoi": AOI, "video_url": "https://example.test/v", "extra": 1}
+    path.unlink()
+    site.build(ROOT, AOI)
+    assert json.loads(path.read_text(encoding="utf-8")) == {"aoi": AOI, "video_url": "", "repo_url": ""}
+
+
+def test_serve_survives_a_burst_of_connections(served):
+    """A page opens ~20 connections at once; the listen backlog must not reset them (found under load, WP10g)."""
+    import socket
+    port, bad = int(served.rsplit(":", 1)[1]), []
+
+    def one():
+        try:
+            with socket.create_connection(("127.0.0.1", port), timeout=10) as s:
+                s.sendall(b"GET /config.json HTTP/1.1\r\nHost: x\r\nConnection: close\r\n\r\n")
+                if not s.recv(100):
+                    bad.append(1)
+        except OSError:
+            bad.append(1)
+
+    threads = [threading.Thread(target=one) for _ in range(200)]
+    [t.start() for t in threads]
+    [t.join() for t in threads]
+    assert not bad

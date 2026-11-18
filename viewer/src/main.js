@@ -707,7 +707,9 @@ async function boot() {
   resize();
   window.addEventListener('resize', resize);
 
-  const aoi = new URLSearchParams(location.search).get('aoi') || 'anza_borrego_01';
+  // The AOI comes from data only (17.14): `?aoi=`, else the `aoi` key of the site's config.json.
+  const aoi = new URLSearchParams(location.search).get('aoi') || (await fetchJson('config.json', true))?.aoi;
+  if (!aoi) throw new Error('no AOI: add ?aoi=<id> to the URL or "aoi" to config.json');
   if (!/^[a-z0-9_]+$/.test(aoi)) throw new Error(`bad aoi ${aoi}`);
   const [tile, sceneDoc, validation, opaque, additive] = await Promise.all([
     fetchJson(`data/${aoi}/tile.json`),
