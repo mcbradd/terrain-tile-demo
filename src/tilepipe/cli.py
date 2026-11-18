@@ -22,8 +22,15 @@ def blender_exe():
     return os.environ.get("TILEPIPE_BLENDER") or shutil.which("blender") or _DEFAULT_BLENDER
 
 
+_LOG = None  # build/logs/preflight.log while preflight runs (3.3 rule 7)
+
+
 def _run(cmd, timeout=120):
-    return subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    if _LOG is not None:  # no timestamps, so the log is reproducible
+        with _LOG.open("a", encoding="utf-8", newline="\n") as f:
+            f.write(f"$ {' '.join(map(str, cmd))}\nexit {r.returncode}\n{r.stdout}{r.stderr}")
+    return r
 
 
 def _blender_cmd(blender, script, *args):
@@ -98,6 +105,10 @@ def pf07():
 
 
 def preflight(root: Path) -> int:
+    global _LOG
+    _LOG = root / "build" / "logs" / "preflight.log"
+    _LOG.parent.mkdir(parents=True, exist_ok=True)
+    _LOG.write_text("", encoding="utf-8")
     results = []
     for id_, name, fn in [
         ("PF-01", "Blender binary", pf01), ("PF-02", "Headless export", lambda: pf02(root)),
