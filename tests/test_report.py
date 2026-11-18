@@ -22,6 +22,9 @@ def html() -> str:
     doc = {"schema": 1, "aoi": AOI, "summary": {"tile": {"pass": 1, "warn": 0, "fail": 0, "skip": 0}},
            "results": [{"rule": "GEO-01", "severity": "FAIL", "status": "PASS", "scope": "tile", "measured": 1.0,
                         "limit": 2.0, "unit": "m", "message": "GEO-01 PASS tile: measured 1 m, limit <= 2 m.",
+                        "fix_hint": ""},
+                       {"rule": "PERF-01", "severity": "WARN", "status": "PASS", "scope": "tile", "measured": 0.0,
+                        "limit": 0.02, "unit": "fraction", "message": "PERF-01 PASS tile: smoke.",
                         "fix_hint": ""}]}
     return render(ROOT, AOI, doc).read_text(encoding="utf-8")
 
@@ -45,3 +48,7 @@ def test_no_script_no_external_url_no_dash(html):
     for m in re.finditer(r"""\b(?:src|href)\s*=\s*["']([^"']*)["']""", html, re.I):
         assert not re.match(r"(?:[a-z][a-z0-9+.-]*:)?//", m.group(1), re.I) and not m.group(1).startswith("http"), m.group(1)
     assert "@import" not in html and "url(" not in html
+
+
+def test_perf01_labeled_build_machine(html):
+    assert "Measured on the build machine. Not evidence for either profile." in html

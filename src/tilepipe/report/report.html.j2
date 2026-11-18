@@ -107,7 +107,7 @@ img { max-width: 100%; height: auto; }
 <h3>{{ g.scope }}</h3>
 <table>
 {% for r in g.rows %}
-<tr{% if r.status in ("PASS", "SKIP") %} class="muted"{% endif %}><td><span class="chip {{ r.status }}">{{ r.status }}</span></td><td>{{ r.rule }}</td><td>{{ r.message }}{% if r.status in ("FAIL", "WARN") and r.fix_hint %} <em>{{ r.fix_hint }}</em>{% endif %}</td></tr>
+<tr{% if r.status in ("PASS", "SKIP") %} class="muted"{% endif %}><td><span class="chip {{ r.status }}">{{ r.status }}</span></td><td>{{ r.rule }}</td><td>{{ r.message }}{% if r.rule == "PERF-01" %} <em>Measured on the build machine. Not evidence for either profile.</em>{% endif %}{% if r.status in ("FAIL", "WARN") and r.fix_hint %} <em>{{ r.fix_hint }}</em>{% endif %}</td></tr>
 {% endfor %}
 </table>
 {% endfor %}
