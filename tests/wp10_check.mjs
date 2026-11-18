@@ -170,6 +170,8 @@ async function run() {
   check(/ASSUMED class:/.test(budget) && /No headset performance was measured\./.test(budget) && /budget-forced/.test(budget)
     && /MiB/.test(budget) && /Full report/.test(budget), 'Budget panel text', budget.replace(/\n/g, ' | ').slice(0, 300));
   check(/PASS|WARN|FAIL/.test(await page.locator('#budget .chip').innerText()), 'Budget chip carries its word');
+  const chipText = await page.locator('#budget .chip').innerText();
+  check(chipText === 'PASS, 1 warning', 'HUD verdict is PASS with the warning count beside it (ruling 3)', chipText);
   await page.click('#btn-about');
   const about = await page.locator('#about').innerText();
   check(/Report/.test(about) && /Repository/.test(about) && /Video/.test(about), 'About panel links');

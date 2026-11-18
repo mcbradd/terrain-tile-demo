@@ -136,8 +136,8 @@ function setSegmented(id, value) {
   }
 }
 
-function chip(status) {
-  return el('span', { class: `chip ${status.toLowerCase()}`, text: status });
+function chip(status, text = status) {
+  return el('span', { class: `chip ${status.toLowerCase()}`, text });
 }
 
 const fmt = (n) => Math.round(n).toLocaleString('en-US');
@@ -230,7 +230,8 @@ async function loadVideoLink() {
 function chipStatus(name) {
   const s = viewer.validation && viewer.validation.summary && viewer.validation.summary[`profile:${name}`];
   if (!s) return null;
-  return s.fail > 0 ? 'FAIL' : s.warn > 0 ? 'WARN' : 'PASS';
+  const verdict = s.fail > 0 ? 'FAIL' : 'PASS';
+  return { verdict, text: s.warn > 0 ? `${verdict}, ${s.warn} warning${s.warn === 1 ? '' : 's'}` : verdict };
 }
 
 function setBar(k, used, max, text) {
@@ -262,7 +263,7 @@ export function refresh() {
   ui.terr.textContent = `Terrain error: ${p.e_star_m.toFixed(1)} m = ${p.error_px_nominal.toFixed(1)} px at 0.75 m`
     + (p.budget_forced ? ', budget-forced' : '');
   const status = chipStatus(name);
-  ui.chip.replaceChildren(el('span', { text: 'Validation ' }), status ? chip(status) : el('span', { class: 'muted',
+  ui.chip.replaceChildren(el('span', { text: 'Validation ' }), status ? chip(status.verdict, status.text) : el('span', { class: 'muted',
     text: 'not run' }));
   document.getElementById('chk-contours').checked = viewer.toggles.contours;
   document.getElementById('chk-grid').checked = viewer.toggles.grid;
