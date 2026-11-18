@@ -113,6 +113,7 @@ class _Handler(SimpleHTTPRequestHandler):
 
 class _Server(ThreadingHTTPServer):
     allow_reuse_address = False  # on Windows reuse lets a second server share a busy port
+    request_queue_size = 128  # the default backlog of 5 resets connections when a page opens ~20 at once on Windows
 
     def handle_error(self, request, client_address) -> None:  # a browser closing a connection is not an error
         pass

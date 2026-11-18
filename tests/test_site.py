@@ -108,3 +108,23 @@ def test_config_json_holds_built_aoi_and_keeps_other_keys(served):
     path.unlink()
     site.build(ROOT, AOI)
     assert json.loads(path.read_text(encoding="utf-8")) == {"aoi": AOI, "video_url": "", "repo_url": ""}
+
+
+def test_serve_survives_a_burst_of_connections(served):
+    """A page opens ~20 connections at once; the listen backlog must not reset them (found under load, WP10g)."""
+    import socket
+    port, bad = int(served.rsplit(":", 1)[1]), []
+
+    def one():
+        try:
+            with socket.create_connection(("127.0.0.1", port), timeout=10) as s:
+                s.sendall(b"GET /config.json HTTP/1.1\r\nHost: x\r\nConnection: close\r\n\r\n")
+                if not s.recv(100):
+                    bad.append(1)
+        except OSError:
+            bad.append(1)
+
+    threads = [threading.Thread(target=one) for _ in range(200)]
+    [t.start() for t in threads]
+    [t.join() for t in threads]
+    assert not bad
