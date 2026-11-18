@@ -33,3 +33,11 @@ def test_OFFLINE_node_child_exits_on_network():
     assert r.returncode == 1 and "TILEPIPE_OFFLINE" in r.stderr, r.stderr
     assert quiet.returncode == 0, quiet.stderr
     assert "offline_guard" not in os.environ.get("NODE_OPTIONS", ""), "environment restored on exit"
+
+
+def test_preflight_writes_nonempty_log(tmp_path):
+    """3.3 rule 7: preflight's probe subprocesses land in build/logs/preflight.log."""
+    from tilepipe import cli
+    cli.preflight(tmp_path)
+    log = tmp_path / "build" / "logs" / "preflight.log"
+    assert log.exists() and "exit " in log.read_text(encoding="utf-8")
