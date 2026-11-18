@@ -213,3 +213,11 @@ None recorded.
 - Change: `tilepipe.entities.run` calls `manifest.run(root, default_aoi)` after a successful gate, when `build/<aoi>/geo.json` exists, so `tile.json` and `outputs.sha256` count `dist/entities/`. No signature, threshold, or rule changed.
 - Result: `build`, `entities`, `validate` on a clean tree passes PAY-01 on both profiles (9162285 and 12208697 bytes). `entities --no-blender` copies the committed exports and yields a byte-identical `outputs.sha256`.
 - Open: `tilepipe all` still exits 2 at `site` (WP10 not merged, stub).
+
+### D-14 (WP06f) validation.json is not listed in outputs.sha256
+
+- Spec section: 7.8, 6.7, 12.2 (DET-01).
+- Expected: `outputs.sha256` lists every file in `dist/<aoi>/` except itself (7.8) and is identical on a clean re-run (6.7).
+- Observed: after a clean `tilepipe all`, `outputs.sha256` had 104 lines because `validate` runs after the manifest. On the next run `validation.json` existed, so the list had 105 lines and its hash changed with each run.
+- Change: `hashing.write_outputs_sha256` also skips `validation.json`. It is written after the manifest and carries the DET-01 comparison of the list, so listing it is circular, and fixing it the other way would need a change in `validate/`. The list is now the same on a clean and a repeated run. No threshold, budget, or rule changes.
+- Why: DRAFT, for Bradd to write in his own words.

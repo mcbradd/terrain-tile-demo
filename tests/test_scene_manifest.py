@@ -64,6 +64,17 @@ def test_outputs_sha256(tmp_path):
     assert lines[0].split("  ")[0] == hashing.sha256_file(tmp_path / "b.bin")
 
 
+def test_outputs_sha256_ignores_validation_json(tmp_path):
+    (tmp_path / "a.bin").write_bytes(b"a")
+    hashing.write_outputs_sha256(tmp_path)
+    first = (tmp_path / "outputs.sha256").read_bytes()
+    (tmp_path / "validation.json").write_text("{}")
+    hashing.write_outputs_sha256(tmp_path)
+    (tmp_path / "validation.json").write_text('{"x": 1}')
+    hashing.write_outputs_sha256(tmp_path)
+    assert (tmp_path / "outputs.sha256").read_bytes() == first
+
+
 def test_committed_scene_matches_data_when_built():
     committed = ROOT / "scene" / f"{AOI}_scene.json"
     assert committed.exists()
