@@ -32,6 +32,7 @@ def _source_gate(root: Path) -> list[str]:
 def complete(export: Path, dist: Path) -> dict:
     """Copy one entity's GLBs to `dist` and return its entity.json with per-LOD tris, vertices, bytes, sha256."""
     doc = json.loads((export / "entity.json").read_text(encoding="utf-8"))
+    doc.pop("blender_version", None)   # export metadata for build_info.json (contracts.md 2), not part of 9.2
     if dist.exists():
         shutil.rmtree(dist)
     dist.mkdir(parents=True)
