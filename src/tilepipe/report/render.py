@@ -163,7 +163,7 @@ def build_context(root: Path, aoi: str, validation: dict) -> dict:
     }
 
 
-def render(root: Path, aoi: str, validation: dict) -> Path:
+def render(root: Path, aoi: str, validation: dict, out_dir: Path | None = None) -> Path:
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(Path(__file__).parent), autoescape=True,
                              trim_blocks=True, lstrip_blocks=True, undefined=jinja2.StrictUndefined)
     env.filters["n"] = lambda v: f"{int(v):,}"
@@ -173,7 +173,7 @@ def render(root: Path, aoi: str, validation: dict) -> Path:
         mime = "jpeg" if ctx["h5"].suffix.lower() in (".jpg", ".jpeg") else "png"
         ctx["h5"] = f"data:image/{mime};base64," + base64.b64encode(ctx["h5"].read_bytes()).decode("ascii")
     html = env.get_template("report.html.j2").render(**ctx).replace("—", "-")
-    out = root / "site" / "report" / "index.html"
+    out = (out_dir or root / "site" / "report") / "index.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8", newline="\n") as f:
         f.write(html)
