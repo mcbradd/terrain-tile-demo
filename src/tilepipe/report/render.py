@@ -13,6 +13,7 @@ from pathlib import Path
 import jinja2
 
 from tilepipe import config
+from tilepipe.validate.runner import verdict, verdict_text
 from tilepipe.validate.rules_scene import ENTITY_DRAWS, STEM_DRAWS, STEM_TRIS
 
 ACCURACY = (
@@ -35,10 +36,6 @@ ORDER = {"FAIL": 0, "WARN": 1, "PASS": 2, "SKIP": 3}
 
 def _jload(p: Path):
     return json.loads(p.read_text(encoding="utf-8"))
-
-
-def _chip(c: dict) -> str:
-    return "FAIL" if c["fail"] else "WARN" if c["warn"] else "PASS"
 
 
 def _commit(root: Path) -> str:
@@ -135,7 +132,7 @@ def build_context(root: Path, aoi: str, validation: dict) -> dict:
         cells = [[{"k": sel[f"c{cx}_{cz}"], "e": ch[f"c{cx}_{cz}"]["e_max_m"][sel[f"c{cx}_{cz}"]]}
                   for cx in range(4)] for cz in range(4)]
         c = summary.get(f"profile:{name}", empty)
-        prof_ctx.append({"name": name, "chip": _chip(c), "counts": c, "cells": cells, "e": e,
+        prof_ctx.append({"name": name, "chip": verdict(c), "verdict": verdict_text(c), "counts": c, "cells": cells, "e": e,
                          "budgets": _budgets(root, e, prof, scene, ents),
                          "sentence": BUDGET_FORCED if e["budget_forced"] else TOLERANCE_MET,
                          "assumed": _assumed(root, name, prof), "anchor": prof["anchor"]["source"]})

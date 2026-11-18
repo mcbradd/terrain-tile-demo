@@ -106,6 +106,17 @@ def summarize(results: list[dict]) -> dict:
     return summary
 
 
+def verdict(c: dict) -> str:
+    """A scope's verdict from its summary counts: FAIL if any rule FAILs, else PASS. WARN rows stay WARN (Bradd ruling 3)."""
+    return "FAIL" if c["fail"] else "PASS"
+
+
+def verdict_text(c: dict) -> str:
+    """Verdict plus warning count, e.g. "PASS, 1 warning". viewer/src/hud.js mirrors this format."""
+    w = c["warn"]
+    return verdict(c) + (f", {w} warning{'s' * (w != 1)}" if w else "")
+
+
 def junit(aoi: str, results: list[dict]) -> bytes:
     """One testsuite per scope, one testcase per rule; FAIL gets a `failure`, SKIP a `skipped`, WARN system-out."""
     root = ET.Element("testsuites", name=f"tilepipe {aoi}")

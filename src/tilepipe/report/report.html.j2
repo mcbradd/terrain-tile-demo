@@ -51,7 +51,7 @@ img { max-width: 100%; height: auto; }
 <table>
 <tr><th>Profile</th><th>Verdict</th><th class="num">Pass</th><th class="num">Warn</th><th class="num">Fail</th></tr>
 {% for p in profiles %}
-<tr><td>{{ p.name }}</td><td><span class="chip {{ p.chip }}">{{ p.chip }}</span></td><td class="num">{{ p.counts.pass }}</td><td class="num">{{ p.counts.warn }}</td><td class="num">{{ p.counts.fail }}</td></tr>
+<tr><td>{{ p.name }}</td><td><span class="chip {{ p.chip }}">{{ p.verdict }}</span></td><td class="num">{{ p.counts.pass }}</td><td class="num">{{ p.counts.warn }}</td><td class="num">{{ p.counts.fail }}</td></tr>
 {% endfor %}
 </table>
 </section>

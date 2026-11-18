@@ -52,3 +52,34 @@ def test_no_script_no_external_url_no_dash(html):
 
 def test_perf01_labeled_build_machine(html):
     assert "Measured on the build machine. Not evidence for either profile." in html
+
+
+def _verdict_cell(html: str, profile: str) -> tuple[str, str]:
+    m = re.search(rf'<tr><td>{profile}</td><td><span class="chip (\w+)">([^<]*)</span></td>', html)
+    return m.group(1), m.group(2)
+
+
+def _render_with(warn: int, fail: int) -> str:
+    c = {"pass": 5, "warn": warn, "fail": fail, "skip": 0}
+    doc = {"schema": 1, "aoi": AOI, "results": [], "summary": {"profile:mobile_ar": c, "profile:workstation": c}}
+    if not (config.dist_dir(ROOT, AOI) / "tile.json").exists():
+        assert cli.build(ROOT, AOI) == 0
+    return render(ROOT, AOI, doc).read_text(encoding="utf-8")
+
+
+def test_verdict_pass_with_warning_count():
+    """Bradd ruling 3: 0 FAIL and 1 WARN is PASS, with the warning count beside it."""
+    from tilepipe.validate.runner import verdict, verdict_text
+    c = {"pass": 5, "warn": 1, "fail": 0, "skip": 0}
+    assert verdict(c) == "PASS" and verdict_text(c) == "PASS, 1 warning"
+    assert verdict_text({**c, "warn": 2}) == "PASS, 2 warnings"
+    assert verdict_text({**c, "warn": 0}) == "PASS"
+    assert verdict({**c, "fail": 1}) == "FAIL"
+
+
+def test_report_shows_pass_one_warning():
+    assert _verdict_cell(_render_with(1, 0), "mobile_ar") == ("PASS", "PASS, 1 warning")
+
+
+def test_report_fail_stays_fail():
+    assert _verdict_cell(_render_with(0, 1), "workstation")[0] == "FAIL"
