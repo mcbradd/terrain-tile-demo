@@ -1,13 +1,14 @@
 """WP11 Blender tests (SPEC 12.9): test_rules.py headless, the fixture matrix, the template, and the entities."""
 import importlib.util
-import os
 import sys
 from pathlib import Path
 
 import pytest
 
+from tilepipe.cli import blender_exe
+
 ROOT = Path(__file__).resolve().parents[1]
-BLENDER = Path(os.environ.get("TILEPIPE_BLENDER", r"C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"))
+BLENDER = Path(blender_exe())
 pytestmark = pytest.mark.skipif(not BLENDER.exists(), reason="Blender 5.2 not installed")
 
 _spec = importlib.util.spec_from_file_location("source_gate", ROOT / "blender" / "source_gate.py")

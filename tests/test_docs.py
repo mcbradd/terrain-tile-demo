@@ -1,4 +1,5 @@
 """WP13 document checks: length per document, forbidden terms, em dashes, required sentences."""
+import getpass
 import re
 from pathlib import Path
 
@@ -42,7 +43,7 @@ def test_doc_no_em_dash_or_banned_phrase(rel):
 
 @pytest.mark.parametrize("rel", LIMITS)
 def test_doc_no_personal_paths(rel):
-    assert not re.search(r"[A-Za-z]:\\|/Users/|@[\w.-]+\.\w+|McBra", read(rel))
+    assert not re.search(r"[A-Za-z]:\\|/Users/|@[\w.-]+\.\w+|" + re.escape(getpass.getuser()), read(rel))
 
 
 def test_readme_required_sentence():
