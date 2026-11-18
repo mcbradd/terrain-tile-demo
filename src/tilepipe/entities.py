@@ -57,7 +57,7 @@ def deliverable_gate(root: Path, ids: list[str]) -> list[dict]:
                   options={"skip_entities": False, "determinism": False, "no_blender": True}, cache={})
     out = [RULES[r].check(ctx, f"entity:{e}").to_dict() for e in ids for r in ENTD]
     files = sorted((root / "dist" / "entities").rglob("*.glb"))
-    counts = rules_tex.run_validator(files)
+    counts = rules_tex.run_validator(files, root / "build" / "logs" / "gltf_validator_entities.log")   # 3.3 rule 7
     bad = [f"{f}: {c['errors']} errors, {c['warnings']} warnings" for f, c in counts.items()
            if c["errors"] or c["warnings"]]
     out.append(common.violations("GLB-01", "entities", bad, "files", "Fix the export (11.5).").to_dict())
