@@ -12,6 +12,7 @@
       -2.5
     ]
   },
+  "blender_version": "5.2.0 LTS",
   "class": "vehicle",
   "display": {
     "mode": "token",

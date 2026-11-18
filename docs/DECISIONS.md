@@ -238,3 +238,11 @@ None recorded.
 - Change: the viewer reads `?aoi=`, else the `aoi` key of `site/config.json`, else it shows a load error. `tests/viewer_check.mjs` writes `aoi` (the first `aois.toml` AOI with a built tile) into its config.json and fails if any `aois.toml` id appears under `viewer/src`. No threshold, budget, or rule changes.
 - Resolved by WP10g: `tilepipe site` writes `aoi` into `config.json`, merged into a kept file, and `tests/test_site.py` accepts the key.
 - Why: DRAFT, for Bradd to write in his own words.
+
+### D-18 (WP02f) Byte-identical build_info.json across `all` and `all --no-blender`
+
+- Spec section: 3.3 rule 3, 5.7; VERIFICATION.md approved change 4.
+- Expected: `uv run tilepipe all` and `uv run tilepipe all --no-blender` write byte-identical `build_info.json`.
+- Observed: the frozen contract (contracts.md 2) makes `build_info.json` hold `stage_seconds`, `total_seconds`, and `finished_utc`. These are wall-clock values and differ on every run, with or without Blender, so no two builds can match byte for byte.
+- Change: the check compares `build_info.json` with those three timing keys removed. `gdal_version`, `blender_version`, and `host` match byte for byte, and `outputs.sha256` matches whole. GDAL is used, through rasterio in `fetch` and `prep`, so `gdal_version` is `rasterio.__gdal_version__`. The Blender version is `bpy.app.version_string`, written by `export_asset` into each committed `export/entity.json` and read from there; `entities.complete` drops it from the `dist/` copy so 9.2 is unchanged. No threshold, budget, or rule changes.
+- Why: DRAFT, for Bradd to write in his own words.

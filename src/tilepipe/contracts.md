@@ -23,7 +23,14 @@ This file is frozen after WP02. A change needs the orchestrator's approval and a
 
 `tilepipe build [--from S] [--to S]` runs `config.STAGES` in order: prep, lod, bake, export, batch, scene,
 manifest. `cli.build` times each stage and merges `{"stage_seconds": {stage: s}, "total_seconds": s, "host",
-"finished_utc"}` into `B/build_info.json`. A stage reads only committed inputs and earlier outputs listed here.
+"finished_utc", "gdal_version", "blender_version"}` into `B/build_info.json`. A stage reads only committed inputs
+and earlier outputs listed here.
+
+`cli.tool_versions(root) -> dict` gives the two version strings. `gdal_version` is `rasterio.__gdal_version__`.
+`blender_version` is `bpy.app.version_string` as recorded at entity export: `export_asset` writes it into the
+partial `assets/entities/<entity>/export/entity.json`, and `entities.complete` drops it from the `dist/` copy (9.2).
+Distinct values are sorted and joined with `", "`; `"not recorded"` if none. Blender is not run for this, so
+`all` and `all --no-blender` record the same versions (VERIFICATION.md approved change 4).
 
 | Stage | Function | Reads | Writes |
 | --- | --- | --- | --- |

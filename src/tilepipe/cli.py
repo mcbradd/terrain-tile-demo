@@ -142,8 +142,20 @@ def build(root: Path, aoi: str, start: str | None = None, stop: str | None = Non
     info["total_seconds"] = sum(secs[s] for s in stages if s in secs)
     info["host"] = platform.node()
     info["finished_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    info.update(tool_versions(root))
     config.write_json(info_path, info)
     return EXIT_OK
+
+
+def tool_versions(root: Path) -> dict:
+    """GDAL linked into rasterio, and the Blender version recorded at entity export (3.3 rule 3, 5.7).
+
+    Blender is read from the committed exports, not run, so `all` and `all --no-blender` record the same value.
+    """
+    import rasterio
+    found = {json.loads(p.read_text(encoding="utf-8")).get("blender_version", "not recorded")
+             for p in (Path(root) / "assets" / "entities").glob("ent_*/export/entity.json")}
+    return {"gdal_version": rasterio.__gdal_version__, "blender_version": ", ".join(sorted(found)) or "not recorded"}
 
 
 def _parser(stage_names) -> argparse.ArgumentParser:

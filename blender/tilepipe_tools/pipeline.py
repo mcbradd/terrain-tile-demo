@@ -79,6 +79,7 @@ def export_asset(coll, out_dir: Path, repo_root: Path, blend_path: Path) -> Path
         "base_color_srgb": _base_color_srgb(lod0.material_slots[0].material),
         "lods": lods,
         "source_blend_sha256": _sha256(blend_path),
+        "blender_version": bpy.app.version_string,   # read into build_info.json; dropped from dist (9.2)
     }
     path = out_dir / "entity.json"
     path.write_text(json.dumps(doc, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")

@@ -12,6 +12,7 @@
       -0.68
     ]
   },
+  "blender_version": "5.2.0 LTS",
   "class": "uas",
   "display": {
     "mode": "token",

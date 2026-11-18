@@ -12,6 +12,7 @@
       -1.5
     ]
   },
+  "blender_version": "5.2.0 LTS",
   "class": "mast",
   "display": {
     "mode": "token",

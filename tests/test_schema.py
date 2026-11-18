@@ -248,3 +248,27 @@ def test_schema_canonical_json(tmp_path):
     with pytest.raises(ValueError):
         config.dumps_json({"x": float("nan")})
     assert json.loads(p.read_text(encoding="utf-8"))["b"] == 1.234568
+
+
+def test_schema_build_info_tool_versions(tmp_path):
+    """Approved change 4: build_info.json versions come from rasterio and the committed export metadata."""
+    import rasterio
+
+    from tilepipe import cli
+    assert cli.tool_versions(tmp_path) == {"gdal_version": rasterio.__gdal_version__, "blender_version": "not recorded"}
+    for e in ("ent_a_b_c", "ent_d_e_f"):
+        d = tmp_path / "assets" / "entities" / e / "export"
+        d.mkdir(parents=True)
+        (d / "entity.json").write_text(json.dumps({"blender_version": "5.2.0 LTS"}), encoding="utf-8")
+    assert cli.tool_versions(tmp_path)["blender_version"] == "5.2.0 LTS"
+    assert cli.tool_versions(ROOT)["blender_version"].startswith("5.2.")   # 3.3 rule 3: any 5.2.x, never 5.3
+
+
+def test_schema_entity_complete_drops_blender_version(tmp_path):
+    """The export's blender_version feeds build_info.json only; dist entity.json keeps the 9.2 shape."""
+    from tilepipe import entities
+    export = ROOT / "assets" / "entities" / "ent_uas_quad_a" / "export"
+    assert "blender_version" in json.loads((export / "entity.json").read_text(encoding="utf-8"))
+    doc = entities.complete(export, tmp_path / "d")
+    assert "blender_version" not in doc
+    assert config.schema_errors(json.loads((tmp_path / "d" / "entity.json").read_text(encoding="utf-8")), "entity") == []
