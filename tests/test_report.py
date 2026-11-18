@@ -83,3 +83,16 @@ def test_report_shows_pass_one_warning():
 
 def test_report_fail_stays_fail():
     assert _verdict_cell(_render_with(0, 1), "workstation")[0] == "FAIL"
+
+
+def test_report_versions_come_from_build_info(html):
+    """WP08g: GDAL and Blender versions are the ones recorded in build_info.json."""
+    import json
+    p = config.build_dir(ROOT, AOI) / "build_info.json"
+    orig = p.read_text(encoding="utf-8")
+    try:
+        p.write_text(json.dumps({**json.loads(orig), "gdal_version": "9.8.7", "blender_version": "6.5.4"}), encoding="utf-8")
+        out = _render_with(0, 0)
+    finally:
+        p.write_text(orig, encoding="utf-8")
+    assert "<th>GDAL</th><td>9.8.7</td>" in out and "<th>Blender</th><td>6.5.4</td>" in out

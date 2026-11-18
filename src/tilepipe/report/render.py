@@ -5,7 +5,6 @@ Contract: tilepipe.report.render.render(root, aoi, validation) -> Path (contract
 import base64
 import json
 import platform
-import re
 import subprocess
 from importlib import metadata
 from pathlib import Path
@@ -54,17 +53,11 @@ def _ver(pkg: str) -> str:
         return "not installed"
 
 
-def _versions(root: Path) -> list[tuple[str, str]]:
-    try:
-        import rasterio
-        gdal = rasterio.__gdal_version__
-    except ImportError:
-        gdal = "not installed"
-    log = root / "build" / "logs" / "entities.log"
-    m = re.search(r"Blender (\d+\.\d+\.\d+)", log.read_text(encoding="utf-8", errors="replace")) if log.exists() else None
+def _versions(root: Path, info: dict) -> list[tuple[str, str]]:
     pkg = _jload(root / "package.json")["dependencies"] if (root / "package.json").exists() else {}
     return [("Python", platform.python_version()), ("numpy", _ver("numpy")), ("rasterio", _ver("rasterio")),
-            ("GDAL", gdal), ("Blender", m.group(1) if m else "not recorded"),
+            ("GDAL", info.get("gdal_version", "not recorded")),
+            ("Blender", info.get("blender_version", "not recorded")),
             ("three", pkg.get("three", "not recorded"))]
 
 
@@ -165,7 +158,7 @@ def build_context(root: Path, aoi: str, validation: dict) -> dict:
         "groups": groups, "entities": ent_ctx, "fixtures": fixtures,
         "geo": [r for r in results if r["rule"] == "GEO-01"], "accuracy": ACCURACY,
         "scale": _scale(info, d), "extrapolation": EXTRAPOLATION, "static_only": STATIC_ONLY,
-        "source": src, "retrieved_date": src["retrieved_utc"][:10], "versions": _versions(root),
+        "source": src, "retrieved_date": src["retrieved_utc"][:10], "versions": _versions(root, info),
         "validator": tile["generator"], "h5": h5,
     }
 
