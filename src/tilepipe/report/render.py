@@ -5,7 +5,6 @@ Contract: tilepipe.report.render.render(root, aoi, validation) -> Path (contract
 import base64
 import json
 import platform
-import re
 import subprocess
 from importlib import metadata
 from pathlib import Path
@@ -54,17 +53,11 @@ def _ver(pkg: str) -> str:
         return "not installed"
 
 
-def _versions(root: Path) -> list[tuple[str, str]]:
-    try:
-        import rasterio
-        gdal = rasterio.__gdal_version__
-    except ImportError:
-        gdal = "not installed"
-    log = root / "build" / "logs" / "entities.log"
-    m = re.search(r"Blender (\d+\.\d+\.\d+)", log.read_text(encoding="utf-8", errors="replace")) if log.exists() else None
+def _versions(root: Path, info: dict) -> list[tuple[str, str]]:
     pkg = _jload(root / "package.json")["dependencies"] if (root / "package.json").exists() else {}
     return [("Python", platform.python_version()), ("numpy", _ver("numpy")), ("rasterio", _ver("rasterio")),
-            ("GDAL", gdal), ("Blender", m.group(1) if m else "not recorded"),
+            ("GDAL", info.get("gdal_version", "not recorded")),
+            ("Blender", info.get("blender_version", "not recorded")),
             ("three", pkg.get("three", "not recorded"))]
 
 
@@ -165,12 +158,12 @@ def build_context(root: Path, aoi: str, validation: dict) -> dict:
         "groups": groups, "entities": ent_ctx, "fixtures": fixtures,
         "geo": [r for r in results if r["rule"] == "GEO-01"], "accuracy": ACCURACY,
         "scale": _scale(info, d), "extrapolation": EXTRAPOLATION, "static_only": STATIC_ONLY,
-        "source": src, "retrieved_date": src["retrieved_utc"][:10], "versions": _versions(root),
+        "source": src, "retrieved_date": src["retrieved_utc"][:10], "versions": _versions(root, info),
         "validator": tile["generator"], "h5": h5,
     }
 
 
-def render(root: Path, aoi: str, validation: dict) -> Path:
+def render(root: Path, aoi: str, validation: dict, out_dir: Path | None = None) -> Path:
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(Path(__file__).parent), autoescape=True,
                              trim_blocks=True, lstrip_blocks=True, undefined=jinja2.StrictUndefined)
     env.filters["n"] = lambda v: f"{int(v):,}"
@@ -180,7 +173,7 @@ def render(root: Path, aoi: str, validation: dict) -> Path:
         mime = "jpeg" if ctx["h5"].suffix.lower() in (".jpg", ".jpeg") else "png"
         ctx["h5"] = f"data:image/{mime};base64," + base64.b64encode(ctx["h5"].read_bytes()).decode("ascii")
     html = env.get_template("report.html.j2").render(**ctx).replace("—", "-")
-    out = root / "site" / "report" / "index.html"
+    out = (out_dir or root / "site" / "report") / "index.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8", newline="\n") as f:
         f.write(html)

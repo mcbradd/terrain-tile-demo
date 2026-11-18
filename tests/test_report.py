@@ -83,3 +83,19 @@ def test_report_shows_pass_one_warning():
 
 def test_report_fail_stays_fail():
     assert _verdict_cell(_render_with(0, 1), "workstation")[0] == "FAIL"
+
+
+def test_report_versions_come_from_build_info(html, tmp_path, monkeypatch):
+    """WP08g: GDAL and Blender versions are the ones recorded in build_info.json. Touches only tmp_path."""
+    import json
+    import shutil
+    real = config.build_dir(ROOT, AOI)
+    fake = tmp_path / "build"
+    shutil.copytree(real, fake)
+    info = fake / "build_info.json"
+    info.write_text(json.dumps({**json.loads(info.read_text(encoding="utf-8")), "gdal_version": "9.8.7",
+                                "blender_version": "6.5.4"}), encoding="utf-8")
+    monkeypatch.setattr(config, "build_dir", lambda root, aoi: fake)
+    doc = {"schema": 1, "aoi": AOI, "results": [], "summary": {}}
+    out = render(ROOT, AOI, doc, out_dir=tmp_path / "report").read_text(encoding="utf-8")
+    assert "<th>GDAL</th><td>9.8.7</td>" in out and "<th>Blender</th><td>6.5.4</td>" in out
