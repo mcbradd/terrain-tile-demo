@@ -6,7 +6,6 @@ import math
 import os
 import re
 import shutil
-import socket
 import tempfile
 import tomllib
 from fractions import Fraction
@@ -96,43 +95,24 @@ def meta04(ctx, scope):
     return common.violations("META-04", scope, bad, "limits", "Lower tris_max in entity_lods.toml (8.4).")
 
 
-# ---------------------------------------------------------------- DET-01 and OFF-01: two builds in scratch roots
+# ---------------------------------------------------------------- DET-01 and OFF-01: builds in scratch roots
 
 _INPUTS = ("aois.toml", "entity_lods.toml", "profiles", "look", "data/source", "scene", "assets/entities",
            "viewer/src/shaders", "dist/entities")
+# `tilepipe all` also needs the viewer (site), the Blender scripts (entities), and tests/ (REG-01 in validate).
+_ALL_INPUTS = tuple(n for n in _INPUTS if n != "viewer/src/shaders") + ("viewer", "blender", "tests")
+_REPO = Path(__file__).resolve().parents[3]
+_inner_off01 = False   # True while OFF-01 runs `tilepipe all`, so the inner validate does not recurse
 
 
-def _stage_root(src: Path, dst: Path) -> None:
-    for name in _INPUTS:
+def _stage_root(src: Path, dst: Path, names=_INPUTS) -> None:
+    for name in names:
         s = src / name
         if s.is_dir():
-            shutil.copytree(s, dst / name)
+            shutil.copytree(s, dst / name, ignore=shutil.ignore_patterns("__pycache__"))
         elif s.is_file():
             (dst / name).parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(s, dst / name)
-
-
-@contextlib.contextmanager
-def _offline():
-    """TILEPIPE_OFFLINE=1 with the socket guard of offline.py, undone on exit."""
-    from tilepipe import offline
-    names = ("connect", "connect_ex")
-    saved = ({n: getattr(socket.socket, n) for n in names},
-             {n: getattr(socket, n) for n in ("create_connection", "getaddrinfo", "gethostbyname")})
-    prev = os.environ.get("TILEPIPE_OFFLINE")
-    os.environ["TILEPIPE_OFFLINE"] = "1"
-    offline.install()
-    try:
-        yield
-    finally:
-        for n, f in saved[0].items():
-            setattr(socket.socket, n, f)
-        for n, f in saved[1].items():
-            setattr(socket, n, f)
-        if prev is None:
-            os.environ.pop("TILEPIPE_OFFLINE", None)
-        else:
-            os.environ["TILEPIPE_OFFLINE"] = prev
 
 
 def build_into(root: Path, aoi: str) -> None:
@@ -143,6 +123,8 @@ def build_into(root: Path, aoi: str) -> None:
 
 def two_builds(ctx) -> dict:
     """Build twice into fresh roots, the second offline. {'hashes': [h1, h2], 'errors': [e1, e2]}."""
+    from tilepipe import offline
+
     def run():
         out = {"hashes": [], "errors": []}
         with tempfile.TemporaryDirectory() as td:
@@ -151,7 +133,7 @@ def two_builds(ctx) -> dict:
                 root.mkdir()
                 _stage_root(ctx.root, root)
                 try:
-                    with (_offline() if i == 2 else contextlib.nullcontext()):
+                    with (offline.offline() if i == 2 else contextlib.nullcontext()):
                         build_into(root, ctx.aoi)
                     out["hashes"].append((root / "dist" / ctx.aoi / "outputs.sha256").read_text(encoding="utf-8"))
                     out["errors"].append("")
@@ -175,14 +157,47 @@ def det01(ctx, scope):
                         "Find the stage that writes the differing file and remove its nondeterminism (6.7).")
 
 
+def offline_all(ctx) -> str:
+    """Run `tilepipe all` with TILEPIPE_OFFLINE=1 on a scratch copy of the committed inputs. '' or the failure.
+
+    Covers every step (build, entities, validate, site) and their node and Blender child processes, which inherit
+    the guards of offline.py. The scratch root sits under the repository's build/, so node finds node_modules.
+    Blender runs when it is installed; otherwise the run is `all --no-blender`.
+    """
+    from tilepipe import cli, config, offline
+
+    def run():
+        global _inner_off01
+        args = ["all", "--aoi", ctx.aoi] + ([] if Path(cli.blender_exe()).exists() else ["--no-blender"])
+        out = io.StringIO()
+        (_REPO / "build").mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=_REPO / "build", prefix="off01_", ignore_cleanup_errors=True) as td:
+            root = Path(td)
+            _stage_root(ctx.root, root, _ALL_INPUTS)
+            _inner_off01 = True
+            try:
+                with offline.offline(), contextlib.redirect_stdout(out):
+                    rc = cli._dispatch(cli._parser(list(config.STAGES)).parse_args(args), root)
+            except Exception as e:  # a failed step is the finding
+                return f"{type(e).__name__}: {e}"[:200].replace("\n", " ")
+            finally:
+                _inner_off01 = False
+        last = next((ln for ln in reversed(out.getvalue().splitlines()) if ln.strip()), "")
+        return "" if rc == 0 else f"tilepipe all exit {rc}: {last}"[:200]
+    return common.memo(ctx, "offline_all", run)
+
+
 @implements("OFF-01")
 def off01(ctx, scope):
-    """Covers the seven build stages under TILEPIPE_OFFLINE=1; entities and site are covered by gate G6."""
-    if not ctx.options.get("determinism"):
-        return skip("OFF-01", scope, "runs only with `tilepipe validate --determinism`")
-    err = two_builds(ctx)["errors"][1]
+    """Runs all of `tilepipe all` offline, child processes included. Too slow for every validate, so it runs with
+    `--determinism` or when validate itself runs under TILEPIPE_OFFLINE=1."""
+    if _inner_off01:
+        return skip("OFF-01", scope, "this validate is the inner step of the OFF-01 run")
+    if not (ctx.options.get("determinism") or os.environ.get("TILEPIPE_OFFLINE") == "1"):
+        return skip("OFF-01", scope, "runs only with `tilepipe validate --determinism` or under TILEPIPE_OFFLINE=1")
+    err = offline_all(ctx)
     return check_result("OFF-01", scope, not err, err or "ok", "ok", "", "==",
-                        "Remove the network access the build attempts (3.3 rule 8).")
+                        "Remove the network access the step attempts (3.3 rule 8); see build/logs/.")
 
 
 # ---------------------------------------------------------------- REG-01

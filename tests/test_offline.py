@@ -21,3 +21,15 @@ def test_OFFLINE_network_attempt_raises():
     env = {**os.environ, "TILEPIPE_OFFLINE": "1", "PYTHONPATH": src}
     r = subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
+
+
+def test_OFFLINE_node_child_exits_on_network():
+    """offline.offline() puts the node guard in NODE_OPTIONS; a node child that connects exits 1."""
+    from tilepipe import offline
+    probe = "require('net').connect(9, '127.0.0.1').on('error', () => {})"
+    with offline.offline():
+        r = subprocess.run(["node", "-e", probe], capture_output=True, text=True)
+        quiet = subprocess.run(["node", "-e", "process.exit(0)"], capture_output=True, text=True)
+    assert r.returncode == 1 and "TILEPIPE_OFFLINE" in r.stderr, r.stderr
+    assert quiet.returncode == 0, quiet.stderr
+    assert "offline_guard" not in os.environ.get("NODE_OPTIONS", ""), "environment restored on exit"
