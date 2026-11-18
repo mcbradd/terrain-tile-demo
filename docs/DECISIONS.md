@@ -246,3 +246,20 @@ None recorded.
 - Observed: the frozen contract (contracts.md 2) makes `build_info.json` hold `stage_seconds`, `total_seconds`, and `finished_utc`. These are wall-clock values and differ on every run, with or without Blender, so no two builds can match byte for byte.
 - Change: the check compares `build_info.json` with those three timing keys removed. `gdal_version`, `blender_version`, and `host` match byte for byte, and `outputs.sha256` matches whole. GDAL is used, through rasterio in `fetch` and `prep`, so `gdal_version` is `rasterio.__gdal_version__`. The Blender version is `bpy.app.version_string`, written by `export_asset` into each committed `export/entity.json` and read from there; `entities.complete` drops it from the `dist/` copy so 9.2 is unchanged. No threshold, budget, or rule changes.
 - Why: DRAFT, for Bradd to write in his own words.
+
+### D-19 (WP13f) Tracked file names differ from the 4.1 layout
+
+- Spec section: 4.1 (layout), 17.9 (nothing changes silently).
+- Expected: the tracked tree uses the file names that 4.1 lists.
+- Observed: eight 4.1 paths are not tracked under their listed names. Each one is covered by a file with another name.
+  - `src/tilepipe/validate/rules_texture.py` is `rules_tex.py`. It holds TEX-01 to TEX-05, GLB-01, GLB-02, and PAY-01.
+  - `src/tilepipe/validate/rules_glb.py` does not exist. GLB-01 and GLB-02 live in `rules_tex.py`.
+  - `src/tilepipe/validate/rules_entity.py` is `rules_entd.py`. It holds ENTD-01 to ENTD-06.
+  - `src/tilepipe/report/template.html.j2` is `report.html.j2`.
+  - `blender/tilepipe_tools/export.py` does not exist. The export function `export_asset` is in `pipeline.py`, and the operator is in `__init__.py`.
+  - `blender/tilepipe_tools/panel.py` does not exist. `TILEPIPE_PT_panel` is in `__init__.py`.
+  - `blender/scripts/preflight_export.py` is `tools/preflight_export.py` (see D-03).
+  - `viewer/assets/room.jpg` is not tracked. It is the `[HUMAN]` photo of 15.2.
+- Also tracked but not listed in 4.1: `src/tilepipe/validate/common.py`, `src/tilepipe/offline.py`, `src/tilepipe/offline_guard.mjs`, `blender/tilepipe_tools/pipeline.py`, `blender/source_gate.py`, `blender/offline/startup/tilepipe_offline.py`, `viewer/src/shaders/composite.vert.glsl`, `viewer/src/shaders/line.frag.glsl`, `tools/launcher/`, and `tests/*.mjs`. `config.py`, `entities.py`, and `contracts.md` are covered by D-04 and `tests/test_blender.py` by D-05.
+- Change: none to code. No file is renamed or moved. This record documents where the content lives. No threshold, budget, or rule changes.
+- Why: DRAFT, Bradd write in own words.
