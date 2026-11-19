@@ -1,0 +1,57 @@
+# Core CI (P1.2): build, validate, and test the pipeline without Blender.
+# Windows only: the toolchain pins and the determinism claim are for Windows x64 (3.2). Blender is not installed on
+# the runner, so every Blender test skips and `entities --no-blender` uses the committed exports.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      # uv and Node are pinned to the versions of 3.1. Python 3.12.13 comes from .python-version.
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.8"
+          enable-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.16.0"
+          cache: npm
+
+      # Network is allowed here (3.3 rule 8). The source crop is committed under data/source, so no step fetches data.
+      - run: uv sync --no-build
+      - run: npm ci
+
+      # The pipeline commands run offline, as the spec requires of every command outside the three network ones.
+      - name: Build
+        run: uv run tilepipe build
+        env:
+          TILEPIPE_OFFLINE: "1"
+      - name: Entity deliverable gate from the committed exports
+        run: uv run tilepipe entities --no-blender
+        env:
+          TILEPIPE_OFFLINE: "1"
+      - name: Validate
+        run: uv run tilepipe validate
+        env:
+          TILEPIPE_OFFLINE: "1"
+      # Not under TILEPIPE_OFFLINE: the offline tests set it themselves, and the viewer tests serve and browse
+      # 127.0.0.1, which the guard blocks. Those browser tests use the Chrome or Edge on the runner and skip when
+      # no browser is found. Blender tests skip because Blender is absent.
+      - name: Test
+        run: uv run pytest -q
