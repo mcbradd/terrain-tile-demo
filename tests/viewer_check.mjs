@@ -104,8 +104,9 @@ async function launch(chromium) {
   return null;
 }
 
-// Requests that may 404 while other packages are pending: entity GLBs (WP11) and the optional room photo.
-const OPTIONAL = /\/(data\/entities\/|assets\/room\.jpg|assets\/fallback\.jpg|data\/[^/]+\/validation\.json)/;
+// Requests that may 404 while other packages are pending: entity GLBs (WP11) and the fallback image.
+// assets/room.jpg is not here: the viewer requests it only when config.json says it is shipped.
+const OPTIONAL = /\/(data\/entities\/|assets\/fallback\.jpg|data\/[^/]+\/validation\.json)/;
 
 async function check() {
   let chromium;

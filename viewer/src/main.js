@@ -708,7 +708,8 @@ async function boot() {
   window.addEventListener('resize', resize);
 
   // The AOI comes from data only (17.14): `?aoi=`, else the `aoi` key of the site's config.json.
-  const aoi = new URLSearchParams(location.search).get('aoi') || (await fetchJson('config.json', true))?.aoi;
+  const cfg = await fetchJson('config.json', true);
+  const aoi = new URLSearchParams(location.search).get('aoi') || cfg?.aoi;
   if (!aoi) throw new Error('no AOI: add ?aoi=<id> to the URL or "aoi" to config.json');
   if (!/^[a-z0-9_]+$/.test(aoi)) throw new Error(`bad aoi ${aoi}`);
   const [tile, sceneDoc, validation, opaque, additive] = await Promise.all([
@@ -737,7 +738,7 @@ async function boot() {
   U.u_hMax.value = tile.height.max;
   U.u_extent.value = tile.extent_m;
   U.u_gridOffset.value.set(tile.origin.E0 % 1000, tile.origin.N_top % 1000);
-  loadRoom();
+  if (cfg?.room) loadRoom(); // `tilepipe site` sets `room` only when it shipped assets/room.jpg, so no 404
 
   viewer.look = viewer.looks[PROFILE_LOOK[name]] ? PROFILE_LOOK[name] : 'opaque'; // 13.2 step 2
   renderer.setAnimationLoop(frame);

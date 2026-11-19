@@ -78,9 +78,10 @@ def build(root: Path, aoi: str) -> None:
     for name in ("index.html", "styles.css"):
         _copy(root / "viewer" / name, out / name)
     (out / ".nojekyll").write_bytes(b"")
-    cfg_path = out / "config.json"  # the viewer reads `aoi` from here when the URL has no ?aoi= (17.14, D-16)
+    cfg_path = out / "config.json"  # the viewer reads `aoi` from here when the URL has no ?aoi= (17.14, D-16),
+    # and fetches assets/room.jpg only when `room` is true
     cfg = json.loads(cfg_path.read_text(encoding="utf-8")) if cfg_path.exists() else {"video_url": "", "repo_url": ""}
-    config.write_json(cfg_path, {**cfg, "aoi": aoi})
+    config.write_json(cfg_path, {**cfg, "aoi": aoi, "room": (root / "assets" / "room.jpg").exists()})
     for name in ("room.jpg", "fallback.jpg"):  # [HUMAN] files; copied only when present
         if (root / "assets" / name).exists():
             _copy(root / "assets" / name, out / "assets" / name)
