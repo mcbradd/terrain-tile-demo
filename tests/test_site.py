@@ -13,6 +13,7 @@ from tilepipe import config, site
 ROOT = Path(__file__).resolve().parents[1]
 AOI = config.default_aoi(ROOT)
 NEEDS_DIST = pytest.mark.skipif(not (ROOT / "dist" / AOI / "tile.json").exists(), reason="run `tilepipe build` first")
+ROOM = (ROOT / "assets" / "room.jpg").exists()
 NEEDS_NODE = pytest.mark.skipif(not shutil.which("node"), reason="node not found")
 
 
@@ -38,7 +39,7 @@ def test_site_tree_matches_13_9(served):
     for prof in tile["profiles"].values():
         assert {b["file"] for b in prof["batches"]} <= names
     assert not any("_lod" in n for n in names), "the 80 per-chunk LOD files are not hosted"
-    assert json.loads((out / "config.json").read_text(encoding="utf-8")).keys() == {"aoi", "video_url", "repo_url"}
+    assert json.loads((out / "config.json").read_text(encoding="utf-8")).keys() == {"aoi", "video_url", "repo_url", "room"}
     html = (out / "index.html").read_text(encoding="utf-8")
     assert "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'" in html
     assert "__TILEPIPE_PROFILES__" not in (out / "app.js").read_text(encoding="utf-8")
@@ -111,10 +112,28 @@ def test_config_json_holds_built_aoi_and_keeps_other_keys(served):
     path = ROOT / "site" / "config.json"
     path.write_text(json.dumps({"aoi": "stale", "video_url": "https://example.test/v", "extra": 1}), encoding="utf-8")
     site.build(ROOT, AOI)
-    assert json.loads(path.read_text(encoding="utf-8")) == {"aoi": AOI, "video_url": "https://example.test/v", "extra": 1}
+    assert json.loads(path.read_text(encoding="utf-8")) == {"aoi": AOI, "video_url": "https://example.test/v", "extra": 1,
+                                                              "room": ROOM}
     path.unlink()
     site.build(ROOT, AOI)
-    assert json.loads(path.read_text(encoding="utf-8")) == {"aoi": AOI, "video_url": "", "repo_url": ""}
+    assert json.loads(path.read_text(encoding="utf-8")) == {"aoi": AOI, "video_url": "", "repo_url": "", "room": ROOM}
+
+
+@NEEDS_DIST
+def test_config_json_room_key_tracks_the_room_photo(served):
+    """The viewer requests assets/room.jpg only when `room` is true, so an absent photo logs no 404."""
+    photo, cfg = ROOT / "assets" / "room.jpg", ROOT / "site" / "config.json"
+    if not ROOM:
+        photo.write_bytes(bytes([0xFF, 0xD8, 0xFF, 0xD9]))
+    try:
+        site.build(ROOT, AOI)
+        assert json.loads(cfg.read_text(encoding="utf-8"))["room"] is True
+        assert (ROOT / "site" / "assets" / "room.jpg").is_file()
+    finally:
+        if not ROOM:
+            photo.unlink()
+            site.build(ROOT, AOI)
+    assert json.loads(cfg.read_text(encoding="utf-8"))["room"] is ROOM
 
 
 def test_serve_survives_a_burst_of_connections(served):
