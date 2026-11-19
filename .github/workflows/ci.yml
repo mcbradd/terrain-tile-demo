@@ -19,7 +19,7 @@ concurrency:
 jobs:
   core:
     runs-on: windows-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -37,7 +37,7 @@ jobs:
       - run: uv sync --no-build
       - run: npm ci
 
-      # Everything below runs offline, as the spec requires of every other command.
+      # The pipeline commands run offline, as the spec requires of every command outside the three network ones.
       - name: Build
         run: uv run tilepipe build
         env:
@@ -50,7 +50,8 @@ jobs:
         run: uv run tilepipe validate
         env:
           TILEPIPE_OFFLINE: "1"
+      # Not under TILEPIPE_OFFLINE: the offline tests set it themselves, and the viewer tests serve and browse
+      # 127.0.0.1, which the guard blocks. Those browser tests use the Chrome or Edge on the runner and skip when
+      # no browser is found. Blender tests skip because Blender is absent.
       - name: Test
         run: uv run pytest -q
-        env:
-          TILEPIPE_OFFLINE: "1"

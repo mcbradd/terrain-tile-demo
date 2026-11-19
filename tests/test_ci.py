@@ -22,7 +22,7 @@ def test_ci_workflow_runs_core_commands():
 
 def test_ci_workflow_fetches_nothing_and_runs_offline():
     assert not any("tilepipe fetch" in r for r in RUNS)  # the crop is committed under data/source
-    assert TEXT.count('TILEPIPE_OFFLINE: "1"') == 4  # build, entities, validate, pytest
+    assert TEXT.count('TILEPIPE_OFFLINE: "1"') == 3  # build, entities, validate; pytest runs without the guard
 
 
 def test_ci_workflow_pins_and_caches():
