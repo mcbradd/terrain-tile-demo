@@ -2,11 +2,18 @@
 from pathlib import Path
 
 import bpy
-from bpy.props import CollectionProperty, EnumProperty, IntProperty, PointerProperty, StringProperty
+from bpy.props import BoolProperty, CollectionProperty, EnumProperty, IntProperty, PointerProperty, StringProperty
 
-from . import pipeline, rules
+from . import pipeline, rules, tile_import
 
 PROFILES = (("mobile_ar", "mobile_ar", ""), ("workstation", "workstation", ""), ("all", "all", ""))
+_AOI_ITEMS: list = []   # Blender needs the enum item list kept alive between calls
+
+
+def _aoi_items(self, context):
+    root = _repo_root(context)
+    _AOI_ITEMS[:] = [(a, a, "") for a in tile_import.list_aois(root)] if root else []
+    return _AOI_ITEMS or [("", "(no built tile)", "")]
 
 
 def _repo_root(context) -> Path | None:
@@ -58,6 +65,7 @@ class TILEPIPE_Result(bpy.types.PropertyGroup):
 
 class TILEPIPE_State(bpy.types.PropertyGroup):
     profile: EnumProperty(name="Profile", items=PROFILES, default="mobile_ar")
+    aoi: EnumProperty(name="AOI", items=_aoi_items)
     results: CollectionProperty(type=TILEPIPE_Result)
     result_index: IntProperty(default=-1, update=_select_result)
 
@@ -118,6 +126,32 @@ class TILEPIPE_OT_export_asset(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class TILEPIPE_OT_import_tile(bpy.types.Operator):
+    """Import the built terrain (chosen profile) and entity placements from dist/ at real scale"""
+    bl_idname = "tilepipe.import_tile"
+    bl_label = "Import Tile"
+    bl_options = {"REGISTER", "UNDO"}
+
+    repo_root: StringProperty(subtype="DIR_PATH", description="Overrides the add-on preference (headless use)")
+    aoi: StringProperty(description="AOI id; empty uses the panel choice, then the first built tile")
+    entities: BoolProperty(name="Entities", default=True, description="Instance entity LOD0 at scene.json placements")
+
+    def execute(self, context):
+        root = Path(bpy.path.abspath(self.repo_root)) if self.repo_root else _repo_root(context)
+        if root is None:
+            self.report({"ERROR"}, "Set the repo_root preference.")
+            return {"CANCELLED"}
+        st = context.scene.tilepipe
+        try:
+            res = tile_import.import_tile(root, self.aoi or st.aoi or None, st.profile, self.entities)
+        except (FileNotFoundError, OSError) as e:
+            self.report({"ERROR"}, str(e))
+            return {"CANCELLED"}
+        self.report({"INFO"}, f"Imported {res['collection']}: {res['terrain_objects']} terrain objects, "
+                              f"{res['instances']} entities")
+        return {"FINISHED"}
+
+
 class TILEPIPE_PT_panel(bpy.types.Panel):
     bl_label = "Tile Pipeline"
     bl_space_type = "VIEW_3D"
@@ -149,10 +183,13 @@ class TILEPIPE_PT_panel(bpy.types.Panel):
         layout.operator("tilepipe.validate_asset")
         layout.template_list("TILEPIPE_UL_results", "", st, "results", st, "result_index", rows=5)
         layout.operator("tilepipe.export_asset")
+        box = layout.box()
+        box.prop(st, "aoi")
+        box.operator("tilepipe.import_tile")
 
 
 CLASSES = (TILEPIPE_Prefs, TILEPIPE_Result, TILEPIPE_State, TILEPIPE_UL_results,
-           TILEPIPE_OT_validate_asset, TILEPIPE_OT_export_asset, TILEPIPE_PT_panel)
+           TILEPIPE_OT_validate_asset, TILEPIPE_OT_export_asset, TILEPIPE_OT_import_tile, TILEPIPE_PT_panel)
 
 
 def register():
