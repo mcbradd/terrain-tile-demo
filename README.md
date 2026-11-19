@@ -1,5 +1,7 @@
 # Terrain Tile Pipeline Demo
 
+[![ci](https://github.com/mcbradd/terrain-tile-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/mcbradd/terrain-tile-demo/actions/workflows/ci.yml)
+
 One command takes public USGS elevation data to a validated, real-time terrain tile, built against two hardware budget profiles. A Blender toolchain validates entity assets while they are authored and again after export.
 
 [![Workstation profile, opaque look](docs/img/h1_workstation_opaque.png)](https://mcbradd.github.io/terrain-tile-demo/)
@@ -16,7 +18,7 @@ npm ci
 uv run tilepipe all --no-blender
 ```
 
-The same with the Blender steps: `uv run tilepipe all`. Blender 5.2.0 must be installed (see `uv run tilepipe preflight`). Run every command from the repository root.
+The same with the Blender steps: `uv run tilepipe all`. Blender 5.2.0 must be installed (see `uv run tilepipe preflight`). Run every command from the repository root. CI runs the core steps without Blender, and `node tools/capture/capture.mjs` retakes the hero images, the fallback picture and `bench.json` from `site/`.
 
 ## What it shows
 
