@@ -2,9 +2,11 @@
 
 One command takes public USGS elevation data to a validated, real-time terrain tile, built against two hardware budget profiles. A Blender toolchain validates entity assets while they are authored and again after export.
 
-> **Status: in development.** The live viewer, walkthrough video, and validation report will be linked here once the build passes its own acceptance gates.
+[![Workstation profile, opaque look](docs/img/h1_workstation_opaque.png)](https://mcbradd.github.io/terrain-tile-demo/)
 
-Links: live viewer, walkthrough video, validation report. Each is added here once published.
+**Links:** [live viewer](https://mcbradd.github.io/terrain-tile-demo/) · [walkthrough video](https://mcbradd.github.io/terrain-tile-demo/video/walkthrough.mp4) · [validation report](https://mcbradd.github.io/terrain-tile-demo/report/index.html)
+
+The viewer needs WebGL2 on a current desktop browser (tested in Chrome, Edge, Firefox and WebKit; see `docs/VERIFICATION.md`). The video is a silent, captioned screen capture.
 
 ## Reproduce
 
