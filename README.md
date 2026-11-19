@@ -25,6 +25,7 @@ The same with the Blender steps: `uv run tilepipe all`. Blender 5.2.0 must be in
 - **Measured LOD error.** Geometric error per chunk and level, in meters and in on-screen pixels, with the trade against the triangle budget reported.
 - **Two-gate asset validation.** Rules run inside Blender while an artist works, then again on the exported glTF with no DCC in the loop. Every rule has a test asset built to break it.
 - **Engine-agnostic contract.** glTF plus a JSON manifest, and a standalone GLSL ES 3.00 terrain shader that ports line for line.
+- **Debug views.** An overdraw heat view with mean overdraw measured per profile in the report, and an illustrative slope-class overlay split at 15 and 30 degrees.
 
 ## Repository layout
 

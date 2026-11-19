@@ -33,6 +33,7 @@ uniform float u_wIndex;
 uniform float u_wGrid;
 uniform float u_chunkLod[16];
 uniform float u_debugLod;
+uniform float u_slopeClasses;   // P1.5: 0.0 off, 1.0 slope-class overlay on (illustrative, D-21)
 
 in vec3 v_tl;
 
@@ -61,6 +62,13 @@ vec3 lodTint(float k) {
   return vec3(0.5647, 0.0212, 0.0212);               // #C62828
 }
 
+// Slope-class overlay tint (P1.5, illustrative): below 15, 15 to 30, above 30 degrees. sRGB hex as linear RGB.
+vec3 slopeTint(float deg) {
+  if (deg < 15.0) return vec3(0.1590, 0.3663, 0.1590);   // #6FA36F
+  if (deg < 30.0) return vec3(0.7454, 0.4793, 0.0685);   // #E0B84A
+  return vec3(0.6308, 0.0976, 0.0497);                   // #D0583F
+}
+
 void main() {
   vec2  uv   = clamp(v_tl.xz / u_extent, 0.5 / 1024.0, 1.0 - 0.5 / 1024.0);
   vec2  hs   = textureLod(u_height, uv, 0.0).rg;   // level 0 always: contours must not move with view angle
@@ -74,6 +82,12 @@ void main() {
   float shadeRel = max(dot(n, u_lightDir), 0.0) / 0.70710678;   // flat ground = 1
   vec3  lit  = base * u_kDim * mix(u_aoFloor, 1.0, nao.b)
              * clamp(u_shadeBase + u_shadeGain * shadeRel, 0.0, u_shadeMax);
+
+  // slope classes (P1.5): true-scale slope of the normal, which bake takes from the height grid's central
+  // differences, as the cursor readout does. Lit like the ramp so relief still reads; lines stay on top.
+  float slopeDeg = degrees(atan(length(nxz), ny));
+  vec3  tintLit  = slopeTint(slopeDeg) * u_kDim * clamp(u_shadeBase + u_shadeGain * shadeRel, 0.0, u_shadeMax);
+  lit = mix(lit, tintLit, 0.6 * u_slopeClasses);
 
   // lines: distance in pixels to the nearest line, antialiased, faded when dense
   float c    = h / u_interval;

@@ -3,7 +3,7 @@
 // after the scene pass and before the composite pass (renderer.info.autoReset is false).
 // The result shape is the one SCN-04 and PERF-01 read (Decision D-07).
 import * as THREE from 'three';
-import { viewer, setProfile, setLook, setDebug, setGroundDisc, PROFILE_LOOK } from './main.js';
+import { viewer, setProfile, setLook, setDebug, setGroundDisc, measureOverdraw, PROFILE_LOOK } from './main.js';
 import { DEFAULT_VIEW, orbitPosition } from './camera.js';
 
 export const BENCH_PROFILES = ['workstation', 'mobile_ar'];
@@ -53,11 +53,13 @@ export async function runBench() {
   const size = viewer.renderer.getDrawingBufferSize(new THREE.Vector2());
   const result = { user_agent: navigator.userAgent, gpu: gpuString(), canvas: { width: size.x, height: size.y },
     pixel_ratio: viewer.renderer.getPixelRatio(), profiles: {} };
+  const overdraw = {};
   for (const name of BENCH_PROFILES) {
     await setProfile(name);
     setLook(PROFILE_LOOK[name]);
     viewer.resetCamera();
     for (let i = 0; i < WAIT_FRAMES; i++) await nextFrame();
+    overdraw[name] = measureOverdraw(); // P1.3, at the default view before the orbit
     const times = [];
     let last = await nextFrame();
     let live = null;
@@ -73,8 +75,51 @@ export async function runBench() {
   }
   viewer.controls.enabled = true;
   viewer.resetCamera();
+  viewer.overdrawResult = overdrawDoc(overdraw);
   return result;
 }
+
+// ---------- overdraw (P1.3) ----------
+
+// overdraw.json, saved next to bench.json. A separate file because bench.json's shape is fixed by D-07.
+function overdrawDoc(profiles) {
+  const size = viewer.renderer.getDrawingBufferSize(new THREE.Vector2());
+  return {
+    canvas: { width: size.x, height: size.y },
+    pixel_ratio: viewer.renderer.getPixelRatio(),
+    camera: { view: 'default', target_m: [...DEFAULT_VIEW.target], distance_m: DEFAULT_VIEW.distance,
+      elevation_deg: DEFAULT_VIEW.elevationDeg, azimuth_deg: DEFAULT_VIEW.azimuthDeg, fov_deg: viewer.camera.fov },
+    method: 'Fragments per covered pixel: terrain batches and entities, depth test off, ground disc and wireframe '
+      + 'off, one count per fragment in an 8-bit target.',
+    profiles,
+  };
+}
+
+// The overdraw half of bench mode alone, for scripts: each profile at the default view after WAIT_FRAMES.
+export async function overdrawRun() {
+  await viewer.ready;
+  await viewer.risen;
+  const keep = { profile: viewer.profile, look: viewer.look, debug: viewer.debug, disc: viewer.groundDiscEnabled };
+  setGroundDisc(false);
+  setDebug('none');
+  viewer.controls.enabled = false;
+  const profiles = {};
+  for (const name of BENCH_PROFILES) {
+    await setProfile(name);
+    setLook(PROFILE_LOOK[name]);
+    viewer.resetCamera();
+    for (let i = 0; i < WAIT_FRAMES; i++) await nextFrame();
+    profiles[name] = measureOverdraw();
+  }
+  const doc = overdrawDoc(profiles);
+  viewer.controls.enabled = true;
+  await setProfile(keep.profile);
+  setLook(keep.look);
+  setDebug(keep.debug);
+  setGroundDisc(keep.disc);
+  return doc;
+}
+viewer.overdrawRun = overdrawRun;
 
 // Show the result and offer it for download. Saving it to build/<aoi>/bench.json is a manual step unless a
 // script reads `window.tilepipe.benchResult`.
@@ -89,6 +134,14 @@ export function showBench(result) {
   a.textContent = 'Download bench.json';
   a.download = 'bench.json';
   a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+  if (viewer.overdrawResult) {
+    panel.append(' | ');
+    const o = panel.appendChild(document.createElement('a'));
+    o.textContent = 'Download overdraw.json';
+    o.download = 'overdraw.json';
+    o.href = URL.createObjectURL(new Blob([`${JSON.stringify(viewer.overdrawResult, null, 2)}\n`],
+      { type: 'application/json' }));
+  }
   const pre = panel.appendChild(document.createElement('pre'));
   pre.textContent = text;
   document.getElementById('hud').appendChild(panel);

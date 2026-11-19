@@ -271,3 +271,8 @@ None recorded.
 - Observed: entries and reasons are now written, so the old tests failed.
 - Change: `tests/test_docs.py` checks entry format and ISO dates, not emptiness, and bans the draft marker. The VERIFICATION.md cap skips its log lines. No cap is raised.
 - Why: the old checks guarded the drafting stage, which is over.
+
+### D-21 (P1) Slope uniform and overdraw input
+
+- Spec section: 10.1, 10.2, 14.1.
+- Change: the terrain shader adds `u_slopeClasses` for P1.5. The report also reads `build/<aoi>/overdraw.json` from bench mode for P1.3. No threshold changes.

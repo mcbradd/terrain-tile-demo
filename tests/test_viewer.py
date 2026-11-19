@@ -20,6 +20,7 @@ TERRAIN_UNIFORMS = {
     "u_shadeGain", "u_shadeMax", "u_lineColor", "u_plinthColor", "u_alphaMinor", "u_alphaIndex",
     "u_alphaGrid", "u_interval", "u_indexEvery", "u_wMinor", "u_wIndex", "u_wGrid", "u_chunkLod",
     "u_debugLod",
+    "u_slopeClasses",  # P1.5 slope-class overlay toggle (Deviation D-21)
 }
 
 
