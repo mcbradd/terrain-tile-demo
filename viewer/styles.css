@@ -113,4 +113,6 @@ body.touring #cursor, body.touring #view-panel { display: none; }
   #view-panel { bottom: 12px; right: 12px; width: calc(100vw - 24px); max-width: none; }
   #title { max-width: calc(100vw - 150px); }
   body.touring #budget.collapsible { display: block; }
+  /* An open panel takes the place of the panel it would cover: Budget the title card, View the Cursor panel. */
+  #hud:has(#budget.open) #title, body.touring #title, #hud:has(#view-panel.open) #cursor { display: none; }
 }

@@ -382,8 +382,10 @@ export async function initHud() {
   const budget = budgetPanel();
   const view = viewPanel();
   const tb = el('div', { id: 'toggles' },
-    el('button', { type: 'button', text: 'Budget', onclick: () => budget.classList.toggle('open') }),
-    el('button', { type: 'button', text: 'View', onclick: () => view.classList.toggle('open') }));
+    ...[['Budget', budget], ['View', view]].map(([text, panel]) => el('button', {
+      type: 'button', text, 'aria-controls': panel.id, 'aria-expanded': 'false',
+      onclick: (e) => e.currentTarget.setAttribute('aria-expanded', panel.classList.toggle('open')),
+    })));
   hud.append(titlePanel(), tb, budget, cursorPanel(), view, caption);
   window.addEventListener('keydown', onKey);
   trackPointer(document.getElementById('view'));
