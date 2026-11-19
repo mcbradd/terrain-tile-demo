@@ -53,9 +53,10 @@ Read from `entity_lods.toml`.
 
 1. Build the extension zip from `blender/tilepipe_tools` and install it in Blender through Preferences, Get Extensions, Install from Disk.
 2. In the add-on preferences, set `repo_root` to the repository folder.
-3. Copy `assets/entities/_template/ent_template.blend` to `assets/entities/<entity>/<entity>.blend` and rename the collection to match.
-4. Model within the LOD limits. In the sidebar tab `Tile Pipeline`, press `Validate Asset`. Click a failing row to select the object.
-5. Press `Export Asset`. It writes three GLBs and a partial `entity.json` under `assets/entities/<entity>/export/`.
+3. To model against real terrain, press `Import Tile` in the same tab (pick the AOI and profile first). It loads the built terrain from `dist/<aoi>/` and the entity placements at true scale: east is +X, north is +Y, and the tile's NW corner is the origin. It only reads `dist/`.
+4. Copy `assets/entities/_template/ent_template.blend` to `assets/entities/<entity>/<entity>.blend` and rename the collection to match.
+5. Model within the LOD limits. In the sidebar tab `Tile Pipeline`, press `Validate Asset`. Click a failing row to select the object.
+6. Press `Export Asset`. It writes three GLBs and a partial `entity.json` under `assets/entities/<entity>/export/`.
 
 ## Accuracy statement
 
