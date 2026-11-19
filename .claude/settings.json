@@ -21,7 +21,6 @@
       "Bash(git push:*)"
     ],
     "deny": [
-      "Bash(gh repo edit:*)",
       "Bash(gh repo delete:*)"
     ]
   }
