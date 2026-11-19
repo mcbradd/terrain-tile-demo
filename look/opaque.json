@@ -1,0 +1,33 @@
+{
+  "alpha_grid": 0.3,
+  "alpha_index": 0.8,
+  "alpha_minor": 0.45,
+  "ao_floor": 0.35,
+  "clear_srgb": "#0E1013",
+  "k_dim": 1.0,
+  "line_srgb": "#1E1D1A",
+  "mode": "opaque",
+  "plinth_srgb": "#24262A",
+  "ramp": [
+    {
+      "srgb": "#6B6A5E",
+      "t": 0.0
+    },
+    {
+      "srgb": "#9A9382",
+      "t": 0.35
+    },
+    {
+      "srgb": "#C9C1AE",
+      "t": 0.7
+    },
+    {
+      "srgb": "#EFEBE2",
+      "t": 1.0
+    }
+  ],
+  "schema": 1,
+  "shade_base": 0.25,
+  "shade_gain": 0.75,
+  "shade_max": 1.3
+}

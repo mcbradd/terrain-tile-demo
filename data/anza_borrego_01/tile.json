@@ -1,0 +1,2071 @@
+{
+  "cell_m": 10.0,
+  "cells": 1024,
+  "chunks": [
+    {
+      "aabb": {
+        "max": [
+          2560.0,
+          1466.941284,
+          2560.0
+        ],
+        "min": [
+          0.0,
+          76.676483,
+          0.0
+        ]
+      },
+      "cx": 0,
+      "cz": 0,
+      "id": "c0_0",
+      "lods": [
+        {
+          "bytes": 2402992,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c0_0_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "7299f7b064c8488aea675d97fb3b6b989b85fdecb2c8126568d81ba857e676fc",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409260,
+          "e_max_m": 8.715088,
+          "e_rms_m": 0.82214,
+          "file": "terrain_c0_0_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "9306d9be6abc14b92f4115933b0d322bbd4e4da5ec7578d08505bde6111fc9b3",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106664,
+          "e_max_m": 22.298828,
+          "e_rms_m": 2.570447,
+          "file": "terrain_c0_0_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "4905456528b1f57e567f0466472d0a014b5c456845bb6fcd29c4d212ec4b05d7",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29096,
+          "e_max_m": 47.667679,
+          "e_rms_m": 6.642566,
+          "file": "terrain_c0_0_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "ccd8bf2c9b022881fbc5a5bf3691977e4ad279096f63ab0a9fc6a8f3a904ac66",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8736,
+          "e_max_m": 83.867149,
+          "e_rms_m": 15.427997,
+          "file": "terrain_c0_0_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "93d0c29ceb064d021be6396e1bf37df6e0a8a78c3a36202de95dd39ed7909bab",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          5120.0,
+          1349.104858,
+          2560.0
+        ],
+        "min": [
+          2560.0,
+          76.676483,
+          0.0
+        ]
+      },
+      "cx": 1,
+      "cz": 0,
+      "id": "c1_0",
+      "lods": [
+        {
+          "bytes": 2402996,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c1_0_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "6c82b4f6c41788936729e7c66a85d295b40696668dc95035335ffad6e3a3e9fe",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409264,
+          "e_max_m": 10.00061,
+          "e_rms_m": 1.039731,
+          "file": "terrain_c1_0_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "6283e0719e5ea7b8827e2dd30b4680721ecc2f10eab9defc57a025368bca1524",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106668,
+          "e_max_m": 28.74054,
+          "e_rms_m": 3.339053,
+          "file": "terrain_c1_0_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "cafea762f531ee10eb36967c06e139e994c4324ed8db6592ddb738565999f292",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29096,
+          "e_max_m": 52.637512,
+          "e_rms_m": 8.243336,
+          "file": "terrain_c1_0_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "b628f54f4cb61b0278cb0b402a9415a3091f0bf9e0ea3571733d1002b60aa55d",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8740,
+          "e_max_m": 87.420776,
+          "e_rms_m": 18.393904,
+          "file": "terrain_c1_0_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "69737cb64abb766b78e6d86c14adc5c485ef249bb187a2eb1d5f0fe85d716ac6",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          7680.0,
+          793.37085,
+          2560.0
+        ],
+        "min": [
+          5120.0,
+          52.692566,
+          0.0
+        ]
+      },
+      "cx": 2,
+      "cz": 0,
+      "id": "c2_0",
+      "lods": [
+        {
+          "bytes": 2402992,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c2_0_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "996afc6786bcda367a304bad88a0e27891b622d13dacc881290d269580cabc04",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409264,
+          "e_max_m": 7.186981,
+          "e_rms_m": 0.659404,
+          "file": "terrain_c2_0_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "442c62834290a9057dd5e03fb5c82fff555c3c8ce2f0d007fdfe716ebe683b46",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106668,
+          "e_max_m": 17.858322,
+          "e_rms_m": 2.176025,
+          "file": "terrain_c2_0_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "aca6682f9829f2287909148f60c3327b2274f5e951915cbcd3a01a196ff47491",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29096,
+          "e_max_m": 38.367226,
+          "e_rms_m": 6.009128,
+          "file": "terrain_c2_0_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "d964a74c066788501ea32eb848be8cc69043957b12da04966342a5013ccc5ecb",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8740,
+          "e_max_m": 57.099281,
+          "e_rms_m": 13.274082,
+          "file": "terrain_c2_0_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "4e43122e084b3e523aa3747d79482f3cfe96247826e9a0d19f80aaf2ed4787c4",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          10240.0,
+          350.228271,
+          2560.0
+        ],
+        "min": [
+          7680.0,
+          13.776077,
+          0.0
+        ]
+      },
+      "cx": 3,
+      "cz": 0,
+      "id": "c3_0",
+      "lods": [
+        {
+          "bytes": 2402992,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c3_0_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "1bf1fcf5ed1a7b0c1015e55be6056981c0b0045b117eaa16d46c71462d507f11",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409264,
+          "e_max_m": 3.857956,
+          "e_rms_m": 0.109025,
+          "file": "terrain_c3_0_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "ba606b255c47c3c8f930804acc516adf372d9880b81de01380e5db73850f3cb4",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106664,
+          "e_max_m": 7.246811,
+          "e_rms_m": 0.352415,
+          "file": "terrain_c3_0_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "04bace2c19752d4d0302a970e91164156fbb6578cc932d8b41586642df8137c2",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29096,
+          "e_max_m": 19.95507,
+          "e_rms_m": 0.981607,
+          "file": "terrain_c3_0_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "226d0458fd273e4ffd72f4edcebb60a055c04b89f01aa4d90270754cffd467c6",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8740,
+          "e_max_m": 34.871239,
+          "e_rms_m": 2.193883,
+          "file": "terrain_c3_0_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "19110dfa7be7812e07ca3f4b21761a293a1c098d6bdc77450ac552708380fa4e",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          2560.0,
+          1479.974365,
+          5120.0
+        ],
+        "min": [
+          0.0,
+          76.676483,
+          2560.0
+        ]
+      },
+      "cx": 0,
+      "cz": 1,
+      "id": "c0_1",
+      "lods": [
+        {
+          "bytes": 2402992,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c0_1_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "ecb094db216053f1d9b94d62c0fc48ea007d3087aa13ddeda22dad1f1275a6b6",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409264,
+          "e_max_m": 9.617828,
+          "e_rms_m": 0.849305,
+          "file": "terrain_c0_1_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "a7e895092b9658755ab1ad2228e1bf6f7ee03c0fb569eee27945a49e8c4259dc",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106668,
+          "e_max_m": 24.424591,
+          "e_rms_m": 2.754312,
+          "file": "terrain_c0_1_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "7dd505e5dadc73567161d3edce2d2f84925a089070830d11b3294abd1da5e498",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29096,
+          "e_max_m": 42.35495,
+          "e_rms_m": 7.357924,
+          "file": "terrain_c0_1_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "70c04d6e501b163dde65a245466d83204a929d9b80f2383fef646cfac751f026",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8740,
+          "e_max_m": 89.009655,
+          "e_rms_m": 16.878144,
+          "file": "terrain_c0_1_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "7d3a89ee9f45f3d95aae809eb7d39bff74704821cdb6cb36c137eb50fa1c68ed",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          5120.0,
+          1316.203979,
+          5120.0
+        ],
+        "min": [
+          2560.0,
+          186.601578,
+          2560.0
+        ]
+      },
+      "cx": 1,
+      "cz": 1,
+      "id": "c1_1",
+      "lods": [
+        {
+          "bytes": 2402996,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c1_1_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "0c357acb14bef147b18348d30c51ff63de5521b8a9cd5277acf9a94ccc72129a",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409268,
+          "e_max_m": 10.080688,
+          "e_rms_m": 0.955143,
+          "file": "terrain_c1_1_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "4ae7d1d4534cb696bf925ce966eae21fa596b2d35b6b7c69044a98efd8ebf50b",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106668,
+          "e_max_m": 25.376373,
+          "e_rms_m": 3.00826,
+          "file": "terrain_c1_1_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "b7c91e83dd85c53471cf6ddc3f3a4b1904acc550832ea368fd87a962172d397c",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29100,
+          "e_max_m": 53.521179,
+          "e_rms_m": 7.809755,
+          "file": "terrain_c1_1_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "c314ec7dbc2874285b851fe10026b5dfd133328b5c7928f254aa180024721a75",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8744,
+          "e_max_m": 83.309082,
+          "e_rms_m": 17.814075,
+          "file": "terrain_c1_1_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "ca143e8ac2f9a818ad8e49ee7fd0e742c7ecd8fc3810ac628a3c119eb867c2df",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          7680.0,
+          1204.81665,
+          5120.0
+        ],
+        "min": [
+          5120.0,
+          1.443253,
+          2560.0
+        ]
+      },
+      "cx": 2,
+      "cz": 1,
+      "id": "c2_1",
+      "lods": [
+        {
+          "bytes": 2402996,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c2_1_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "b7fe3d174e4e8bd37798f61ac05ddb4de33030abafbbfd205ec0a5ab862118ce",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409264,
+          "e_max_m": 10.807068,
+          "e_rms_m": 0.855133,
+          "file": "terrain_c2_1_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "b11584841842ea2e9ddc5a6ba1901150e985835b77829d9bf7c6c5720972c5a2",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106668,
+          "e_max_m": 29.633484,
+          "e_rms_m": 2.697093,
+          "file": "terrain_c2_1_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "b578d0da4c4cf5b4091bdb10f326f884b3e0b351ecb37a7f2f0e9f2e82158835",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29100,
+          "e_max_m": 53.490906,
+          "e_rms_m": 6.807429,
+          "file": "terrain_c2_1_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "9b70ddc23899fb314dc2894678493517685405462bba31512c0c9c7516680ab2",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8744,
+          "e_max_m": 95.146904,
+          "e_rms_m": 14.801178,
+          "file": "terrain_c2_1_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "15dd686d802b21066f5400547272844ae450dc677638c62ba6ad32e0c9435618",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          10240.0,
+          303.250977,
+          5120.0
+        ],
+        "min": [
+          7680.0,
+          -7.697586,
+          2560.0
+        ]
+      },
+      "cx": 3,
+      "cz": 1,
+      "id": "c3_1",
+      "lods": [
+        {
+          "bytes": 2402996,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c3_1_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "3a2230e353ee7e4fdd834b2308fe768f07c0927d23b82afdff35f5bd9676fb6c",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409264,
+          "e_max_m": 3.423347,
+          "e_rms_m": 0.148361,
+          "file": "terrain_c3_1_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "39a2c0ba4c6efd40a3f5cb5dbccefecc27485c91c8bf328d4c54f152b0630186",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106668,
+          "e_max_m": 9.742844,
+          "e_rms_m": 0.514996,
+          "file": "terrain_c3_1_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "98027394d33835307087be5cba03e82be4101e924aa8784a422999b22d669d4a",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29100,
+          "e_max_m": 22.029839,
+          "e_rms_m": 1.426044,
+          "file": "terrain_c3_1_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "cb363bf1d2ddfebcb19cc60f1407ca8e1a241f8ac03f301b8b676618a7bf2c32",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8748,
+          "e_max_m": 37.411585,
+          "e_rms_m": 3.023684,
+          "file": "terrain_c3_1_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "71135c43aff22e8704b2cd89b288420f231d030ca575d2ab2527f8008d3b713b",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          2560.0,
+          1786.583618,
+          7680.0
+        ],
+        "min": [
+          0.0,
+          76.676483,
+          5120.0
+        ]
+      },
+      "cx": 0,
+      "cz": 2,
+      "id": "c0_2",
+      "lods": [
+        {
+          "bytes": 2402996,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c0_2_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "e6b3d1d2c92b2504ef88ac634f55ae8151b63c2c1fac3589f1ed1d64b3c103ac",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409260,
+          "e_max_m": 9.814148,
+          "e_rms_m": 0.639843,
+          "file": "terrain_c0_2_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "737799ae0fadeda1a0fd9e3526ed8211bca7b8d93965f9c568f0baec13a90cb5",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106668,
+          "e_max_m": 20.823792,
+          "e_rms_m": 2.031797,
+          "file": "terrain_c0_2_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "5ec874e31ba254dc50e35d2a743217a1a2b9526df5ebe4badfc3004e1919ca63",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29096,
+          "e_max_m": 50.952118,
+          "e_rms_m": 5.367576,
+          "file": "terrain_c0_2_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "4d3f0fd1b93ddf277ac0b13c86ae959e7f214cc98deaa585b61b713cec14230a",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8740,
+          "e_max_m": 62.189034,
+          "e_rms_m": 11.75802,
+          "file": "terrain_c0_2_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "6313624cda295a06920a5792073696363f6c0b4e9b505760f92a75c2b5913b48",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          5120.0,
+          1596.2854,
+          7680.0
+        ],
+        "min": [
+          2560.0,
+          162.83287,
+          5120.0
+        ]
+      },
+      "cx": 1,
+      "cz": 2,
+      "id": "c1_2",
+      "lods": [
+        {
+          "bytes": 2402996,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c1_2_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "402fe0b5e75fd96cd9e7ae6cb0d525708de4ce0b34a0fc7ad0f68e37e1cbf0c0",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409264,
+          "e_max_m": 8.682709,
+          "e_rms_m": 0.729325,
+          "file": "terrain_c1_2_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "84a1bd5bc043f5b2aec0124c3e2d1eb4f173580ac1f34b46645d6670d7cac7b6",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106668,
+          "e_max_m": 25.160507,
+          "e_rms_m": 2.347706,
+          "file": "terrain_c1_2_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "7d9a138a360b4235a00cb46379a6cd2b58e506a4183191dcc4076f8a112cc39b",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29100,
+          "e_max_m": 32.932503,
+          "e_rms_m": 6.103001,
+          "file": "terrain_c1_2_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "0eda18353703f4c870665b402d1730c9efe3a3305a59cf72b169d6d7836f04bd",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8744,
+          "e_max_m": 61.998833,
+          "e_rms_m": 13.340055,
+          "file": "terrain_c1_2_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "6b06bd3d2c38dbbed615d4aa2bcd0cfd5f37769793d642d485917fdc28c0236a",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          7680.0,
+          708.90686,
+          7680.0
+        ],
+        "min": [
+          5120.0,
+          22.357727,
+          5120.0
+        ]
+      },
+      "cx": 2,
+      "cz": 2,
+      "id": "c2_2",
+      "lods": [
+        {
+          "bytes": 2402996,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c2_2_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "84f0eb6873975ccd58c8df685ace1560325ee3b5c219a27ad1df9929f0b1b06b",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409268,
+          "e_max_m": 7.190796,
+          "e_rms_m": 0.540655,
+          "file": "terrain_c2_2_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "8cc3ca4b5ab61acf1e408957b1d10f4edd47b411fb7df43f892a1dd601d6a071",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106672,
+          "e_max_m": 20.491653,
+          "e_rms_m": 1.771149,
+          "file": "terrain_c2_2_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "e1b5f63b1f171b3dcc04ab461c98071601f6ebd6ba99e89484f2aaeaa91adff9",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29100,
+          "e_max_m": 38.863174,
+          "e_rms_m": 4.568969,
+          "file": "terrain_c2_2_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "a6febfc88403ff51ccd090768cf2c3e98fa5245094451ebc9828814149fe5840",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8744,
+          "e_max_m": 65.565186,
+          "e_rms_m": 10.545994,
+          "file": "terrain_c2_2_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "ddcdc9caec305f497ad0b8a99df64d0743e861d3cc672b02f71156a5612045d6",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          10240.0,
+          252.372177,
+          7680.0
+        ],
+        "min": [
+          7680.0,
+          -11.222641,
+          5120.0
+        ]
+      },
+      "cx": 3,
+      "cz": 2,
+      "id": "c3_2",
+      "lods": [
+        {
+          "bytes": 2403000,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c3_2_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "5aae85a85d550751ca806cc8c1dc76e5d18ca42f026d74e1190b0c9fc5e7bb99",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409264,
+          "e_max_m": 3.37886,
+          "e_rms_m": 0.061512,
+          "file": "terrain_c3_2_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "b50256d899b41a7a8163c5688cf124a4bdac242f6a74f8c470bddfd8eff13ea4",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106668,
+          "e_max_m": 6.930496,
+          "e_rms_m": 0.177268,
+          "file": "terrain_c3_2_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "fa9abca66e8ec4df3e0f19db2d5404b0ed5a8cbaebac98e758247ac587142a4d",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29096,
+          "e_max_m": 13.610168,
+          "e_rms_m": 0.383655,
+          "file": "terrain_c3_2_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "6d7d6d6aff4efbfdea6f76a0fb1c562637bd8330fb11691161a85bffb32121ad",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8748,
+          "e_max_m": 19.84304,
+          "e_rms_m": 0.682591,
+          "file": "terrain_c3_2_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "021551229bca5a26e7fad2264a30df48ed0839cd7760268a4a1e577ed0e2e0be",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          2560.0,
+          1531.750977,
+          10240.0
+        ],
+        "min": [
+          0.0,
+          76.676483,
+          7680.0
+        ]
+      },
+      "cx": 0,
+      "cz": 3,
+      "id": "c0_3",
+      "lods": [
+        {
+          "bytes": 2402992,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c0_3_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "7a8a64d241569ef3da5a708729faa12d8bd10abcf994b48adbc71ffe5520768a",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409264,
+          "e_max_m": 9.375671,
+          "e_rms_m": 0.598718,
+          "file": "terrain_c0_3_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "1e8cf6c26f8a914a2a1b03042e767a902b19739ad41cf327b7ed772e39878627",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106668,
+          "e_max_m": 19.554596,
+          "e_rms_m": 1.936362,
+          "file": "terrain_c0_3_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "b566230217e922f0a092132f36809f6ca9bd1e33c3c710af4533a355ad34b000",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29096,
+          "e_max_m": 37.127014,
+          "e_rms_m": 5.185831,
+          "file": "terrain_c0_3_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "d88c6ad905f92ba44f1a9e0d72bf631c7e3ccb0810189a5e100ac3833188f42e",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8740,
+          "e_max_m": 62.893524,
+          "e_rms_m": 11.605446,
+          "file": "terrain_c0_3_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "cb2c2d5c9a5ce0da28cc7c91d48ea6167c9d7e5c8169ddccd522d5cb0b17ec80",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          5120.0,
+          1288.730225,
+          10240.0
+        ],
+        "min": [
+          2560.0,
+          76.676483,
+          7680.0
+        ]
+      },
+      "cx": 1,
+      "cz": 3,
+      "id": "c1_3",
+      "lods": [
+        {
+          "bytes": 2402996,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c1_3_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "83f8ca435d8fa963269b937ac3a0836b8cd3ec86ff7d2e93f5c439f5b9e31b97",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409264,
+          "e_max_m": 5.725403,
+          "e_rms_m": 0.631102,
+          "file": "terrain_c1_3_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "5aaf92124d53e63073d4fdda272c7bea165e4b2bf75306a469a89d77043c27da",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106668,
+          "e_max_m": 15.734772,
+          "e_rms_m": 2.026224,
+          "file": "terrain_c1_3_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "42eaa8d540a2866c91dc847de31b3e9244943405acd45e32148b65c2037d7c54",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29100,
+          "e_max_m": 33.409424,
+          "e_rms_m": 5.367848,
+          "file": "terrain_c1_3_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "f6ee33e3e2a6b7d6e64e4a425cc736742f8ba7732b410185d6a1e4941406b821",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8744,
+          "e_max_m": 63.222885,
+          "e_rms_m": 13.522159,
+          "file": "terrain_c1_3_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "4693724744554163c53e31a2e92e221dec3913e07eb5325563e0c2c5cb4a9c2b",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          7680.0,
+          798.185669,
+          10240.0
+        ],
+        "min": [
+          5120.0,
+          52.135773,
+          7680.0
+        ]
+      },
+      "cx": 2,
+      "cz": 3,
+      "id": "c2_3",
+      "lods": [
+        {
+          "bytes": 2402996,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c2_3_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "1c2098818d7ce7900f5e03f8bad970ef063d0fdd582943b479081d4fde486cfa",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409268,
+          "e_max_m": 7.449417,
+          "e_rms_m": 0.521036,
+          "file": "terrain_c2_3_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "b64c06fadb16ec312679bdb8ea1f63c619188fb7f48c6b7ddd7264d9ff12412f",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106672,
+          "e_max_m": 15.853271,
+          "e_rms_m": 1.6572,
+          "file": "terrain_c2_3_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "8c8d10c5066f49dd13c8d196ec50bee3213e9df843a28d3839831636534ccc01",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29100,
+          "e_max_m": 33.573242,
+          "e_rms_m": 4.21952,
+          "file": "terrain_c2_3_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "135a74cd7a47fe70d847d4878425a55c1d0faf2b237ae622bdb6eeecd347494c",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8744,
+          "e_max_m": 60.598322,
+          "e_rms_m": 8.98105,
+          "file": "terrain_c2_3_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "9246881ab57201e525a6d349668ca8ac9f1b0b1459cbe65281895cb448ddd72e",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    },
+    {
+      "aabb": {
+        "max": [
+          10240.0,
+          359.925903,
+          10240.0
+        ],
+        "min": [
+          7680.0,
+          -11.222641,
+          7680.0
+        ]
+      },
+      "cx": 3,
+      "cz": 3,
+      "id": "c3_3",
+      "lods": [
+        {
+          "bytes": 2403000,
+          "e_max_m": 0.0,
+          "e_rms_m": 0.0,
+          "file": "terrain_c3_3_lod0.glb",
+          "index_type": "uint32",
+          "k": 0,
+          "sha256": "98769e196916cb0dc925cb9f0ffed39b8eee23de9c77f0f5ceeb92a20258a29e",
+          "skirt_depth_m": 1.0,
+          "tris": 133120,
+          "tris_skirt": 2048,
+          "tris_surface": 131072,
+          "vertices": 67077
+        },
+        {
+          "bytes": 409268,
+          "e_max_m": 5.430092,
+          "e_rms_m": 0.395673,
+          "file": "terrain_c3_3_lod1.glb",
+          "index_type": "uint16",
+          "k": 1,
+          "sha256": "ef66c43cf04d8e827bde4fc7ae09d04afdf97ebcef1814a81d42c75b28b4b2bf",
+          "skirt_depth_m": 22.7,
+          "tris": 33792,
+          "tris_skirt": 1024,
+          "tris_surface": 32768,
+          "vertices": 17157
+        },
+        {
+          "bytes": 106672,
+          "e_max_m": 12.3302,
+          "e_rms_m": 1.219064,
+          "file": "terrain_c3_3_lod2.glb",
+          "index_type": "uint16",
+          "k": 2,
+          "sha256": "d9e0f5f899ca3bfc61bf0a91d978f2fd6951a78b4e5377639fbebab7c1aa85b1",
+          "skirt_depth_m": 60.3,
+          "tris": 8704,
+          "tris_skirt": 512,
+          "tris_surface": 8192,
+          "vertices": 4485
+        },
+        {
+          "bytes": 29104,
+          "e_max_m": 26.526398,
+          "e_rms_m": 2.8605,
+          "file": "terrain_c3_3_lod3.glb",
+          "index_type": "uint16",
+          "k": 3,
+          "sha256": "52433e91a68a3971eea722bf37a28d3cab45fde2b7ad25b63a1cce5af880d5c4",
+          "skirt_depth_m": 108.1,
+          "tris": 2304,
+          "tris_skirt": 256,
+          "tris_surface": 2048,
+          "vertices": 1221
+        },
+        {
+          "bytes": 8748,
+          "e_max_m": 36.484634,
+          "e_rms_m": 5.611603,
+          "file": "terrain_c3_3_lod4.glb",
+          "index_type": "uint16",
+          "k": 4,
+          "sha256": "4fbdf5470ef72a227a7d08049f52ac8bbe0e84077769df1c9ab524cc0ec64986",
+          "skirt_depth_m": 191.3,
+          "tris": 640,
+          "tris_skirt": 128,
+          "tris_surface": 512,
+          "vertices": 357
+        }
+      ]
+    }
+  ],
+  "crs": {
+    "epsg": 32611,
+    "height_unit": "m",
+    "hemisphere": "N",
+    "vertical_datum": "NAVD88",
+    "zone": 11
+  },
+  "entities": [
+    "ent_vehicle_wheeled_a",
+    "ent_mast_comms_a",
+    "ent_uas_quad_a"
+  ],
+  "extent_m": 10240.0,
+  "frame": {
+    "front_face": "CCW",
+    "handedness": "right",
+    "origin": "NW corner, elevation 0",
+    "up": "+Y",
+    "x": "east",
+    "z": "south"
+  },
+  "generator": "tilepipe 1.0.0",
+  "height": {
+    "max": 1787.322144,
+    "min": 176.676483,
+    "plinth_bottom": 76.676483
+  },
+  "looks": [
+    "additive",
+    "opaque"
+  ],
+  "mgrs": {
+    "center": "11SNS5307082470",
+    "gzd": "11S",
+    "square": "NS"
+  },
+  "name": "Anza-Borrego, Borrego Palm Canyon",
+  "origin": {
+    "E0": 547950,
+    "N0": 3677350,
+    "N_top": 3687590
+  },
+  "profiles": {
+    "mobile_ar": {
+      "batches": [
+        {
+          "aabb": {
+            "max": [
+              5120.0,
+              1479.974365,
+              5120.0
+            ],
+            "min": [
+              0.0,
+              76.676483,
+              0.0
+            ]
+          },
+          "bytes": 424800,
+          "chunks": [
+            "c0_0",
+            "c1_0",
+            "c0_1",
+            "c1_1"
+          ],
+          "file": "terrain_mobile_ar_b00.glb",
+          "index_type": "uint16",
+          "sha256": "6fb4c577b671772d8edbf40269d0756adcc4bd35139b9504ed84a09043e9f0ba",
+          "tris": 34816,
+          "vertices": 17940
+        },
+        {
+          "aabb": {
+            "max": [
+              10240.0,
+              1204.483398,
+              5120.0
+            ],
+            "min": [
+              5120.0,
+              75.41433,
+              0.0
+            ]
+          },
+          "bytes": 269664,
+          "chunks": [
+            "c2_0",
+            "c3_0",
+            "c2_1",
+            "c3_1"
+          ],
+          "file": "terrain_mobile_ar_b01.glb",
+          "index_type": "uint16",
+          "sha256": "5e77d87f7bb149febb7922b500f94f319eda1e6242b4dbc257849a5625ce6213",
+          "tris": 22016,
+          "vertices": 11412
+        },
+        {
+          "aabb": {
+            "max": [
+              5120.0,
+              1784.446533,
+              10240.0
+            ],
+            "min": [
+              0.0,
+              76.676483,
+              5120.0
+            ]
+          },
+          "bytes": 424804,
+          "chunks": [
+            "c0_2",
+            "c1_2",
+            "c0_3",
+            "c1_3"
+          ],
+          "file": "terrain_mobile_ar_b02.glb",
+          "index_type": "uint16",
+          "sha256": "b5e80ed7bbe2f8f4fe735a58c314825e02b9bc91a64cdf39948eebdd850e8305",
+          "tris": 34816,
+          "vertices": 17940
+        },
+        {
+          "aabb": {
+            "max": [
+              10240.0,
+              798.015747,
+              10240.0
+            ],
+            "min": [
+              5120.0,
+              -11.222641,
+              5120.0
+            ]
+          },
+          "bytes": 249320,
+          "chunks": [
+            "c2_2",
+            "c3_2",
+            "c2_3",
+            "c3_3"
+          ],
+          "file": "terrain_mobile_ar_b03.glb",
+          "index_type": "uint16",
+          "sha256": "3f4e2203426da4ad38bf9a3e0af098cf8934ab8688eeee6162e69afb2669c5e8",
+          "tris": 20352,
+          "vertices": 10548
+        }
+      ],
+      "budget_forced": true,
+      "e_star_m": 29.633484,
+      "entity_lod": 1,
+      "error_px_nominal": 12.733819,
+      "error_px_v3": 25.46624,
+      "selection": {
+        "c0_0": 2,
+        "c0_1": 2,
+        "c0_2": 2,
+        "c0_3": 2,
+        "c1_0": 2,
+        "c1_1": 2,
+        "c1_2": 2,
+        "c1_3": 2,
+        "c2_0": 2,
+        "c2_1": 2,
+        "c2_2": 2,
+        "c2_3": 2,
+        "c3_0": 3,
+        "c3_1": 3,
+        "c3_2": 4,
+        "c3_3": 3
+      },
+      "tau_target_m": 4.654213,
+      "terrain_draws": 4,
+      "terrain_tex_samples": 2,
+      "terrain_tris": 112000,
+      "texture_bytes": 7689556,
+      "web_payload_bytes": 9162285
+    },
+    "workstation": {
+      "batches": [
+        {
+          "aabb": {
+            "max": [
+              2560.0,
+              1465.861206,
+              2560.0
+            ],
+            "min": [
+              0.0,
+              76.676483,
+              0.0
+            ]
+          },
+          "bytes": 409260,
+          "chunks": [
+            "c0_0"
+          ],
+          "file": "terrain_workstation_b00.glb",
+          "index_type": "uint16",
+          "sha256": "9306d9be6abc14b92f4115933b0d322bbd4e4da5ec7578d08505bde6111fc9b3",
+          "tris": 33792,
+          "vertices": 17157
+        },
+        {
+          "aabb": {
+            "max": [
+              5120.0,
+              1348.888794,
+              2560.0
+            ],
+            "min": [
+              2560.0,
+              76.676483,
+              0.0
+            ]
+          },
+          "bytes": 409264,
+          "chunks": [
+            "c1_0"
+          ],
+          "file": "terrain_workstation_b01.glb",
+          "index_type": "uint16",
+          "sha256": "6283e0719e5ea7b8827e2dd30b4680721ecc2f10eab9defc57a025368bca1524",
+          "tris": 33792,
+          "vertices": 17157
+        },
+        {
+          "aabb": {
+            "max": [
+              7680.0,
+              791.202576,
+              2560.0
+            ],
+            "min": [
+              5120.0,
+              76.676483,
+              0.0
+            ]
+          },
+          "bytes": 106668,
+          "chunks": [
+            "c2_0"
+          ],
+          "file": "terrain_workstation_b02.glb",
+          "index_type": "uint16",
+          "sha256": "aca6682f9829f2287909148f60c3327b2274f5e951915cbcd3a01a196ff47491",
+          "tris": 8704,
+          "vertices": 4485
+        },
+        {
+          "aabb": {
+            "max": [
+              10240.0,
+              349.669434,
+              2560.0
+            ],
+            "min": [
+              7680.0,
+              76.676483,
+              0.0
+            ]
+          },
+          "bytes": 106664,
+          "chunks": [
+            "c3_0"
+          ],
+          "file": "terrain_workstation_b03.glb",
+          "index_type": "uint16",
+          "sha256": "04bace2c19752d4d0302a970e91164156fbb6578cc932d8b41586642df8137c2",
+          "tris": 8704,
+          "vertices": 4485
+        },
+        {
+          "aabb": {
+            "max": [
+              2560.0,
+              1479.974365,
+              5120.0
+            ],
+            "min": [
+              0.0,
+              76.676483,
+              2560.0
+            ]
+          },
+          "bytes": 409264,
+          "chunks": [
+            "c0_1"
+          ],
+          "file": "terrain_workstation_b04.glb",
+          "index_type": "uint16",
+          "sha256": "a7e895092b9658755ab1ad2228e1bf6f7ee03c0fb569eee27945a49e8c4259dc",
+          "tris": 33792,
+          "vertices": 17157
+        },
+        {
+          "aabb": {
+            "max": [
+              5120.0,
+              1316.203979,
+              5120.0
+            ],
+            "min": [
+              2560.0,
+              352.711243,
+              2560.0
+            ]
+          },
+          "bytes": 409268,
+          "chunks": [
+            "c1_1"
+          ],
+          "file": "terrain_workstation_b05.glb",
+          "index_type": "uint16",
+          "sha256": "4ae7d1d4534cb696bf925ce966eae21fa596b2d35b6b7c69044a98efd8ebf50b",
+          "tris": 33792,
+          "vertices": 17157
+        },
+        {
+          "aabb": {
+            "max": [
+              7680.0,
+              1204.483398,
+              5120.0
+            ],
+            "min": [
+              5120.0,
+              168.99234,
+              2560.0
+            ]
+          },
+          "bytes": 409264,
+          "chunks": [
+            "c2_1"
+          ],
+          "file": "terrain_workstation_b06.glb",
+          "index_type": "uint16",
+          "sha256": "b11584841842ea2e9ddc5a6ba1901150e985835b77829d9bf7c6c5720972c5a2",
+          "tris": 33792,
+          "vertices": 17157
+        },
+        {
+          "aabb": {
+            "max": [
+              10240.0,
+              303.250977,
+              5120.0
+            ],
+            "min": [
+              7680.0,
+              76.676483,
+              2560.0
+            ]
+          },
+          "bytes": 106668,
+          "chunks": [
+            "c3_1"
+          ],
+          "file": "terrain_workstation_b07.glb",
+          "index_type": "uint16",
+          "sha256": "98027394d33835307087be5cba03e82be4101e924aa8784a422999b22d669d4a",
+          "tris": 8704,
+          "vertices": 4485
+        },
+        {
+          "aabb": {
+            "max": [
+              2560.0,
+              1786.191406,
+              7680.0
+            ],
+            "min": [
+              0.0,
+              76.676483,
+              5120.0
+            ]
+          },
+          "bytes": 409260,
+          "chunks": [
+            "c0_2"
+          ],
+          "file": "terrain_workstation_b08.glb",
+          "index_type": "uint16",
+          "sha256": "737799ae0fadeda1a0fd9e3526ed8211bca7b8d93965f9c568f0baec13a90cb5",
+          "tris": 33792,
+          "vertices": 17157
+        },
+        {
+          "aabb": {
+            "max": [
+              5120.0,
+              1595.878418,
+              7680.0
+            ],
+            "min": [
+              2560.0,
+              327.721191,
+              5120.0
+            ]
+          },
+          "bytes": 409264,
+          "chunks": [
+            "c1_2"
+          ],
+          "file": "terrain_workstation_b09.glb",
+          "index_type": "uint16",
+          "sha256": "84a1bd5bc043f5b2aec0124c3e2d1eb4f173580ac1f34b46645d6670d7cac7b6",
+          "tris": 33792,
+          "vertices": 17157
+        },
+        {
+          "aabb": {
+            "max": [
+              7680.0,
+              707.865906,
+              7680.0
+            ],
+            "min": [
+              5120.0,
+              190.957733,
+              5120.0
+            ]
+          },
+          "bytes": 409268,
+          "chunks": [
+            "c2_2"
+          ],
+          "file": "terrain_workstation_b10.glb",
+          "index_type": "uint16",
+          "sha256": "8cc3ca4b5ab61acf1e408957b1d10f4edd47b411fb7df43f892a1dd601d6a071",
+          "tris": 33792,
+          "vertices": 17157
+        },
+        {
+          "aabb": {
+            "max": [
+              10240.0,
+              251.868164,
+              7680.0
+            ],
+            "min": [
+              7680.0,
+              71.977364,
+              5120.0
+            ]
+          },
+          "bytes": 29096,
+          "chunks": [
+            "c3_2"
+          ],
+          "file": "terrain_workstation_b11.glb",
+          "index_type": "uint16",
+          "sha256": "6d7d6d6aff4efbfdea6f76a0fb1c562637bd8330fb11691161a85bffb32121ad",
+          "tris": 2304,
+          "vertices": 1221
+        },
+        {
+          "aabb": {
+            "max": [
+              2560.0,
+              1531.032959,
+              10240.0
+            ],
+            "min": [
+              0.0,
+              76.676483,
+              7680.0
+            ]
+          },
+          "bytes": 409264,
+          "chunks": [
+            "c0_3"
+          ],
+          "file": "terrain_workstation_b12.glb",
+          "index_type": "uint16",
+          "sha256": "1e8cf6c26f8a914a2a1b03042e767a902b19739ad41cf327b7ed772e39878627",
+          "tris": 33792,
+          "vertices": 17157
+        },
+        {
+          "aabb": {
+            "max": [
+              5120.0,
+              1287.330078,
+              10240.0
+            ],
+            "min": [
+              2560.0,
+              76.676483,
+              7680.0
+            ]
+          },
+          "bytes": 106668,
+          "chunks": [
+            "c1_3"
+          ],
+          "file": "terrain_workstation_b13.glb",
+          "index_type": "uint16",
+          "sha256": "42eaa8d540a2866c91dc847de31b3e9244943405acd45e32148b65c2037d7c54",
+          "tris": 8704,
+          "vertices": 4485
+        },
+        {
+          "aabb": {
+            "max": [
+              7680.0,
+              798.015747,
+              10240.0
+            ],
+            "min": [
+              5120.0,
+              76.676483,
+              7680.0
+            ]
+          },
+          "bytes": 106672,
+          "chunks": [
+            "c2_3"
+          ],
+          "file": "terrain_workstation_b14.glb",
+          "index_type": "uint16",
+          "sha256": "8c8d10c5066f49dd13c8d196ec50bee3213e9df843a28d3839831636534ccc01",
+          "tris": 8704,
+          "vertices": 4485
+        },
+        {
+          "aabb": {
+            "max": [
+              10240.0,
+              359.695679,
+              10240.0
+            ],
+            "min": [
+              7680.0,
+              76.676483,
+              7680.0
+            ]
+          },
+          "bytes": 106672,
+          "chunks": [
+            "c3_3"
+          ],
+          "file": "terrain_workstation_b15.glb",
+          "index_type": "uint16",
+          "sha256": "d9e0f5f899ca3bfc61bf0a91d978f2fd6951a78b4e5377639fbebab7c1aa85b1",
+          "tris": 8704,
+          "vertices": 4485
+        }
+      ],
+      "budget_forced": true,
+      "e_star_m": 17.858322,
+      "entity_lod": 0,
+      "error_px_nominal": 6.394998,
+      "error_px_v3": 12.789741,
+      "selection": {
+        "c0_0": 1,
+        "c0_1": 1,
+        "c0_2": 1,
+        "c0_3": 1,
+        "c1_0": 1,
+        "c1_1": 1,
+        "c1_2": 1,
+        "c1_3": 2,
+        "c2_0": 2,
+        "c2_1": 1,
+        "c2_2": 1,
+        "c2_3": 2,
+        "c3_0": 2,
+        "c3_1": 2,
+        "c3_2": 3,
+        "c3_3": 2
+      },
+      "tau_target_m": 2.792527,
+      "terrain_draws": 16,
+      "terrain_tex_samples": 2,
+      "terrain_tris": 358656,
+      "texture_bytes": 7689556,
+      "web_payload_bytes": 12208697
+    }
+  },
+  "scene": "scene.json",
+  "schema": 1,
+  "source": {
+    "credit": "Elevation: U.S. Geological Survey, 3D Elevation Program, 1/3 arc-second DEM. Public domain.",
+    "crop_sha256": "89df841df79536257a07f699e2fa8c8c10cebc3b1056bd9485c25e661d60b995",
+    "product": "USGS 3DEP 1/3 arc-second DEM",
+    "retrieved_utc": "2026-11-14T19:08:49Z",
+    "urls": [
+      "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/13/TIFF/current/n34w117/USGS_13_n34w117.tif"
+    ]
+  },
+  "table": {
+    "exaggeration_allowed": [
+      1.0,
+      1.5,
+      2.0,
+      3.0
+    ],
+    "exaggeration_default": 1.5,
+    "scale": 8000
+  },
+  "textures": [
+    {
+      "bytes": 2097152,
+      "channels": {
+        "RG": "h = min + (R*65280 + G*255) / 65535 * (max - min), R and G sampled as 0..1"
+      },
+      "colorspace": "linear",
+      "file": "terrain_height.rg8.bin",
+      "filter": "bilinear",
+      "format": "RG8_UNORM",
+      "height": 1024,
+      "id": "height",
+      "mip_levels": 1,
+      "sha256": "63cf58136c7e7bb30afdd91545db9705762bcfdcf88c9b51d85254e60240eb3a",
+      "width": 1024,
+      "wrap": "clamp"
+    },
+    {
+      "bytes": 5592404,
+      "channels": {
+        "A": "reserved, 255",
+        "B": "ambient occlusion",
+        "G": "normal.z * 0.5 + 0.5",
+        "R": "normal.x * 0.5 + 0.5"
+      },
+      "colorspace": "linear",
+      "file": "terrain_nao.rgba8.bin",
+      "filter": "trilinear",
+      "format": "RGBA8_UNORM",
+      "height": 1024,
+      "id": "nao",
+      "mip_levels": 11,
+      "sha256": "c48e60e547143993726e012adee55389abdd3856bb8d62628cb76a554c0e2945",
+      "width": 1024,
+      "wrap": "clamp"
+    }
+  ],
+  "tile_id": "anza_borrego_01"
+}

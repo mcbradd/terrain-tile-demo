@@ -1,0 +1,61 @@
+{
+  "base_color_srgb": "#F2F0EA",
+  "bbox_m": {
+    "max": [
+      1.0,
+      2.0,
+      2.5
+    ],
+    "min": [
+      -1.0,
+      0.0,
+      -2.5
+    ]
+  },
+  "class": "vehicle",
+  "display": {
+    "mode": "token",
+    "table_size_m": 0.025
+  },
+  "front": "+Z",
+  "id": "ent_vehicle_wheeled_a",
+  "lods": [
+    {
+      "bytes": 46200,
+      "file": "ent_vehicle_wheeled_a_LOD0.glb",
+      "materials": 1,
+      "n": 0,
+      "primitives": 1,
+      "sha256": "cb7b5240c2ce7c31beb20ec3823d51ea2c55c22b5ce51563cd2bea11299ae7ba",
+      "texture_bytes": 0,
+      "tris": 1060,
+      "vertices": 1616
+    },
+    {
+      "bytes": 19312,
+      "file": "ent_vehicle_wheeled_a_LOD1.glb",
+      "materials": 1,
+      "n": 1,
+      "primitives": 1,
+      "sha256": "0139329b56d6ff3a36be101ebc932afef108b50b24bead4df68acc260b756c0d",
+      "texture_bytes": 0,
+      "tris": 420,
+      "vertices": 656
+    },
+    {
+      "bytes": 8556,
+      "file": "ent_vehicle_wheeled_a_LOD2.glb",
+      "materials": 1,
+      "n": 2,
+      "primitives": 1,
+      "sha256": "cfd40e209fcbcf82bf76e698078d0f5fb0e5ad13ae20f2cff352e0f511f250ec",
+      "texture_bytes": 0,
+      "tris": 164,
+      "vertices": 272
+    }
+  ],
+  "origin": "ground footprint center",
+  "schema": 1,
+  "source_blend_sha256": "33a09a6f8189af1b7e75f8e65fa3f500d982d179b6553562fec05b7ceecc5de9",
+  "up": "+Y"
+}

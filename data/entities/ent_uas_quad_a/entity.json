@@ -1,0 +1,61 @@
+{
+  "base_color_srgb": "#F2F0EA",
+  "bbox_m": {
+    "max": [
+      0.68,
+      0.26,
+      0.68
+    ],
+    "min": [
+      -0.68,
+      0.0,
+      -0.68
+    ]
+  },
+  "class": "uas",
+  "display": {
+    "mode": "token",
+    "table_size_m": 0.025
+  },
+  "front": "+Z",
+  "id": "ent_uas_quad_a",
+  "lods": [
+    {
+      "bytes": 36804,
+      "file": "ent_uas_quad_a_LOD0.glb",
+      "materials": 1,
+      "n": 0,
+      "primitives": 1,
+      "sha256": "dcfb0a01afd73620f2a8a3df250a7d1086a1f9bd96dfe2ac52cfa4812904ef04",
+      "texture_bytes": 0,
+      "tris": 828,
+      "vertices": 1280
+    },
+    {
+      "bytes": 15292,
+      "file": "ent_uas_quad_a_LOD1.glb",
+      "materials": 1,
+      "n": 1,
+      "primitives": 1,
+      "sha256": "79c37ff02550fa9839c5bcb1034b0d3e208b05c358388cdf8afc540735dde243",
+      "texture_bytes": 0,
+      "tris": 316,
+      "vertices": 512
+    },
+    {
+      "bytes": 7228,
+      "file": "ent_uas_quad_a_LOD2.glb",
+      "materials": 1,
+      "n": 2,
+      "primitives": 1,
+      "sha256": "c99efb8b8490748f710c277eb12d3d217a7d6d7bad01d1f6495645c77f9d7529",
+      "texture_bytes": 0,
+      "tris": 124,
+      "vertices": 224
+    }
+  ],
+  "origin": "ground footprint center",
+  "schema": 1,
+  "source_blend_sha256": "33992bde11e3a96eb2afc1aa92553a1448663c51fd6456dba52981ce7809ede6",
+  "up": "+Y"
+}

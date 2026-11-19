@@ -1,0 +1,61 @@
+{
+  "base_color_srgb": "#F2F0EA",
+  "bbox_m": {
+    "max": [
+      1.5,
+      12.0,
+      1.5
+    ],
+    "min": [
+      -1.5,
+      0.0,
+      -1.5
+    ]
+  },
+  "class": "mast",
+  "display": {
+    "mode": "token",
+    "table_size_m": 0.025
+  },
+  "front": "+Z",
+  "id": "ent_mast_comms_a",
+  "lods": [
+    {
+      "bytes": 23984,
+      "file": "ent_mast_comms_a_LOD0.glb",
+      "materials": 1,
+      "n": 0,
+      "primitives": 1,
+      "sha256": "0e361fe7cc271b65d3f664db1c5fbbe96b91f3d7cd3bce215f5a8e43af2a5646",
+      "texture_bytes": 0,
+      "tris": 536,
+      "vertices": 822
+    },
+    {
+      "bytes": 9868,
+      "file": "ent_mast_comms_a_LOD1.glb",
+      "materials": 1,
+      "n": 1,
+      "primitives": 1,
+      "sha256": "df6f9101ee4bde92b45967478a81b4ab7280931a8b47b9d6bd45956bda9a82ad",
+      "texture_bytes": 0,
+      "tris": 200,
+      "vertices": 318
+    },
+    {
+      "bytes": 4492,
+      "file": "ent_mast_comms_a_LOD2.glb",
+      "materials": 1,
+      "n": 2,
+      "primitives": 1,
+      "sha256": "de52a769379cfd60cc5dbc42d13e962528f3bbf02ddf3795a147c58327c6b907",
+      "texture_bytes": 0,
+      "tris": 72,
+      "vertices": 126
+    }
+  ],
+  "origin": "ground footprint center",
+  "schema": 1,
+  "source_blend_sha256": "34179157292e4cbc701f8cc827e6e6938bf4b5ffd2e89dd0965b98fc8a433917",
+  "up": "+Y"
+}
