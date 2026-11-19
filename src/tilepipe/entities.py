@@ -66,11 +66,16 @@ def deliverable_gate(root: Path, ids: list[str]) -> list[dict]:
 
 
 def refresh_manifest(root: Path) -> None:
-    """Rewrite tile.json and outputs.sha256 now that dist/entities/ exists (D-12). Skipped before a first build."""
+    """Rewrite tile.json and outputs.sha256 of every built AOI now that dist/entities/ exists (D-12).
+
+    Every AOI, not only the default: PAY-01 counts entity GLBs into each tile.json, so `all --aoi <other>` on a fresh
+    clone would otherwise validate a manifest written before dist/entities/ existed. An AOI with no tile.json yet
+    has not finished a build and is skipped.
+    """
     from tilepipe import manifest
-    aoi = config.default_aoi(root)
-    if (config.build_dir(root, aoi) / "geo.json").exists():
-        manifest.run(root, aoi)
+    for aoi in config.load_aois(root):
+        if (config.dist_dir(root, aoi) / "tile.json").exists():
+            manifest.run(root, aoi)
 
 
 def run(root: Path, no_blender: bool = False) -> int:

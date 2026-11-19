@@ -1,4 +1,5 @@
 """D-12: entities.run rewrites the manifest so outputs.sha256 lists the entity GLBs."""
+import shutil
 from pathlib import Path
 
 from tilepipe import config, entities
@@ -9,12 +10,24 @@ ROOT = Path(__file__).resolve().parent.parent
 def test_refresh_manifest_calls_manifest_run(monkeypatch):
     calls = []
     monkeypatch.setattr("tilepipe.manifest.run", lambda root, aoi: calls.append((root, aoi)))
-    aoi = config.default_aoi(ROOT)
-    geo = config.build_dir(ROOT, aoi) / "geo.json"
     entities.refresh_manifest(ROOT)
-    assert bool(calls) == geo.exists()
-    if calls:
-        assert calls == [(ROOT, aoi)]
+    built = [a for a in config.load_aois(ROOT) if (config.dist_dir(ROOT, a) / "tile.json").exists()]
+    assert calls == [(ROOT, a) for a in built]
+
+
+def test_refresh_manifest_covers_every_built_aoi(monkeypatch, tmp_path):
+    """Regression: only the default AOI was refreshed, so a fresh `all --aoi st_helens_01` failed PAY-01."""
+    shutil.copy2(ROOT / "aois.toml", tmp_path / "aois.toml")
+    aois = list(config.load_aois(ROOT))
+    assert len(aois) >= 2
+    for a in aois:   # every AOI built, the non-default one included
+        t = config.dist_dir(tmp_path, a) / "tile.json"
+        t.parent.mkdir(parents=True)
+        t.write_text("{}", encoding="utf-8")
+    calls = []
+    monkeypatch.setattr("tilepipe.manifest.run", lambda root, aoi: calls.append(aoi))
+    entities.refresh_manifest(tmp_path)
+    assert calls == aois
 
 
 def test_deliverable_gate_logs_validator_output(monkeypatch, tmp_path):

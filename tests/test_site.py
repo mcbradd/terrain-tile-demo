@@ -161,3 +161,30 @@ def test_serve_survives_a_burst_of_connections(served):
     [t.start() for t in threads]
     [t.join() for t in threads]
     assert not bad
+
+
+@NEEDS_DIST
+@pytest.mark.skipif(not (ROOT / "dist" / AOI / "validation.json").exists(), reason="run `tilepipe validate` first")
+def test_site_report_matches_final_validation_json(served):
+    """Regression: site/report/ is shared by every AOI, so a stale report (another AOI's failing validate) survived
+    `site` and showed profile FAIL while dist/<aoi>/validation.json had none. `site` re-renders it from that file."""
+    import re
+
+    from tilepipe.report.render import render
+    from tilepipe.validate.runner import verdict_text
+    doc = json.loads((ROOT / "dist" / AOI / "validation.json").read_text(encoding="utf-8"))
+    profiles = [s.split(":", 1)[1] for s in doc["summary"] if s.startswith("profile:")]
+    stale = {**doc, "summary": {s: {**c, "fail": c["fail"] + 1} for s, c in doc["summary"].items()}}
+    report = ROOT / "site" / "report" / "index.html"
+
+    def cells():
+        html = report.read_text(encoding="utf-8")
+        return {p: re.search(rf'<tr><td>{p}</td><td><span class="chip \w+">([^<]*)</span>', html)[1] for p in profiles}
+
+    try:
+        render(ROOT, AOI, stale)   # what a later failing validate leaves in site/report/
+        assert profiles and all(v.startswith("FAIL") for v in cells().values())
+        site.build(ROOT, AOI)
+        assert cells() == {p: verdict_text(doc["summary"][f"profile:{p}"]) for p in profiles}
+    finally:
+        render(ROOT, AOI, doc)

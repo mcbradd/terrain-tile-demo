@@ -184,41 +184,51 @@ async function run() {
   await page.setViewportSize({ width: 1280, height: 720 });
 
   // ---- tour: plays, captions, cancel on input, restores profile and look ----
+  // Each step is read from body[data-tour-step], which the tour sets in the same frame as that step's caption and
+  // state, polled every animation frame. No wall-clock timing: a loaded machine only makes the steps late.
+  const TOUR_WAIT = 60000;
+  const tourStep = (pg, n) => pg.waitForFunction((k) => {
+    if (document.body.dataset.tourStep !== String(k)) return null;
+    const v = window.tilepipe;
+    return { caption: document.getElementById('caption').innerText, look: v.look, debug: v.debug };
+  }, n, { timeout: TOUR_WAIT, polling: 'raf' }).then((h) => h.jsonValue());
   const tourPage = await ctx.newPage();
   await tourPage.goto(`${ORIGIN}/?profile=workstation`);
   await tourPage.evaluate(() => window.tilepipe.ready);
-  const cap = () => tourPage.locator('#caption').innerText().catch(() => '');
-  await tourPage.waitForSelector('#caption:not([hidden])', { timeout: 10000 });
-  check((await cap()).startsWith('10.24 km of Anza-Borrego'), 'tour caption 1', await cap());
-  await tourPage.waitForFunction(() => window.tilepipe.debug === 'both', null, { timeout: 8000 });
-  check((await cap()).startsWith('Geometry is chosen'), 'tour caption 2 with LOD tint and wireframe', await cap());
+  const s0 = await tourStep(tourPage, 0);
+  check(s0.caption.startsWith('10.24 km of Anza-Borrego'), 'tour caption 1', s0.caption);
+  const s1 = await tourStep(tourPage, 1);
+  check(s1.debug === 'both' && s1.caption.startsWith('Geometry is chosen'), 'tour caption 2 with LOD tint and wireframe',
+    `${s1.debug}: ${s1.caption}`);
   check(!(await tourPage.locator('#cursor').isVisible()) && await tourPage.locator('#budget').isVisible(),
     'tour hides Cursor and View, keeps Budget');
-  await tourPage.waitForFunction(() => window.tilepipe.profile === 'mobile_ar', null, { timeout: 8000 });
-  check(/^Mobile AR budget: [\d,]+ triangles, [\d.]+ px of terrain error$/.test(await cap()), 'tour caption 3', await cap());
-  await tourPage.waitForFunction(() => window.tilepipe.look === 'additive', null, { timeout: 8000 });
-  check((await cap()).startsWith('Preview for see-through displays'), 'tour caption 4', await cap());
-  await tourPage.waitForSelector('#caption[hidden]', { state: 'attached', timeout: 10000 });
-  await tourPage.waitForFunction(() => window.tilepipe.profile === 'workstation' && window.tilepipe.look === 'opaque');
+  const s2 = await tourStep(tourPage, 2);
+  check(/^Mobile AR budget: [\d,]+ triangles, [\d.]+ px of terrain error$/.test(s2.caption), 'tour caption 3', s2.caption);
+  await tourPage.waitForFunction(() => window.tilepipe.profile === 'mobile_ar', null, { timeout: TOUR_WAIT, polling: 'raf' });
+  const s3 = await tourStep(tourPage, 3);
+  check(s3.look === 'additive' && s3.caption.startsWith('Preview for see-through displays'), 'tour caption 4',
+    `${s3.look}: ${s3.caption}`);
+  await tourPage.waitForSelector('#caption[hidden]', { state: 'attached', timeout: TOUR_WAIT });
+  await tourPage.waitForFunction(() => window.tilepipe.profile === 'workstation' && window.tilepipe.look === 'opaque',
+    null, { timeout: TOUR_WAIT });
   check((await tourPage.evaluate(() => window.tilepipe.debug)) === 'none', 'tour ends with the initial profile and look');
   await tourPage.close();
 
   const cancelPage = await ctx.newPage();
   await cancelPage.goto(`${ORIGIN}/?profile=workstation`);
   await cancelPage.evaluate(() => window.tilepipe.ready);
-  await cancelPage.waitForSelector('#caption:not([hidden])', { timeout: 10000 });
-  await cancelPage.waitForFunction(() => window.tilepipe.debug === 'both', null, { timeout: 8000 });
+  await tourStep(cancelPage, 1);
   await cancelPage.mouse.move(300, 300);
   await cancelPage.mouse.down();
   await cancelPage.mouse.up();
-  await cancelPage.waitForSelector('#caption[hidden]', { state: 'attached', timeout: 5000 });
+  await cancelPage.waitForSelector('#caption[hidden]', { state: 'attached', timeout: TOUR_WAIT });
   const after = await cancelPage.evaluate(() => ({ p: window.tilepipe.profile, l: window.tilepipe.look, d: window.tilepipe.debug,
     touring: document.body.classList.contains('touring') }));
   check(after.p === 'workstation' && after.l === 'opaque' && after.d === 'none' && !after.touring, 'pointer input cancels the tour', JSON.stringify(after));
   await cancelPage.evaluate(() => document.getElementById('btn-tour').click());
-  await cancelPage.waitForSelector('#caption:not([hidden])', { timeout: 5000 });
+  await cancelPage.waitForSelector('#caption:not([hidden])', { timeout: TOUR_WAIT });
   await cancelPage.keyboard.press('x');
-  await cancelPage.waitForSelector('#caption[hidden]', { state: 'attached', timeout: 5000 });
+  await cancelPage.waitForSelector('#caption[hidden]', { state: 'attached', timeout: TOUR_WAIT });
   check(true, 'Play tour starts it and a key cancels it');
   await cancelPage.close();
 
