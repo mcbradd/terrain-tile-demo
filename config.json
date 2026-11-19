@@ -1,6 +1,1 @@
-{
-  "aoi": "anza_borrego_01",
-  "repo_url": "https://github.com/mcbradd/terrain-tile-demo",
-  "room": false,
-  "video_url": ""
-}
+{"aoi": "anza_borrego_01", "aois": {"anza_borrego_01": "Anza-Borrego, Borrego Palm Canyon"}, "repo_url": "https://github.com/mcbradd/terrain-tile-demo", "room": false, "video_url": ""}
