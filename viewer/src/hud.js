@@ -8,7 +8,7 @@ import { runBench, showBench } from './bench.js';
 const PROFILES = ['workstation', 'mobile_ar'];
 const PROFILE_LABEL = { workstation: 'Workstation', mobile_ar: 'Mobile AR' };
 const LOOK_LABEL = { opaque: 'Opaque', additive: 'Additive' };
-const DEBUG_LABEL = { none: 'None', wireframe: 'Wireframe', lod: 'LOD tint' };
+const DEBUG_LABEL = { none: 'None', wireframe: 'Wireframe', lod: 'LOD tint', overdraw: 'Overdraw' };
 const STEM_TRIS = 16;
 const MIB = 1048576;
 const MARCH_STEPS = 512;
@@ -183,8 +183,8 @@ function viewPanel() {
       segmented('seg-exag', viewer.tile.table.exaggeration_allowed.map((v) => [v, v.toFixed(1)]),
         (v) => { setExaggeration(v); refresh(); })),
     el('div', { class: 'row checks' }, check('contours', 'Contours'), check('grid', 'Grid'),
-      check('entities', 'Entities')),
-    el('div', { class: 'row checks' }, radio('none'), radio('wireframe'), radio('lod')),
+      check('entities', 'Entities'), check('slope', 'Slope classes')),
+    el('div', { class: 'row checks' }, radio('none'), radio('wireframe'), radio('lod'), radio('overdraw')),
     el('button', { type: 'button', id: 'btn-tour', class: 'accent', text: 'Play tour', onclick: toggleTour }));
 }
 
@@ -289,6 +289,45 @@ export function refresh() {
   document.getElementById('chk-entities').checked = viewer.toggles.entities;
   document.getElementById(`dbg-${viewer.debug === 'both' ? 'lod' : viewer.debug}`).checked = true;
   document.getElementById('btn-tour').textContent = tour && tour.active ? 'Stop tour' : 'Play tour';
+  refreshLegend();
+}
+
+// ---------- legend for the slope classes (P1.5) and the overdraw view (P1.3) ----------
+
+// Same hex values as slopeTint in terrain.frag.glsl and the stops of overdraw_heat.frag.glsl.
+const SLOPE_KEY = [['#6FA36F', 'Under 15 deg'], ['#E0B84A', '15 to 30 deg'], ['#D0583F', 'Over 30 deg']];
+const HEAT_KEY = [['#24408A', '1'], ['#2A9D8F', '2'], ['#8AB17D', '3'], ['#E9C46A', '4'], ['#E76F51', '6'],
+  ['#FFFFFF', '8+']];
+
+function legendPanel() {
+  const swatch = (hex) => el('span', { class: 'sw', style: `background:${hex}` });
+  ui.legendSlope = el('div', { id: 'legend-slope', hidden: '' },
+    el('h2', { text: 'Slope classes (illustrative)' }),
+    ...SLOPE_KEY.map(([hex, t]) => el('p', {}, swatch(hex), document.createTextNode(` ${t}`))),
+    el('p', { class: 'muted', text: 'Illustrative only: true-scale slope of the 10 m grid. Key S toggles it.' }));
+  ui.odMean = el('p', { class: 'num', id: 'od-mean', text: 'Measuring.' });
+  ui.legendOverdraw = el('div', { id: 'legend-overdraw', hidden: '' },
+    el('h2', { text: 'Overdraw' }),
+    el('p', { class: 'muted', text: 'Fragments drawn per pixel, depth test off. Key O toggles it.' }),
+    el('div', { class: 'heat' }, ...HEAT_KEY.map(([hex, t]) => el('span', {}, swatch(hex),
+      document.createTextNode(` ${t}`)))),
+    ui.odMean);
+  ui.legend = el('section', { id: 'legend', class: 'panel', hidden: '' }, ui.legendSlope, ui.legendOverdraw);
+  setInterval(() => {
+    const o = viewer.overdrawLive;
+    if (!ui.legendOverdraw.hidden && o) {
+      ui.odMean.textContent = `Mean ${o.mean_overdraw.toFixed(2)} fragments per covered pixel in this view`;
+    }
+  }, 500);
+  return ui.legend;
+}
+
+function refreshLegend() {
+  if (!ui.legend) return;
+  ui.legendSlope.hidden = !viewer.toggles.slope;
+  ui.legendOverdraw.hidden = viewer.debug !== 'overdraw';
+  ui.legend.hidden = ui.legendSlope.hidden && ui.legendOverdraw.hidden;
+  document.getElementById('chk-slope').checked = viewer.toggles.slope;
 }
 
 async function loadEntityTris() {
@@ -339,6 +378,8 @@ function onKey(e) {
     case 'c': toggle('contours'); break;
     case 'g': toggle('grid'); break;
     case 'w': setDebug(viewer.debug === 'wireframe' ? 'none' : 'wireframe'); break;
+    case 'o': setDebug(viewer.debug === 'overdraw' ? 'none' : 'overdraw'); break; // P1.3
+    case 's': toggle('slope'); break; // P1.5
     case 't': toggleTour(); return;
     case 'r': viewer.resetCamera(); break;
     case 'h': document.getElementById('hud').classList.toggle('hidden'); return;
@@ -406,6 +447,7 @@ export async function initHud() {
       onclick: (e) => e.currentTarget.setAttribute('aria-expanded', panel.classList.toggle('open')),
     })));
   hud.append(titlePanel(), tb, budget, cursorPanel(), view, caption);
+  hud.append(legendPanel());
   window.addEventListener('keydown', onKey);
   trackPointer(document.getElementById('view'));
   loadVideoLink();

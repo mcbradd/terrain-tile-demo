@@ -115,6 +115,21 @@ def _scale(info: dict, dist: Path) -> dict:
             "rows": [{"n": n, "seconds": total * n, "bytes": nbytes * n} for n in (1, 100, 1000)]}
 
 
+def _overdraw(build: Path) -> dict | None:
+    """P1.3: build/<aoi>/overdraw.json from the viewer's bench mode, saved next to bench.json; None if absent."""
+    f = build / "overdraw.json"
+    if not f.exists():
+        return None
+    doc = _jload(f)
+    cam = doc["camera"]
+    target = ", ".join(f"{v:g}" for v in cam["target_m"])
+    return {"rows": [{"name": n, **p} for n, p in doc["profiles"].items()], "canvas": doc["canvas"],
+            "method": doc["method"],
+            "camera": (f"default view: target ({target}) m, distance {cam['distance_m']:g} m, elevation "
+                       f"{cam['elevation_deg']:g} deg, azimuth {cam['azimuth_deg']:g} deg, vertical FOV "
+                       f"{cam['fov_deg']:g} deg")}
+
+
 def build_context(root: Path, aoi: str, validation: dict) -> dict:
     d, b = config.dist_dir(root, aoi), config.build_dir(root, aoi)
     tile, stats = _jload(d / "tile.json"), _jload(b / "lod_stats.json")
@@ -163,7 +178,7 @@ def build_context(root: Path, aoi: str, validation: dict) -> dict:
         "geo": [r for r in results if r["rule"] == "GEO-01"], "accuracy": ACCURACY,
         "scale": _scale(info, d), "extrapolation": EXTRAPOLATION, "static_only": STATIC_ONLY,
         "source": src, "retrieved_date": src["retrieved_utc"][:10], "versions": _versions(root, info),
-        "validator": tile["generator"], "h5": h5,
+        "validator": tile["generator"], "h5": h5, "overdraw": _overdraw(b),
     }
 
 

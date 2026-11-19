@@ -11,6 +11,8 @@ import entityFrag from './shaders/entity.frag.glsl';
 import compositeVert from './shaders/composite.vert.glsl';
 import compositeFrag from './shaders/composite.frag.glsl';
 import lineFrag from './shaders/line.frag.glsl';
+import overdrawCountFrag from './shaders/overdraw_count.frag.glsl';
+import overdrawHeatFrag from './shaders/overdraw_heat.frag.glsl';
 
 const FALLBACK_TEXT = 'This demo needs WebGL2 with float render targets. Watch the 3-minute walkthrough instead.';
 const LIGHT_DIR = [-0.5, 0.70710678, -0.5]; // TL: light from the northwest, 45 degrees up (10.2)
@@ -20,6 +22,8 @@ const GRADIENT_TOP = '#3A3A3A';
 const GRADIENT_BOTTOM = '#1E1E1E';
 const TABLE_LIFT = 0.010; // table meters, 6.1
 const ANISOTROPY = { mobile_ar: 4, workstation: 8 };
+const RISE_MS = 1200; // P1.6 rise-in on load
+const OVERDRAW_READ_EVERY = 30; // frames between live readbacks in the overdraw view
 
 // ---------- small helpers ----------
 
@@ -198,8 +202,8 @@ export const viewer = {
   profile: null,
   look: null,
   exaggeration: 1.5,
-  toggles: { contours: true, grid: true, entities: true },
-  debug: 'none', // none | wireframe | lod
+  toggles: { contours: true, grid: true, entities: true, slope: false }, // slope: P1.5 overlay
+  debug: 'none', // none | wireframe | lod | overdraw (P1.3)
   groundDiscEnabled: true,
   cpu: { height: null, nao: null }, // level 0 copies for the cursor readout
   sceneInfo: { triangles: 0, calls: 0 }, // counts after the scene pass, before the composite
@@ -209,6 +213,9 @@ export const viewer = {
   ready: null,
   textureBytesLoaded: 0,
   onFrame: null, // optional per-frame hook, called after the composite
+  rise: 1, // P1.6: vertical scale of the table transform, 0 to 1 during the rise-in, exactly 1 after it
+  risen: Promise.resolve(0), // resolves with the rise-in duration in ms (0 when skipped)
+  overdrawLive: null, // P1.3: last readback in the overdraw view, { mean_overdraw, fragments, covered_px }
 };
 
 const U = {
@@ -243,6 +250,7 @@ const U = {
   u_wGrid: { value: 0.75 },
   u_chunkLod: { value: new Array(16).fill(0) },
   u_debugLod: { value: 0 },
+  u_slopeClasses: { value: 0 }, // P1.5 (D-21)
 };
 
 const scene = new THREE.Scene();
@@ -264,6 +272,12 @@ let compositeScene;
 let compositeCam;
 let compositeMat;
 let loadToken = 0;
+let countRT; // P1.3 overdraw count target, 8-bit, one count per fragment
+let heatScene;
+let odTerrainMat;
+let odEntityMat;
+let odStemMat;
+let overdrawFrames = 0;
 
 function entityMaterial(hex, extra = {}) {
   return rawMaterial(entityVert, entityFrag, {
@@ -275,7 +289,9 @@ function entityMaterial(hex, extra = {}) {
 }
 
 // TL to table (6.1): Xt = (x - E/2) / S, Yt = (y - h_min) * V / S + 0.010, Zt = (z - E/2) / S.
-function tableFromTL(V) {
+// During the rise-in (P1.6) V is scaled by `k`; with k = 1 the arithmetic is the plain formula, bit for bit.
+function tableFromTL(V0, k = viewer.rise) {
+  const V = V0 * k;
   const S = viewer.tile.table.scale;
   const half = viewer.tile.extent_m / 2;
   const hMin = viewer.tile.height.min;
@@ -288,7 +304,7 @@ function tableFromTL(V) {
 }
 
 function tableY(yTL) {
-  return (yTL - viewer.tile.height.min) * viewer.exaggeration / viewer.tile.table.scale + TABLE_LIFT;
+  return (yTL - viewer.tile.height.min) * (viewer.exaggeration * viewer.rise) / viewer.tile.table.scale + TABLE_LIFT;
 }
 
 // ---------- look, exaggeration, toggles ----------
@@ -321,6 +337,7 @@ function applyUniformsFromLook() {
   discMesh.visible = !additive && viewer.groundDiscEnabled;
   entityGroup.visible = viewer.toggles.entities;
   U.u_debugLod.value = viewer.debug === 'lod' || viewer.debug === 'both' ? 0.5 : 0; // 'both' is for the tour (13.7)
+  U.u_slopeClasses.value = viewer.toggles.slope ? 1 : 0;
   wireGroup.visible = viewer.debug === 'wireframe' || viewer.debug === 'both';
 }
 
@@ -371,7 +388,11 @@ export function setExaggeration(V) {
   if (!viewer.tile.table.exaggeration_allowed.includes(V)) throw new Error(`exaggeration ${V} not allowed`);
   viewer.exaggeration = V;
   U.u_exag.value = V;
-  U.u_tableFromTL.value.copy(tableFromTL(V));
+  applyTable();
+}
+
+function applyTable(k = viewer.rise) {
+  U.u_tableFromTL.value.copy(tableFromTL(viewer.exaggeration, k));
   for (const g of [terrainGroup, wireGroup]) {
     g.matrix.copy(U.u_tableFromTL.value);
     g.matrixWorldNeedsUpdate = true;
@@ -463,12 +484,14 @@ function findGroundHeights() {
   const S = viewer.tile.table.scale;
   const half = viewer.tile.extent_m / 2;
   const down = new THREE.Vector3(0, -1, 0);
+  applyTable(1); // rays meet the full-height surface even mid rise-in; restored below
   for (const it of instances) {
     ray.set(new THREE.Vector3((it.entry.x - half) / S, 10, (it.entry.z - half) / S), down);
     const hit = ray.intersectObjects(terrainGroup.children, false)[0];
     const yt = hit ? hit.point.y : TABLE_LIFT;
     it.yTL = (yt - TABLE_LIFT) * S / viewer.exaggeration + viewer.tile.height.min;
   }
+  if (viewer.rise !== 1) applyTable();
 }
 
 // One mesh of vertical quads, 0.6 mm wide, ground to token, turned to face the camera each frame (13.6).
@@ -578,6 +601,7 @@ function resize() {
   r.setSize(window.innerWidth, window.innerHeight);
   const size = r.getDrawingBufferSize(new THREE.Vector2());
   rt.setSize(size.x, size.y);
+  countRT.setSize(size.x, size.y);
   compositeMat.uniforms.u_viewSize.value.copy(size);
   viewer.camera.aspect = window.innerWidth / Math.max(1, window.innerHeight);
   viewer.camera.updateProjectionMatrix();
@@ -590,6 +614,11 @@ function frame() {
   cam.updateMatrixWorld();
   U.u_viewProj.value.multiplyMatrices(cam.projectionMatrix, cam.matrixWorldInverse);
   updateStems();
+  if (viewer.debug === 'overdraw') {
+    overdrawFrame();
+    if (viewer.onFrame) viewer.onFrame();
+    return;
+  }
   r.info.reset();
   r.setRenderTarget(rt);
   r.clear(true, true, false);
@@ -598,6 +627,86 @@ function frame() {
   r.setRenderTarget(null);
   r.render(compositeScene, compositeCam);
   if (viewer.onFrame) viewer.onFrame();
+}
+
+// ---------- rise-in (P1.6) ----------
+
+// 1.2 s ease-out of the table's vertical scale from 0 to 1 on first load. Skipped for bench, probe, and reduced
+// motion, so measurements see the final transform. It ends on exactly 1, which restores the plain transform.
+function riseEnabled() {
+  const q = new URLSearchParams(location.search);
+  return q.get('bench') !== '1' && q.get('probe') !== '1'
+    && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function startRise() {
+  viewer.risen = new Promise((resolve) => {
+    const t0 = performance.now();
+    const tick = (now) => {
+      const t = Math.max(0, now - t0) / RISE_MS;
+      viewer.rise = t >= 1 ? 1 : 1 - (1 - t) ** 3;
+      applyTable();
+      if (t >= 1) resolve(now - t0);
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+}
+
+// ---------- overdraw (P1.3) ----------
+
+// Draw terrain batches and entities with the count materials into `target`. Depth test is off, so every
+// front-facing fragment the rasterizer emits is counted (an upper bound: early depth rejection is not modeled).
+// The wireframe and the ground disc are left out.
+function countPass(target) {
+  const r = viewer.renderer;
+  const swaps = [];
+  for (const o of terrainGroup.children) swaps.push([o, o.material, odTerrainMat]);
+  for (const o of entityGroup.children) swaps.push([o, o.material, o.material.side === THREE.DoubleSide ? odStemMat : odEntityMat]);
+  for (const [o, , m] of swaps) o.material = m;
+  const keep = { wire: wireGroup.visible, disc: discMesh.visible, color: r.getClearColor(new THREE.Color()),
+    alpha: r.getClearAlpha() };
+  wireGroup.visible = false;
+  discMesh.visible = false;
+  r.setClearColor(0x000000, 0);
+  r.setRenderTarget(target);
+  r.clear(true, true, false);
+  r.render(scene, viewer.camera);
+  r.setRenderTarget(null);
+  r.setClearColor(keep.color, keep.alpha);
+  wireGroup.visible = keep.wire;
+  discMesh.visible = keep.disc;
+  for (const [o, m] of swaps) o.material = m;
+}
+
+function readOverdraw() {
+  const { width, height } = countRT;
+  const px = new Uint8Array(width * height * 4);
+  viewer.renderer.readRenderTargetPixels(countRT, 0, 0, width, height, px);
+  let fragments = 0;
+  let covered = 0;
+  for (let i = 0; i < px.length; i += 4) {
+    fragments += px[i];
+    if (px[i]) covered += 1;
+  }
+  return { mean_overdraw: covered ? Math.round((fragments / covered) * 1e6) / 1e6 : 0, fragments,
+    covered_px: covered, width, height };
+}
+
+// Mean overdraw at the current camera: fragments shaded per covered pixel.
+export function measureOverdraw() {
+  countPass(countRT);
+  return readOverdraw();
+}
+
+function overdrawFrame() {
+  const r = viewer.renderer;
+  r.info.reset();
+  countPass(countRT);
+  viewer.sceneInfo = { triangles: r.info.render.triangles, calls: r.info.render.calls };
+  r.setRenderTarget(null);
+  r.render(heatScene, compositeCam);
+  if (overdrawFrames++ % OVERDRAW_READ_EVERY === 0) viewer.overdrawLive = readOverdraw();
 }
 
 async function loadRoom() {
@@ -632,6 +741,15 @@ function buildPasses() {
     generateMipmaps: false,
   });
   rt.texture.colorSpace = THREE.LinearSRGBColorSpace;
+  countRT = new THREE.WebGLRenderTarget(ok.x, ok.y, {
+    type: THREE.UnsignedByteType,
+    format: THREE.RGBAFormat,
+    depthBuffer: false,
+    stencilBuffer: false,
+    minFilter: THREE.NearestFilter,
+    magFilter: THREE.NearestFilter,
+    generateMipmaps: false,
+  });
 
   const tri = new THREE.BufferGeometry();
   tri.setAttribute('position', new THREE.BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3));
@@ -652,6 +770,20 @@ function buildPasses() {
   compositeScene = new THREE.Scene();
   compositeScene.add(quad);
   compositeCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+  // overdraw (P1.3): additive one-per-fragment count, then a heat ramp to the screen
+  const count = { blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.OneFactor,
+    blendDst: THREE.OneFactor, depthTest: false, depthWrite: false };
+  odTerrainMat = rawMaterial(terrainVert, overdrawCountFrag, { u_viewProj: U.u_viewProj,
+    u_tableFromTL: U.u_tableFromTL }, count);
+  odEntityMat = rawMaterial(entityVert, overdrawCountFrag, { u_viewProj: U.u_viewProj }, count);
+  odStemMat = rawMaterial(entityVert, overdrawCountFrag, { u_viewProj: U.u_viewProj },
+    { ...count, side: THREE.DoubleSide });
+  const heat = new THREE.Mesh(tri, rawMaterial(compositeVert, overdrawHeatFrag, { u_count: { value: countRT.texture } },
+    { depthTest: false, depthWrite: false }));
+  heat.frustumCulled = false;
+  heatScene = new THREE.Scene();
+  heatScene.add(heat);
 
   // polygon offset pushes the surface back so the wireframe lines win the depth test
   terrainMat = rawMaterial(terrainVert, terrainFrag, U, {
@@ -742,10 +874,14 @@ async function boot() {
 
   viewer.look = viewer.looks[PROFILE_LOOK[name]] ? PROFILE_LOOK[name] : 'opaque'; // 13.2 step 2
   renderer.setAnimationLoop(frame);
+  const rise = riseEnabled();
+  if (rise) viewer.rise = 0; // set before the first terrain frame; findGroundHeights still sees full height
   await setProfile(name);
+  if (rise) startRise();
 }
 
-Object.assign(viewer, { setProfile, setLook, setExaggeration, setToggles, setDebug, setGroundDisc,
+Object.assign(viewer, { setProfile, setLook, setExaggeration, setToggles, setDebug, setGroundDisc, measureOverdraw,
+  terrainUniforms: U,
   resetCamera: () => resetView(viewer.camera, viewer.controls) });
 window.tilepipe = viewer;
 viewer.ready = boot().catch((e) => {

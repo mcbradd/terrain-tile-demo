@@ -267,13 +267,17 @@ None recorded.
 ### D-20 (orchestrator) Human entries and decision reasons
 
 - Spec section: 14.2, 17.9.
-- Expected: `[HUMAN]` entries stay empty and each `Why` stays a draft.
-- Observed: entries and reasons are now written, so the old tests failed.
-- Change: `tests/test_docs.py` checks entry format and ISO dates, not emptiness, and bans the draft marker. The VERIFICATION.md cap skips its log lines. No cap is raised.
-- Why: the old checks guarded the drafting stage, which is over.
+- Change: `tests/test_docs.py` checks entry format and ISO dates, not emptiness, and bans the draft marker. The VERIFICATION.md cap skips log lines. No cap raised.
+- Why: the drafting stage is over.
+
+### D-21 (P1) Slope uniform and overdraw input
+
+- Spec section: 10.1, 10.2, 14.1.
+- Change: shader uniform `u_slopeClasses` (P1.5); report reads `build/<aoi>/overdraw.json` (P1.3), since `bench.json` is frozen.
+- Why: keeps frozen contracts intact.
 
 ### D-22 (P1.1) AOI picker
 
 - Spec section: 13.9.
-- Expected: `config.json` holds the video link.
-- Change: it also maps hosted AOI ids to names. With two, the HUD name is a picker reloading with `?aoi=`. No threshold changes.
+- Change: `config.json` maps hosted AOI ids to names; the HUD name becomes a picker using `?aoi=`.
+- Why: no AOI literals in the viewer.

@@ -68,6 +68,18 @@ img { max-width: 100%; height: auto; }
 </table>
 <p class="muted">Budget anchor: {{ p.anchor }}. Items tagged ASSUMED rest on an assumed input; the other limits are the anchor times the content share.</p>
 {% endfor %}
+<h3 id="overdraw">Mean overdraw [MEASURED]</h3>
+{% if overdraw %}
+<table>
+<tr><th>Profile</th><th class="num">Mean overdraw</th><th class="num">Covered pixels</th><th class="num">Fragments</th></tr>
+{% for o in overdraw.rows %}
+<tr><td>{{ o.name }}</td><td class="num">{{ o.mean_overdraw | f(2) }}</td><td class="num">{{ o.covered_px | n }}</td><td class="num">{{ o.fragments | n }}</td></tr>
+{% endfor %}
+</table>
+<p class="muted">Measured in the viewer on the build machine at {{ overdraw.canvas.width }} by {{ overdraw.canvas.height }} pixels, {{ overdraw.camera }}. {{ overdraw.method }} No threshold applies.</p>
+{% else %}
+<p class="muted">Not measured. The viewer's bench mode writes overdraw.json; save it next to bench.json.</p>
+{% endif %}
 </section>
 
 <section id="lod-selection">

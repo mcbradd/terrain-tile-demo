@@ -11,6 +11,9 @@ const PAIRS = [
   ['entity.vert.glsl', 'entity.frag.glsl'],
   ['composite.vert.glsl', 'composite.frag.glsl'],
   ['terrain.vert.glsl', 'line.frag.glsl'],
+  ['terrain.vert.glsl', 'overdraw_count.frag.glsl'],
+  ['entity.vert.glsl', 'overdraw_count.frag.glsl'],
+  ['composite.vert.glsl', 'overdraw_heat.frag.glsl'],
 ];
 const src = Object.fromEntries(PAIRS.flat().map((f) => [f, readFileSync(join(dir, f), 'utf8')]));
 
