@@ -691,9 +691,14 @@ git status
 3. Press `Ctrl` + `Z` until the scale is back to 1. Validate: all pass. Press "Export Asset".
 4. Close Blender without saving. Run `git status` and undo any export change you do not want (see 4.4 feeder task).
 
-#### D3. Build a new place (only if Mount St. Helens was built)
+#### D3. Build a new place (3 minutes)
 
-This drill needs the St. Helens source data committed in `data/source/`. Today only the Anza-Borrego file is there, so this optional extra was not built. You cannot rehearse it. Write "not run, P1.1 not built".
+The St. Helens source crop is committed in `data/source/`, so this drill uses no network.
+
+1. Run `uv run tilepipe all --aoi st_helens_01 --no-blender`. Good: prep prints zone 10 (EPSG:32610) and MGRS starting `10TES`, and validate ends with 0 FAIL.
+2. Run `uv run tilepipe serve` and open `http://127.0.0.1:8000/?aoi=st_helens_01`. You can also pick the area in the title panel.
+3. Open the report. Good: zone 10, a different LOD selection, the same rules.
+4. Run `uv run tilepipe all --no-blender` afterwards so the site report is Anza-Borrego again.
 
 #### D4. Defend a decision (2 minutes each)
 
@@ -706,7 +711,7 @@ This drill needs the St. Helens source data committed in `data/source/`. Today o
 ```text
 - [HUMAN] D1 retarget budget, rehearsal 1 and 2: 2026-11-19 clean, 2026-11-20 clean
 - [HUMAN] D2 break fix an asset, rehearsal 1 and 2: 2026-11-19 clean, 2026-11-20 clean
-- [HUMAN] D3 build new place, rehearsal 1 and 2: not run, P1.1 not built
+- [HUMAN] D3 build new place, rehearsal 1 and 2: 2026-11-19 clean, 2026-11-20 clean
 - [HUMAN] D4 defend decisions, rehearsal 1 2: 2026-11-19 clean, 2026-11-20 clean
 ```
 
@@ -824,7 +829,7 @@ The code is what actually runs, so trust the code. These are the differences fou
 3. **Pictures folder.** The spec places your table photo and fallback picture under the viewer's assets. The code reads `assets/room.jpg` and `assets/fallback.jpg` from the repo root `assets` folder.
 4. **`site/config.json`.** The spec says it holds only the video link. The code also writes `aoi` and `repo_url`. At publish time you must fill both `video_url` and `repo_url`.
 5. **Drill D1 step 5.** The spec says "reload the viewer". You must also run `uv run tilepipe site` first, or the viewer shows the old data.
-6. **Drill D3.** It needs the Mount St. Helens data, which was not built. It cannot be rehearsed.
+6. **Drill D3.** The site hosts one report, for the area validated last. Rebuild Anza-Borrego after the drill.
 7. **No log lines** for the pacing fraction, the 10-second first-frame check, or the panel export. This guide puts short notes on the browser and front-direction lines instead.
 8. **Report date.** The spec says the report header shows the build date. The code shows the source download date instead, so two builds give the same report (recorded as D-13).
 9. **The approved changes in 4.8** were written by an agent, not by you. They count only once you confirm them.

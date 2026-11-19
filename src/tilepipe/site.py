@@ -81,7 +81,10 @@ def build(root: Path, aoi: str) -> None:
     cfg_path = out / "config.json"  # the viewer reads `aoi` from here when the URL has no ?aoi= (17.14, D-16),
     # and fetches assets/room.jpg only when `room` is true
     cfg = json.loads(cfg_path.read_text(encoding="utf-8")) if cfg_path.exists() else {"video_url": "", "repo_url": ""}
-    config.write_json(cfg_path, {**cfg, "aoi": aoi, "room": (root / "assets" / "room.jpg").exists()})
+    # `aois` maps every hosted AOI id to its tile name, so the HUD can offer a switch between them (Deviation D-22)
+    hosted = {a: json.loads((dist / a / "tile.json").read_text(encoding="utf-8"))["name"]
+              for a, files in todo.items() if files is not None}
+    config.write_json(cfg_path, {**cfg, "aoi": aoi, "aois": hosted, "room": (root / "assets" / "room.jpg").exists()})
     for name in ("room.jpg", "fallback.jpg"):  # [HUMAN] files; copied only when present
         if (root / "assets" / name).exists():
             _copy(root / "assets" / name, out / "assets" / name)

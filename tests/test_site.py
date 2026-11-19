@@ -39,7 +39,11 @@ def test_site_tree_matches_13_9(served):
     for prof in tile["profiles"].values():
         assert {b["file"] for b in prof["batches"]} <= names
     assert not any("_lod" in n for n in names), "the 80 per-chunk LOD files are not hosted"
-    assert json.loads((out / "config.json").read_text(encoding="utf-8")).keys() == {"aoi", "video_url", "repo_url", "room"}
+    cfg = json.loads((out / "config.json").read_text(encoding="utf-8"))
+    assert cfg.keys() == {"aoi", "aois", "video_url", "repo_url", "room"}
+    assert cfg["aois"][AOI] == tile["name"]
+    hosted = sorted(d.name for d in (out / "data").iterdir() if d.name != "entities")
+    assert sorted(cfg["aois"]) == hosted, "every hosted AOI is offered in the HUD switch (D-22)"
     html = (out / "index.html").read_text(encoding="utf-8")
     assert "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'" in html
     assert "__TILEPIPE_PROFILES__" not in (out / "app.js").read_text(encoding="utf-8")
@@ -112,11 +116,14 @@ def test_config_json_holds_built_aoi_and_keeps_other_keys(served):
     path = ROOT / "site" / "config.json"
     path.write_text(json.dumps({"aoi": "stale", "video_url": "https://example.test/v", "extra": 1}), encoding="utf-8")
     site.build(ROOT, AOI)
-    assert json.loads(path.read_text(encoding="utf-8")) == {"aoi": AOI, "video_url": "https://example.test/v", "extra": 1,
-                                                              "room": ROOM}
+    cfg = json.loads(path.read_text(encoding="utf-8"))
+    assert AOI in cfg.pop("aois")
+    assert cfg == {"aoi": AOI, "video_url": "https://example.test/v", "extra": 1, "room": ROOM}
     path.unlink()
     site.build(ROOT, AOI)
-    assert json.loads(path.read_text(encoding="utf-8")) == {"aoi": AOI, "video_url": "", "repo_url": "", "room": ROOM}
+    cfg = json.loads(path.read_text(encoding="utf-8"))
+    assert AOI in cfg.pop("aois")
+    assert cfg == {"aoi": AOI, "video_url": "", "repo_url": "", "room": ROOM}
 
 
 @NEEDS_DIST

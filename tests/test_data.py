@@ -9,7 +9,7 @@ import pytest
 import rasterio
 from rasterio.transform import from_origin
 
-from tilepipe import cli, config, fetch, geo, png
+from tilepipe import cli, config, fetch, geo, png, prep
 
 ROOT = Path(__file__).resolve().parents[1]
 AOI = "test_zone_01"
@@ -66,6 +66,27 @@ def test_geo_tile_geometry_anza_borrego():
     assert (g["zone"], g["epsg"]) == (11, 32611)
     assert g["E0"] % 10 == 0 and g["N0"] % 10 == 0 and g["N_top"] == g["N0"] + 10240
     assert 545000 <= g["E0"] <= 551000 and 3674000 <= g["N0"] <= 3681000
+
+
+@pytest.mark.parametrize("aoi", list(config.load_aois(ROOT)))
+def test_geo_every_aoi_passes_its_geometry_guards(aoi):
+    """DG-01, DG-02, DG-05 for each AOI of aois.toml, against that AOI's own expected ranges (P1.1)."""
+    rec = config.load_aoi(ROOT, aoi)
+    g = geo.tile_geometry(rec)
+    prep.guard_single_zone(g)
+    prep.guard_single_mgrs_square(g)
+    prep.guard_origin(g, rec)
+    assert g["epsg"] == 32600 + g["zone"]
+
+
+def test_geo_st_helens_is_zone_10():
+    g = geo.tile_geometry(config.load_aoi(ROOT, "st_helens_01"))
+    assert (g["zone"], g["epsg"]) == (10, 32610)
+    assert 554000 <= g["E0"] <= 560000 and 5107000 <= g["N0"] <= 5114000
+    m, lat, lon = prep.mgrs_string(g)
+    assert m.startswith("10TES") and len(m) == 15
+    assert (int(m[5:10]), int(m[10:])) == ((g["E0"] + 5120) % 100000, (g["N0"] + 5120) % 100000)
+    assert fetch.source_tiles(fetch.source_window(g, "EPSG:4269")) == ["n47w123"]
 
 
 def test_geo_southern_hemisphere_is_usage_error():
