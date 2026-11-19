@@ -1,0 +1,270 @@
+{
+  "aoi": "st_helens_01",
+  "instances": [
+    {
+      "cell": [
+        970,
+        61
+      ],
+      "entity": "ent_vehicle_wheeled_a",
+      "heading_deg": 66,
+      "hover_table_m": 0.0,
+      "x": 615.0,
+      "z": 9705.0
+    },
+    {
+      "cell": [
+        936,
+        347
+      ],
+      "entity": "ent_vehicle_wheeled_a",
+      "heading_deg": 274,
+      "hover_table_m": 0.0,
+      "x": 3475.0,
+      "z": 9365.0
+    },
+    {
+      "cell": [
+        321,
+        938
+      ],
+      "entity": "ent_vehicle_wheeled_a",
+      "heading_deg": 48,
+      "hover_table_m": 0.0,
+      "x": 9385.0,
+      "z": 3215.0
+    },
+    {
+      "cell": [
+        258,
+        862
+      ],
+      "entity": "ent_vehicle_wheeled_a",
+      "heading_deg": 352,
+      "hover_table_m": 0.0,
+      "x": 8625.0,
+      "z": 2585.0
+    },
+    {
+      "cell": [
+        819,
+        792
+      ],
+      "entity": "ent_vehicle_wheeled_a",
+      "heading_deg": 90,
+      "hover_table_m": 0.0,
+      "x": 7925.0,
+      "z": 8195.0
+    },
+    {
+      "cell": [
+        891,
+        950
+      ],
+      "entity": "ent_vehicle_wheeled_a",
+      "heading_deg": 223,
+      "hover_table_m": 0.0,
+      "x": 9505.0,
+      "z": 8915.0
+    },
+    {
+      "cell": [
+        783,
+        129
+      ],
+      "entity": "ent_vehicle_wheeled_a",
+      "heading_deg": 337,
+      "hover_table_m": 0.0,
+      "x": 1295.0,
+      "z": 7835.0
+    },
+    {
+      "cell": [
+        63,
+        154
+      ],
+      "entity": "ent_vehicle_wheeled_a",
+      "heading_deg": 223,
+      "hover_table_m": 0.0,
+      "x": 1545.0,
+      "z": 635.0
+    },
+    {
+      "cell": [
+        512,
+        967
+      ],
+      "entity": "ent_mast_comms_a",
+      "heading_deg": 284,
+      "hover_table_m": 0.0,
+      "x": 9675.0,
+      "z": 5125.0
+    },
+    {
+      "cell": [
+        900,
+        89
+      ],
+      "entity": "ent_mast_comms_a",
+      "heading_deg": 289,
+      "hover_table_m": 0.0,
+      "x": 895.0,
+      "z": 9005.0
+    },
+    {
+      "cell": [
+        948,
+        557
+      ],
+      "entity": "ent_mast_comms_a",
+      "heading_deg": 108,
+      "hover_table_m": 0.0,
+      "x": 5575.0,
+      "z": 9485.0
+    },
+    {
+      "cell": [
+        616,
+        33
+      ],
+      "entity": "ent_mast_comms_a",
+      "heading_deg": 5,
+      "hover_table_m": 0.0,
+      "x": 335.0,
+      "z": 6165.0
+    },
+    {
+      "cell": [
+        920,
+        721
+      ],
+      "entity": "ent_mast_comms_a",
+      "heading_deg": 42,
+      "hover_table_m": 0.0,
+      "x": 7215.0,
+      "z": 9205.0
+    },
+    {
+      "cell": [
+        175,
+        556
+      ],
+      "entity": "ent_mast_comms_a",
+      "heading_deg": 168,
+      "hover_table_m": 0.0,
+      "x": 5565.0,
+      "z": 1755.0
+    },
+    {
+      "cell": [
+        959,
+        848
+      ],
+      "entity": "ent_mast_comms_a",
+      "heading_deg": 280,
+      "hover_table_m": 0.0,
+      "x": 8485.0,
+      "z": 9595.0
+    },
+    {
+      "cell": [
+        433,
+        874
+      ],
+      "entity": "ent_mast_comms_a",
+      "heading_deg": 355,
+      "hover_table_m": 0.0,
+      "x": 8745.0,
+      "z": 4335.0
+    },
+    {
+      "cell": [
+        912,
+        295
+      ],
+      "entity": "ent_uas_quad_a",
+      "heading_deg": 212,
+      "hover_table_m": 0.02,
+      "x": 2955.0,
+      "z": 9125.0
+    },
+    {
+      "cell": [
+        961,
+        774
+      ],
+      "entity": "ent_uas_quad_a",
+      "heading_deg": 221,
+      "hover_table_m": 0.02,
+      "x": 7745.0,
+      "z": 9615.0
+    },
+    {
+      "cell": [
+        978,
+        610
+      ],
+      "entity": "ent_uas_quad_a",
+      "heading_deg": 110,
+      "hover_table_m": 0.02,
+      "x": 6105.0,
+      "z": 9785.0
+    },
+    {
+      "cell": [
+        793,
+        60
+      ],
+      "entity": "ent_uas_quad_a",
+      "heading_deg": 330,
+      "hover_table_m": 0.02,
+      "x": 605.0,
+      "z": 7935.0
+    },
+    {
+      "cell": [
+        66,
+        303
+      ],
+      "entity": "ent_uas_quad_a",
+      "heading_deg": 64,
+      "hover_table_m": 0.02,
+      "x": 3035.0,
+      "z": 665.0
+    },
+    {
+      "cell": [
+        686,
+        80
+      ],
+      "entity": "ent_uas_quad_a",
+      "heading_deg": 66,
+      "hover_table_m": 0.02,
+      "x": 805.0,
+      "z": 6865.0
+    },
+    {
+      "cell": [
+        952,
+        229
+      ],
+      "entity": "ent_uas_quad_a",
+      "heading_deg": 193,
+      "hover_table_m": 0.02,
+      "x": 2295.0,
+      "z": 9525.0
+    },
+    {
+      "cell": [
+        592,
+        965
+      ],
+      "entity": "ent_uas_quad_a",
+      "heading_deg": 246,
+      "hover_table_m": 0.02,
+      "x": 9655.0,
+      "z": 5925.0
+    }
+  ],
+  "schema": 1
+}

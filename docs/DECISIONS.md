@@ -271,3 +271,9 @@ None recorded.
 - Observed: entries and reasons are now written, so the old tests failed.
 - Change: `tests/test_docs.py` checks entry format and ISO dates, not emptiness, and bans the draft marker. The VERIFICATION.md cap skips its log lines. No cap is raised.
 - Why: the old checks guarded the drafting stage, which is over.
+
+### D-22 (P1.1) AOI picker
+
+- Spec section: 13.9.
+- Expected: `config.json` holds the video link.
+- Change: it also maps hosted AOI ids to names. With two, the HUD name is a picker reloading with `?aoi=`. No threshold changes.

@@ -18,6 +18,8 @@ uv run tilepipe all --no-blender
 
 The same with the Blender steps: `uv run tilepipe all`. Blender 5.2.0 must be installed (see `uv run tilepipe preflight`). Run every command from the repository root.
 
+Two areas are defined in `aois.toml`: Anza-Borrego (UTM zone 11N, the default) and Mount St. Helens (UTM zone 10N). Build the second with `uv run tilepipe all --aoi st_helens_01 --no-blender`. Both source crops are committed, so neither build uses the network. The viewer's title panel switches between built areas.
+
 ## What it shows
 
 - **One-command pipeline.** Raw DEM to runtime assets, deterministic and offline after the first fetch.
@@ -45,6 +47,7 @@ tests/          unit and property tests
 - No headset performance was measured. Budgets are checked as static counts.
 - Both hardware profiles are assumptions derived from public developer guidance, and are labeled as such in config.
 - This is a sketch of method, not a proposal for any team's architecture.
+- The site hosts one validation report, for the area validated last.
 - Identical output is claimed on one machine only. The build is deterministic there, and no other machine was tested.
 - Known limitations are listed in `docs/DECISIONS.md`: contours kink under magnification, normals are 8-bit, baked occlusion ignores exaggeration, and neighboring chunks at different LODs can show thin seams.
 

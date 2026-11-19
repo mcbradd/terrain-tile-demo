@@ -202,7 +202,7 @@ function titlePanel() {
     ui.video = el('span', { class: 'muted', text: 'Video not yet published' }));
   return el('section', { id: 'title', class: 'panel' },
     el('h1', { text: 'Terrain Tile Pipeline Demo' }),
-    el('p', { class: 'tile', text: tile.name }),
+    ui.tileName = el('p', { class: 'tile', text: tile.name }),
     el('p', { text: 'By Bradd McBrearty' }),
     el('p', { class: 'credit', text: tile.source.credit }),
     el('button', { type: 'button', id: 'btn-about', text: 'About',
@@ -220,9 +220,28 @@ async function loadVideoLink() {
     if (typeof cfg.repo_url === 'string' && /^https?:\/\//.test(cfg.repo_url)) {
       ui.repo.replaceWith(el('a', { href: cfg.repo_url, text: 'Repository' }));
     }
+    aoiSwitch(cfg.aois);
   } catch (e) {
     console.warn(`config.json not read: ${e.message}`);
   }
+}
+
+// AOI ids and names come from the `aois` map `tilepipe site` writes into config.json (17.14). With more than one
+// hosted AOI the tile name becomes a picker that reloads the page with ?aoi=<id>.
+function aoiSwitch(aois) {
+  if (!aois || typeof aois !== 'object' || Object.keys(aois).length < 2) return;
+  const pick = el('select', { id: 'sel-aoi', class: 'tile', 'aria-label': 'Area of interest',
+    onchange: (e) => {
+      const q = new URLSearchParams(location.search);
+      q.set('aoi', e.target.value);
+      location.search = q.toString();
+    } });
+  for (const [id, name] of Object.entries(aois)) {
+    const o = el('option', { value: id, text: name });
+    if (id === viewer.tile.tile_id) o.selected = true;
+    pick.append(o);
+  }
+  ui.tileName.replaceWith(pick);
 }
 
 // ---------- state sync ----------
