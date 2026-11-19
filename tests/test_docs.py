@@ -1,4 +1,5 @@
 """WP13 document checks: length per document, forbidden terms, em dashes, required sentences."""
+import datetime
 import getpass
 import re
 from pathlib import Path
@@ -25,7 +26,7 @@ def read(rel):
 
 @pytest.mark.parametrize("rel", LIMITS)
 def test_doc_length(rel):
-    n = len(read(rel).split())
+    n = verification_prose_words(read(rel)) if rel == "docs/VERIFICATION.md" else len(read(rel).split())
     assert 50 < n <= LIMITS[rel], f"{rel}: {n} words, limit {LIMITS[rel]}"
 
 
@@ -63,7 +64,8 @@ def test_decisions_has_all_records_and_keeps_deviations():
     s = read("docs/DECISIONS.md")
     for i in range(1, 12):
         assert re.search(rf"^### D{i} ", s, re.M), f"D{i}"
-    assert len(re.findall(r"^- Why: DRAFT, for Bradd", s, re.M)) >= 11
+    assert len(re.findall(r"^- Why: \S", s, re.M)) >= 11
+    assert "DRAFT" not in s
     assert "## Deviations" in s and "### D-01 (WP01)" in s
 
 
@@ -72,10 +74,65 @@ def test_open_questions_rows():
     assert len(rows) >= 13
 
 
-def test_verification_entries_empty():
-    s = read("docs/VERIFICATION.md")
-    entries = [ln for ln in s.splitlines() if ln.startswith("- [HUMAN]")]
-    assert entries and all(ln.rstrip().endswith(":") for ln in entries)
+def verification_prose_words(s: str) -> int:
+    """Words in VERIFICATION.md outside its log lines: `- [HUMAN]` entries and the numbered rulings."""
+    n, in_rulings = 0, False
+    for ln in s.splitlines():
+        if ln.startswith("## "):
+            in_rulings = ln.strip() == "## Approved threshold changes"
+        if ln.startswith("- [HUMAN]") or (in_rulings and re.match(r"\d+\. ", ln)):
+            continue
+        n += len(ln.split())
+    return n
+
+
+def verification_entry_errors(s: str) -> list[str]:
+    """Each `- [HUMAN]` entry is `label:` (empty) or `label: text`; a filled Date holds a valid ISO date."""
+    entries = [ln.rstrip() for ln in s.splitlines() if ln.startswith("- [HUMAN]")]
+    if not entries:
+        return ["no [HUMAN] entries"]
+    errors = []
+    for ln in entries:
+        m = re.fullmatch(r"- \[HUMAN\] ([^:]+):(?: (\S.*))?", ln)
+        if not m:
+            errors.append(ln)
+        elif m.group(1) == "Date" and m.group(2):
+            dates = re.findall(r"\b\d{4}-\d{2}-\d{2}\b", m.group(2))
+            try:
+                ok = bool(dates) and all(datetime.date.fromisoformat(d) for d in dates)
+            except ValueError:
+                ok = False
+            if not ok:
+                errors.append(ln)
+    return errors
+
+
+def test_verification_entries_format():
+    assert verification_entry_errors(read("docs/VERIFICATION.md")) == []
+
+
+@pytest.mark.parametrize("text", [
+    "- [HUMAN] Date:\n- [HUMAN] Result:",
+    "- [HUMAN] Date: 2026-11-18\n- [HUMAN] Result: PASS, MGRS matches: 11SMS",
+])
+def test_verification_entries_format_pass(text):
+    assert verification_entry_errors(text) == []
+
+
+@pytest.mark.parametrize("text", [
+    "",
+    "- [HUMAN] Date: yesterday",
+    "- [HUMAN] Date: 2026-13-01",
+    "- [HUMAN] Result:PASS",
+    "- [HUMAN] no colon here",
+])
+def test_verification_entries_format_fail(text):
+    assert verification_entry_errors(text)
+
+
+def test_verification_prose_words_skip_log_lines():
+    s = "Intro words.\n- [HUMAN] Date: 2026-11-18 a b c\n## Approved threshold changes\n\nRuling text.\n1. x y z\n"
+    assert verification_prose_words(s) == 8
 
 
 def test_provenance_license_placeholder():
