@@ -13,7 +13,7 @@ from pathlib import Path
 from tilepipe import config
 from tilepipe.config import EnvError, UsageError
 
-KEEP = ("report", "config.json")  # written by `validate` and set by [HUMAN] at G7; a rebuild leaves them alone
+KEEP = ("report", "config.json")  # report: kept when the AOI has no validation.json; config.json: set by [HUMAN] at G7
 MIME = {".glb": "model/gltf-binary", ".bin": "application/octet-stream", ".js": "text/javascript",
         ".json": "application/json", ".map": "application/json", ".css": "text/css", ".html": "text/html",
         ".jpg": "image/jpeg"}
@@ -101,6 +101,12 @@ def build(root: Path, aoi: str) -> None:
                 _copy(dist / a / f, out / "data" / a / f)
             else:
                 print(f"site: dist/{a}/{f} is absent; run `uv run tilepipe validate`")
+    # site/report/ is one file shared by every AOI, written by whichever `validate` ran last. Re-render it from the
+    # hosted AOI's validation.json so the report always matches the verdicts the site ships.
+    final = dist / aoi / "validation.json"
+    if final.exists():
+        from tilepipe.report.render import render
+        render(root, aoi, json.loads(final.read_text(encoding="utf-8")))
     ents = dist / "entities"
     if ents.is_dir():
         for f in sorted(ents.glob("*/entity.json")):

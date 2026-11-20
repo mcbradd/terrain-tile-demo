@@ -25,6 +25,7 @@ export function createTour(hooks) {
     cancelAnimationFrame(run.raf);
     for (const e of events) window.removeEventListener(e, cancel, true);
     run = null;
+    delete document.body.dataset.tourStep;
     viewer.controls.enabled = true;
     // At the end the initial profile and look are restored (13.7).
     setDebug('none');
@@ -60,6 +61,7 @@ export function createTour(hooks) {
       hooks.caption('Preview for see-through displays: black adds no light');
     }
     hooks.sync();
+    document.body.dataset.tourStep = String(step); // observable step state for tests; set with the caption
   }
 
   function tick(now) {
