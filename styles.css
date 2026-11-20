@@ -112,6 +112,14 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 #bench pre { font-size: 11px; white-space: pre-wrap; }
 body.bench #cursor, body.bench #view-panel, body.bench #title, body.bench #budget { display: none; }
 
+/* Legend for the slope classes and the overdraw view (P1.3, P1.5). */
+#legend { bottom: 12px; left: 50%; transform: translateX(-50%); min-width: 220px; }
+#legend[hidden], #legend [hidden] { display: none; }
+#legend .sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -1px;
+  border: 1px solid var(--edge); }
+#legend .heat { display: flex; gap: 10px; margin: 4px 0; }
+body.touring #legend, body.bench #legend { display: none; }
+
 /* During the tour the Cursor and View panels are hidden and Budget stays (13.7). */
 body.touring #cursor, body.touring #view-panel { display: none; }
 

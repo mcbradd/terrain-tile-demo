@@ -26,8 +26,8 @@
     {
       "fix_hint": "",
       "limit": 120.0,
-      "measured": 4.099,
-      "message": "META-02 PASS tile: measured 4.099 s, limit <= 120 s.",
+      "measured": 2.805,
+      "message": "META-02 PASS tile: measured 2.805 s, limit <= 120 s.",
       "rule": "META-02",
       "scope": "tile",
       "severity": "WARN",

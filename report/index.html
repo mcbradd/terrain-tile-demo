@@ -40,7 +40,7 @@ img { max-width: 100%; height: auto; }
 <table>
 <tr><th>Tile</th><td>Anza-Borrego, Borrego Palm Canyon (anza_borrego_01)</td></tr>
 <tr><th>Generator version</th><td>tilepipe 1.0.0</td></tr>
-<tr><th>Git commit</th><td><code>442057f</code></td></tr>
+<tr><th>Git commit</th><td><code>da413c5</code></td></tr>
 <tr><th>Date</th><td>2026-11-14 (source retrieval date; the build records no date in this file)</td></tr>
 <tr><th>Credit</th><td>Elevation: U.S. Geological Survey, 3D Elevation Program, 1/3 arc-second DEM. Public domain.</td></tr>
 </table>
@@ -77,6 +77,8 @@ img { max-width: 100%; height: auto; }
 <tr><td>Payload bytes</td><td class="num">12,208,697</td><td class="num">33,554,432</td><td class="num">36.4%</td><td><span class="bar"><i style="width: 36.4%"></i></span></td></tr>
 </table>
 <p class="muted">Budget anchor: Meta PC VR developer guidance, low end of range. Items tagged ASSUMED rest on an assumed input; the other limits are the anchor times the content share.</p>
+<h3 id="overdraw">Mean overdraw [MEASURED]</h3>
+<p class="muted">Not measured. The viewer's bench mode writes overdraw.json; save it next to bench.json.</p>
 </section>
 
 <section id="lod-selection">
@@ -157,7 +159,7 @@ img { max-width: 100%; height: auto; }
 <tr class="muted"><td><span class="chip PASS">PASS</span></td><td>GLB-01</td><td>GLB-01 PASS tile: measured 0 errors and warnings, limit &lt;= 0 errors and warnings.</td></tr>
 <tr class="muted"><td><span class="chip PASS">PASS</span></td><td>GLB-02</td><td>GLB-02 PASS tile: measured 0 files, limit &lt;= 0 files.</td></tr>
 <tr class="muted"><td><span class="chip PASS">PASS</span></td><td>LOOK-05</td><td>LOOK-05 PASS tile: measured 3.761 CR, limit &gt;= 2 CR.</td></tr>
-<tr class="muted"><td><span class="chip PASS">PASS</span></td><td>META-02</td><td>META-02 PASS tile: measured 4.099 s, limit &lt;= 120 s.</td></tr>
+<tr class="muted"><td><span class="chip PASS">PASS</span></td><td>META-02</td><td>META-02 PASS tile: measured 2.805 s, limit &lt;= 120 s.</td></tr>
 <tr class="muted"><td><span class="chip PASS">PASS</span></td><td>PERF-01</td><td>PERF-01 PASS tile: measured 0.005 of frames, limit &lt;= 0.02 of frames. <em>Measured on the build machine. Not evidence for either profile.</em></td></tr>
 <tr class="muted"><td><span class="chip PASS">PASS</span></td><td>SCN-03</td><td>SCN-03 PASS tile: measured 0 defects, limit &lt;= 0 defects.</td></tr>
 <tr class="muted"><td><span class="chip PASS">PASS</span></td><td>TER-02</td><td>TER-02 PASS tile: measured 0 mismatches, limit &lt;= 0 mismatches.</td></tr>
@@ -533,21 +535,21 @@ img { max-width: 100%; height: auto; }
 <h2>10. Scale estimate</h2>
 <table>
 <tr><th>Stage</th><th class="num">Measured seconds</th></tr>
-<tr><td>bake</td><td class="num">1.66</td></tr>
-<tr><td>batch</td><td class="num">0.24</td></tr>
-<tr><td>export</td><td class="num">0.24</td></tr>
-<tr><td>lod</td><td class="num">0.19</td></tr>
-<tr><td>manifest</td><td class="num">0.86</td></tr>
-<tr><td>prep</td><td class="num">0.80</td></tr>
-<tr><td>scene</td><td class="num">0.12</td></tr>
-<tr><th>Total</th><th class="num">4.10</th></tr>
+<tr><td>bake</td><td class="num">1.25</td></tr>
+<tr><td>batch</td><td class="num">0.13</td></tr>
+<tr><td>export</td><td class="num">0.17</td></tr>
+<tr><td>lod</td><td class="num">0.14</td></tr>
+<tr><td>manifest</td><td class="num">0.50</td></tr>
+<tr><td>prep</td><td class="num">0.54</td></tr>
+<tr><td>scene</td><td class="num">0.08</td></tr>
+<tr><th>Total</th><th class="num">2.81</th></tr>
 </table>
 <p>Bytes per tile: 60,778,601 (all files in the tile output folder except the validation file and the hash list).</p>
 <table>
 <tr><th class="num">Tiles</th><th class="num">Seconds</th><th class="num">Bytes</th></tr>
-<tr><td class="num">1</td><td class="num">4.1</td><td class="num">60,778,601</td></tr>
-<tr><td class="num">100</td><td class="num">409.9</td><td class="num">6,077,860,100</td></tr>
-<tr><td class="num">1,000</td><td class="num">4099.4</td><td class="num">60,778,601,000</td></tr>
+<tr><td class="num">1</td><td class="num">2.8</td><td class="num">60,778,601</td></tr>
+<tr><td class="num">100</td><td class="num">280.5</td><td class="num">6,077,860,100</td></tr>
+<tr><td class="num">1,000</td><td class="num">2805.3</td><td class="num">60,778,601,000</td></tr>
 </table>
 <p>Linear extrapolation from one measured tile on one machine. Not a measurement.</p>
 </section>
