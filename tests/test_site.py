@@ -1,4 +1,5 @@
 """WP10: site assembly, serve, the G4 probe, every control of 13.5, the tour, and bench mode (SPEC 13.5, 13.7 to 13.9)."""
+import os
 import json
 import shutil
 import subprocess
@@ -13,6 +14,8 @@ from tilepipe import config, site
 ROOT = Path(__file__).resolve().parents[1]
 AOI = config.default_aoi(ROOT)
 NEEDS_DIST = pytest.mark.skipif(not (ROOT / "dist" / AOI / "tile.json").exists(), reason="run `tilepipe build` first")
+# Hosted CI runners have no GPU: WebGL2 renders in software and bench mode never finishes there.
+NEEDS_GPU = pytest.mark.skipif(bool(os.environ.get("GITHUB_ACTIONS")), reason="bench needs a GPU; hosted CI has none")
 ROOM = (ROOT / "assets" / "room.jpg").exists()
 NEEDS_NODE = pytest.mark.skipif(not shutil.which("node"), reason="node not found")
 
@@ -97,6 +100,7 @@ def test_controls_keys_and_tour(browser_run):
 
 @NEEDS_DIST
 @NEEDS_NODE
+@NEEDS_GPU
 def test_bench_writes_valid_bench_json(browser_run):
     _, out = browser_run
     bench = json.loads(out.read_text(encoding="utf-8"))
